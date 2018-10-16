@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+	<html xmlns="http://www.w3.org/1999/xhtml"
+		xmlns:c="http://java.sun.com/jsp/jstl/core"
+		xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:p="http://primefaces.org/ui"
+		xmlns:sec="http://www.springframework.org/security/tags"
+		xmlns:ui="http://java.sun.com/jsf/facelets" lang="es-MX"
+		xml:lang="es-MX"
+		xmlns:composite="http://java.sun.com/jsf/composite">
+
+		<composite:interface>
+
+			<composite:attribute name="oneMenuId"
+				type="java.lang.String" required="true" />
+			<composite:attribute name="value" type="java.lang.Integer" />
+			<composite:attribute name="required"
+				type="java.lang.Boolean" default="false" />
+			<composite:attribute name="rendered"
+				type="java.lang.Boolean" default="true" />
+			<composite:attribute name="disabled"
+				type="java.lang.Boolean" default="false" />
+			<composite:attribute name="requiredMessage"
+				type="java.lang.String" default="Este campo es requerido" />
+			<composite:attribute name="labelText"
+				type="java.lang.String" />
+			<composite:attribute name="defaultOption"
+				type="java.lang.Boolean" default="false" />
+			<composite:attribute name="itemsValue" />
+
+			<composite:attribute name="ajaxChangeUpdate"
+				type="java.lang.String" default="" />
+			<composite:attribute name="ajaxChangeCallback"
+				method-signature="void listener()" />
+
+		</composite:interface>
+
+		<composite:implementation>
+			<div class="form-group">
+				<label>
+					<span style="font-weight: bold">
+						<c:if test="#{not empty cc.attrs.required and cc.attrs.required==true}">
+							*<h:outputText value="#{cc.attrs.labelText}" />:
+						</c:if>
+						<c:if test="#{empty cc.attrs.required or cc.attrs.required==false}">
+							<h:outputText value="#{cc.attrs.labelText}" />:
+						</c:if>
+					</span>
+				</label>
+				<p:selectOneMenu id="#{cc.attrs.oneMenuId}"
+					value="#{cc.attrs.value}" styleClass="form-control"
+					required="#{cc.attrs.required}"
+					requiredMessage="#{cc.attrs.requiredMessage}"
+					disabled="#{cc.attrs.disabled}">
+
+
+					<c:if test="#{cc.attrs.defaultOption==true}">
+						<f:selectItem
+							itemLabel="#{messageSource['etiqueta_selecciona']}"
+							itemValue="#{null}" noSelectionOption="true" />
+					</c:if>
+					<f:selectItems value="#{cc.attrs.itemsValue}" />
+
+
+					<c:if
+						test="#{cc.getValueExpression('ajaxChangeCallback') == null and not empty cc.attrs.ajaxChangeUpdate}">
+
+						<p:ajax event="change"
+							onstart="PF('bloqContForm').block()"
+							onsuccess="PF('bloqContForm').unblock()"
+							update="#{cc.attrs.ajaxChangeUpdate}" />
+					</c:if>
+					<c:if
+						test="#{cc.getValueExpression('ajaxChangeCallback') != null}">
+						<p:ajax event="change"
+							listener="#{cc.attrs.ajaxChangeCallback}"
+							onstart="PF('bloqContForm').block()"
+							onsuccess="PF('bloqContForm').unblock()"
+							update="#{cc.attrs.ajaxChangeUpdate}" />
+					</c:if>
+				</p:selectOneMenu>
+				<p:message id="#{cc.attrs.oneMenuId.concat('Msg')}"
+					for="#{cc.attrs.oneMenuId}" errorStyle="color:red" display="text" />
+			</div>
+
+		</composite:implementation>
+
+</html>

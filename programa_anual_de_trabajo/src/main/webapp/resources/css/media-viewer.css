@@ -1,0 +1,179 @@
+/**********		GENERAL		**********/
+
+.media-viewer {
+	padding-bottom: 1px;
+	
+	display: table;
+	box-sizing: border-box;
+    border: 1px solid #dadada;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.07);
+
+    width: 100%;
+    height: 100%;
+	
+	min-height: 200px;
+}
+
+/**********		NOT VISIBLE	STATUS CARD	**********/
+
+.media-viewer.is-notvisible {
+	background-color: white;
+}
+
+.media-viewer.is-notvisible .icon {
+  background-image: url("#{resource['media-viewer:images/notvisible.png']}");
+}
+
+.media-viewer.is-notvisible .status-card .placeholder-info .band {
+	background-color: #e7eff8;
+	color: cadetblue;
+}
+
+/**********		OFFICE CARD	**********/
+
+.media-viewer .embed-media .office-card {
+	background-color: white;
+}
+
+.media-viewer .embed-media .office-card  .icon {
+	background-image: url("#{resource['media-viewer:images/office.png']}");
+	height: 50px;
+	min-width: 50px;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+
+.media-viewer .embed-media .office-card  .placeholder-info .band {
+	background-color: #e7eff8;
+	color: cadetblue;
+}
+
+/**********		LOADING	STATUS CARD	**********/
+
+.media-viewer.is-loading {
+  background-color: black;
+}
+
+.media-viewer.is-loading .icon {
+  background-image: url("#{resource['media-viewer:images/loading.gif']}");
+}
+
+/**********		BROKEN STATUS CARD		**********/
+
+.media-viewer.is-broken {
+ background-color: #be3730;
+ color: white;
+}
+
+.media-viewer.is-broken .icon {
+  background-image: url("#{resource['media-viewer:images/broken.png']}");
+ }
+ 
+ /**********		SUCCESSFUL-LOADED STATUS CARD		**********/
+
+.media-viewer.is-succesful-loaded .status-card{
+ display: none;
+}
+ 
+/**********		GENERAL STATUS CARD		**********/
+
+.media-viewer .status-card {
+	display:table-cell;
+	vertical-align:middle;
+	min-height: 150px;
+}
+ 
+.media-viewer .status-card .icon {
+	height: 50px;
+	min-width: 50px;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+
+.media-viewer .status-card .placeholder-info .message,
+.media-viewer .status-card .placeholder-info .band {
+    font-size: 16px;
+	margin-top: 10px;
+	text-align: center;
+}
+
+.media-viewer .status-card .placeholder-info .band:empty {
+	display: none;
+}
+
+.media-viewer .status-card .placeholder-info .band {
+	color: blue;
+	/*text-decoration: underline;
+	cursor: pointer;*/
+}
+
+/**********		GENERAL IMAGE VIEWER		**********/
+
+/*.media-viewer.image {
+  margin: 0 0 0 0;
+  background-position: center center;
+  background-repeat: no-repeat;
+}*/
+
+/**********		EMBED MEDIA		**********/
+
+.media-viewer .embed-media {
+	text-align: center;
+	background-color: white;
+	display: none;
+}
+
+.media-viewer.is-succesful-loaded .embed-media {
+	display: table-cell;
+    vertical-align: middle;
+}
+
+/**********		EMBED MEDIA - EMBED IMAGE		**********/
+
+.media-viewer.image .embed-media img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+/***********	MEDIA VIEWER - MODAL BUTTON			**********/
+.media-viewer .embed-media .media-buttons {
+    background-size: 30px 30px;
+    background-repeat: no-repeat;
+	cursor:pointer;
+	position: absolute;
+
+	opacity: 0.5;
+    filter: alpha(opacity=50);
+	
+    background-color: white;
+    z-index: 2;
+    width: 30px;
+    height: 30px;
+    display: none;
+}
+
+.media-viewer .embed-media .show-modal-button {
+	background-image: url("#{resource['media-viewer:images/expand.png']}");
+}
+
+.media-viewer .embed-media .show-download-button {
+	background-image: url("#{resource['media-viewer:images/download.png']}");
+	left: 55px;
+}
+
+/***********	MEDIA VIEWER - MODAL			**********/
+#modal-viewer .content .media-viewer{
+	min-width: 300px !important;
+	min-height: 300px !important;
+	width: auto !important;
+	width: 50%;
+    margin: 0 auto;
+}
+
+/*#modal-viewer .content .media-viewer.pdf.is-succesful-loaded .embed-media canvas,*/
+#modal-viewer .content .media-viewer.video.is-succesful-loaded .embed-media video,
+#modal-viewer .content .media-viewer.image.is-succesful-loaded .embed-media img{
+	width: auto !important;
+	max-width: 100% !important;
+	max-height: calc(100vh - 60px) !important;
+}

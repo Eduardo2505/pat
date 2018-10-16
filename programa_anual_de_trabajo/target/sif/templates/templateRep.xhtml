@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c ="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:sec="http://www.springframework.org/security/tags"
+	xmlns:ui="http://java.sun.com/jsf/facelets" lang="es-MX"
+	xml:lang="es-MX">
+
+<f:view contentType="text/html" locale="es_MX">
+	<h:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+		<!-- meta para que en moviles se aplique el modo responsivo y se cancele el zoom -->
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+
+		<!-- Favicon -->
+		<link href="http://www.ine.mx/archivos2/portal/img/faviconINE.ico"
+			rel="shortcut icon" />
+
+		<!-- Importar Estilos CSS desde la carpeta resources -->
+		<h:outputStylesheet library="css" name="bootstrap.css" />
+		<h:outputStylesheet library="css" name="yamm.css" />
+		<h:outputStylesheet library="css" name="sistemas.css" />
+		<h:outputStylesheet library="css" name="font-awesome.css" />
+		<h:outputStylesheet library="css" name="estilos.css" />
+		<h:outputStylesheet library="css" name="institucionales.css" />
+					<h:outputStylesheet library="css" name="primefaces-sobreescritura.css" />
+		
+		<title>Sistema Integral de Fiscalización Versión 2.0</title> 
+		<link href="http://www.ine.mx/archivos2/portal/img/faviconINE.ico" rel="shortcut icon"/> 
+		<ui:insert name="headIncludes" />
+
+		<style type="text/css">
+			.ui-datalist-content{
+				border:0px;
+				background:none;
+			}
+			
+			.ui-picklist .ui-picklist-list{
+			   width: 450px;
+			   height: 300px;
+			}
+			
+			.ui-icon-bullet {
+				background-position: -81px -145px;
+			}
+			.ui-radiobutton-icon {
+				margin-left: 0px;
+			}
+			.ui-radiobutton-icon {
+				margin-left : 0px;
+			}
+			.ui-icon {
+				display           : block;
+				text-indent       : -99999px;
+				overflow          : none; 
+				background-repeat : no-repeat;
+			}
+		</style>
+		
+		<script type="text/javascript">
+			$(document).on('keyup keypress', 'form input[type="text"], form input[type="radio"], form input[type="checkbox"]', function(e) {
+			  if(e.which == 13) {
+			    e.preventDefault();
+			    return false;
+			  }
+			});
+		</script>
+		
+	</h:head>
+	
+	<h:body>
+	
+		<ui:include src="headerRep.xhtml" />
+		
+		<div class="container">			
+			<!--   INICIO - CONTENIDO -->
+			<table width="100%">
+				<tr>
+					<td valign="top" style="padding: 7px;">
+					<ui:insert name="CONTENT" /></td>
+				</tr>
+			</table>
+			<!--   FIN - CONTENIDO -->
+
+		</div>
+		
+	</h:body>
+</f:view>
+</html>

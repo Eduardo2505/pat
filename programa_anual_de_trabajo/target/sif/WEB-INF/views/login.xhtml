@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:sf="http://www.springframework.org/tags/faces"
+	template="/templates/template.xhtml">
+
+	<ui:define name="CONTENT">
+		<table width="100%">
+			<tr>
+				<td valign="top" class="Contenedor">
+
+					<table width="100%" border="0">
+						<tr>
+							<td><c:if test="${not empty param.error}">
+									<div class="error">
+										#{sessionScope.SPRING_SECURITY_LAST_EXCEPTION.message}</div>
+								</c:if>
+								<form name="f"
+									action="${request.contextPath}/j_spring_security_check"
+									method="post">
+
+									<p:messages id="msg" />
+
+									<h:panelGrid columns="2">
+
+										<h:outputLabel for="j_username" value="Nombre de usuario: *" />
+										<p:inputText id="j_username" label="j_username" value="" autocomplete="off"/>
+
+										<h:outputLabel for="j_password" value="Contraseña: *" />
+										<p:inputText type="password" id="j_password" label="j_password" value=""  autocomplete="off"/>
+
+										<h:outputLabel for="j_captcha"
+											value="C&oacute;digo de seguridad: *" />
+
+										<p:graphicImage value="captcha/captcha.png" alt="captcha"
+											width="170" height="50" />
+										<br />
+										<br />
+										<h:inputText id="j_captcha"  label="j_captcha" size="25" autocomplete="off"/>
+										
+									</h:panelGrid>
+									<input type="submit" value="Ingresar" />
+								</form></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</ui:define>
+</ui:composition>

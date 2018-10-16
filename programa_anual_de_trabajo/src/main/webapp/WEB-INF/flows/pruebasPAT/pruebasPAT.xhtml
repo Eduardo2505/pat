@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:sec="http://www.springframework.org/security/tags"
+	template="/templates/template.xhtml">
+
+	<ui:define name="CONTENT">
+
+		<h:form id="form" enctype="multipart/form-data">
+
+			<div class="card page-title-box">
+				<div class="left">
+					<h2>NombreModulo</h2>
+				</div>
+				<div class="right">
+					<ul class="action-list">
+						<li><p:commandLink>#{messageSource['etiqueta_captura']}</p:commandLink></li>
+						<li><p:commandLink action="consultaTemp" immediate="true">#{messageSource['etiqueta_consulta']}</p:commandLink></li>
+						<li><p:commandLink action="temp_modifica" immediate="true">#{messageSource['etiqueta_modifica']}</p:commandLink></li>
+					</ul>
+				</div>
+
+			</div>
+
+			<pe:blockUI id="bloqContForm" target="form" content="blockUIContent"
+				widgetVar="bloqContForm" />
+
+			<!-- BLOCKUICONTENT -->
+			<h:panelGrid id="blockUIContent" columns="2" style="display:none;">
+				<h:graphicImage library="img" name="loader.gif" width="200" />
+			</h:panelGrid>
+			<!-- FIN BLOCKUICONTENT -->
+
+			<p:commandButton id="borrar" value="Cancelar"
+				actionListener="#{mbPruebasPAT.funcionPrueba()}" style="margin-center:5px"
+				process="@this"
+				styleClass="ui-commandlink ui-widget btn  btn-default btn-sm">
+				<p:resetInput target="form" />
+			</p:commandButton>
+
+		</h:form>
+
+
+	</ui:define>
+</ui:composition>

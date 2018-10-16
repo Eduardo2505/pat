@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/webflow-config"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:faces="http://www.springframework.org/schema/faces"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/webflow-config http://www.springframework.org/schema/webflow-config/spring-webflow-config.xsd
+						http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
+						http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
+						http://www.springframework.org/schema/faces http://www.springframework.org/schema/faces/spring-faces.xsd">
+	
+	<!-- Define la infraestructura para que faces tenga acceso a recursos externos como CSS  -->
+	<faces:resources/>
+	
+	<context:component-scan base-package="mx.ine.sif.controllers" />
+	<!-- Habilita el uso de anotaciones @Controller -->
+	<mvc:annotation-driven/>
+	<mvc:view-controller path="/error"/>
+	<!--<mvc:view-controller path="/login"/> -->
+	<mvc:view-controller path="/sinpermiso"/>
+	<mvc:view-controller path="/sinautorizacion"/>
+	<mvc:view-controller path="/sinOperacion"/>
+	<mvc:view-controller path="/contaAntigua"/>
+	<!-- <mvc:view-controller path="/cdatos"/> -->
+	
+	<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources directory -->
+	<mvc:resources mapping="/resources/*" location="/resources/img/,/resources/img/reproductor/,resources/css/,resources/font-awesome,resources/font-awesome/css/,resources/font-awesome/fonts/,resources/pdf/,resources/js/,resources/fonts/,resources/assets/, resources/ultima-layout/, resources/primefaces-ultima-ine/" />
+	
+</beans:beans>

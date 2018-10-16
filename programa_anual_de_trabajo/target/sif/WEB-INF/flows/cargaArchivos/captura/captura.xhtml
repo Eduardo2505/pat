@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:sec="http://www.springframework.org/security/tags"
+	template="/templates/template.xhtml"
+	xmlns:sif="http://java.sun.com/jsf/composite/components">
+
+	<ui:define name="CONTENT">
+	<script>
+		$(document).ready(function(){
+			inicializaBoton();
+		});
+
+		function inicializaBoton(){
+			$("input[type=file]").change(function() {
+				var max = 1024 * 1024; // 1MB
+				if (this.files) {
+					if(this.files[0].size > max){
+						PF('growlMessages').renderMessage({"summary":"Error. ",
+	                        "detail":"El archivo excede el límite máximo permitido de 1MB.",
+	                        "severity":"warn"});
+				    	this.value = null;
+					}
+					
+					var str=this.files[0].name.substr(-4, 4).toLowerCase();
+					if(str!='.csv'){
+				    	PF('growlMessages').renderMessage({"summary":"Error. ",
+                             "detail":"El archivo no es un csv.",
+                             "severity":"warn"});
+				    	this.value = null; // Clears the field.
+					}
+				}
+			});
+		}
+	</script>
+	<!-- Se importa la clase Constantes para las validaciones -->
+		<pe:importConstants className="mx.ine.sif.util.Constantes" var="Constantes" />
+	
+		<!-- Migaja de pan del módulo -->
+		<ol class="breadcrumb">
+           <li><a href="${request.contextPath}/app/home">Inicio</a></li>
+           <li>Operaciones</li>
+           <li class="active">#{messageSource['cargaArchivo_titulo']}</li>
+	    </ol>
+			<!-- HAMBURGUESA  -->    
+		<div class="row" >
+			
+			<div class="titulo btn-group col-md-1" style="text-align:left;">
+				<!-- Menú hamburguesa-->
+				<button type="button" class="btn btn-default btn-sm dropdown-toggle"  data-toggle="dropdown">    
+			       <i class="fa fa-bars fa-2x"></i>
+			    </button>
+				<ul class="dropdown-menu" role="menu">
+				   <!-- >>>>> Capturar >>>>>>-->
+	 			   <li class="text-muted activo" value="">#{messageSource['etiqueta_captura']}</li>
+					<!-- >>>>> Consultar >>>>>>-->		
+				   <li><p:commandLink value="#{messageSource['etiqueta_consulta']}" action="consultar" immediate="true"/></li> 					   					   	
+					<li class="divider"></li>
+				   <!-- >>>>> Ayuda >>>>>>-->					
+				   <li><p:commandLink value="#{messageSource['etiqueta_ayuda']}" action="#" immediate="true"/></li>
+				</ul>	      
+			</div>
+			
+			<!-- Título del módulo-->		 
+			
+			<div class="col-md-11">
+				<h1>#{messageSource['cargaArchivo_titulo']}</h1>
+			</div>			
+		</div>
+		
+		<!-- Leyenda de campos requeridos -->	
+		<div class="row">
+			<div class="col-md-11">
+				<p>
+					<small> #{messageSource['etiqueta_requerido_1']} <span class="obligatorio">*</span>
+						#{messageSource['etiqueta_requerido_2']}
+					</small>
+				</p>
+			</div>
+		</div>				
+		<h:form id="formCargaArchivos"  enctype="multipart/form-data">
+		<p:messages id="msgsEstructura" autoUpdate="true" />
+			
+			<!-- Sección que se define para bloquear el botón mientras se hace la acción -->
+			<pe:blockUI id="bloqContForm" target="formCargaArchivos"
+				content="blockUIContent" widgetVar="bloqContForm" />
+			<h:panelGrid id="blockUIContent" columns="2" style="display:none;">
+				<h:graphicImage library="img" name="loader.gif" width="70" />
+				<h:outputText value="#{messageSource['etiqueta_procesando_info']}" style="white-space: nowrap;" />
+			</h:panelGrid>
+			
+			<!-- Se Mensaje de error -->
+			<p:growl id="id_growl" life="2000" widgetVar="growlMessages" for="growlMessages" showDetail="true" autoUpdate="true" />
+			
+			<!-- Titulo del formulario -->
+			<h3>#{messageSource['cargaArchivo_etiqueta_captura']}</h3>
+			
+				<section class="contenidoTabla">
+					<div class="row show-grid">
+						<div class="col-md-3">
+							<label><span class="obligatorio">*</span> 
+							<h:outputText value="#{messageSource['cargaArchivo_tipo_archivo']}" />:</label>
+						</div>
+							<div class="col-md-4">
+								<p:selectOneMenu disabled="false" 
+									id="catGral" 
+									styleClass="form-control" 
+									height="270"
+									value="#{mbCargaArchivos.tipoArchivo}">
+									<f:selectItem 
+									itemLabel="#{messageSource['cargaArchivo_etiquetaSeleccion']}"/>
+						            <f:selectItems 
+						            value="#{mbCargaArchivos.listaCatalogosGeneral}"/>
+						            <p:ajax event="change" 
+						            listener="#{mbCargaArchivos.mostrarAuxiliares()}"  
+						            onstart="PF('bloqContForm').block()"
+									onsuccess="PF('bloqContForm').unblock()" 
+									 oncomplete="inicializaBoton();"
+						        	update="@form"/>
+						        </p:selectOneMenu>		
+							</div>
+					</div>
+					
+					<br/><br/><br/>
+					<div class="row show-grid">
+						<div class="col-md-3">
+							<label><span class="obligatorio">*</span> <h:outputText value="Archivo" />:</label>
+						</div>
+						<div class="col-md-2">
+							<p:fileUpload id="archivoId" 
+								fileUploadListener="#{mbCargaArchivos.validarArchivo}"
+								mode="advanced"
+								process="@this"
+								auto="true"								
+								immediate="true"
+								update="panelErrores,btnGuardar,pnlBtnGuardar"
+								label="#{messageSource['cargaArchivo_btn_examinar']}"
+								uploadLabel="#{messageSource['cargaArchivo_btn_validar']}"
+								cancelLabel="false"
+								onstart="PF('bloqContForm').block()" 
+								oncomplete="PF('bloqContForm').unblock()"
+								sizeLimit="1048576"
+								invalidSizeMessage="Tamaño de archivo inválido, máximo 1 MB"
+								allowTypes="/(\.|\/)(csv|CSV)$/"
+								invalidFileMessage="Formato de archivo no permitido."								
+								disabled="#{mbCargaArchivos.fileUploadDeshabilitado}"/>								 
+						</div>						
+					</div>
+					<p:graphicImage library="img" name="interrogacion.jpg" width="30" height="30"/>
+					<p:outputLabel value="#{messageSource['cargaArchivo_lbl_guia']}" />						
+					<br />
+						<h:panelGroup id="panelGuia">							
+							<br />
+							<p:commandButton value="Gu&iacute;a de caracteres permitidos"
+											 onclick="PF('dlgCaractEspec').show();">
+							</p:commandButton>
+							<p:outputPanel id="dlgCaractEspec">
+							<p:dialog  header="Lista de caracteres permitidos" 
+							widgetVar="dlgCaractEspec" minHeight="40" resizable="false">
+							Para los campos de tipo texto los caracteres <br/>permitidos son:<br/>
+								<p:dataTable var="caracteres" value="#{mbCargaArchivos.listaCaracEspec}" 
+								             scrollable="true"
+								             scrollHeight="150"
+								             resizableColumns="true"									             
+								             style="width:300px">
+									<p:column headerText="Caracter" width="" style="width:40px;">
+									 	<h:outputText value="#{caracteres.caracter}"/>
+									</p:column>
+									<p:column headerText="Descripción" width="" style="width:110px;">
+									 	<h:outputText value="#{caracteres.descripcion}"/>
+									</p:column>
+								</p:dataTable>
+							</p:dialog>
+							</p:outputPanel>
+							
+							<br/>
+								<br/>
+							<h:outputLink>
+									<p:graphicImage library="img" name="iconPDF.png" width="25" height="25"/>
+									<h:outputText value=" #{messageSource['cargaArchivo_lbl_guiaEjemplo']}" />
+							</h:outputLink>	
+								<br />
+								<h:outputLink>
+									<p:graphicImage library="img" name="icono_xls.png" width="25" height="26"/>
+									<h:outputText value="#{messageSource['cargaArchivo_lbl_EjemploXls']} " />
+								</h:outputLink>
+								<br />
+								<br />							
+						</h:panelGroup>		
+						<br/>
+						<h:panelGrid columns="3" style="margin-bottom:10px"
+							cellpadding="5" border="0" id="pnlBtnGuardar">
+							<p:commandButton value="#{messageSource['boton.aceptar']}"
+								id="btnGuardar" actionListener="#{mbCargaArchivos.guardar}"
+								disabled="#{mbCargaArchivos.btnGuardarDeshabilitado}" ajax="true" update="@this">
+								 <p:confirm minWidth="30px" minHeight="40" header="Confirmación" 
+								 message="#{messageSource['cargaArchivo_msg_confirma_sustituye']}" icon="ui-icon-alert" />
+							</p:commandButton>
+			    			<p:confirmDialog global="true">
+			        			<p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+			        			<p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			    			</p:confirmDialog>								
+						</h:panelGrid>						
+						<p:outputPanel id="panelErrores">
+							<h:panelGroup rendered="#{mbCargaArchivos.mostrarErrores}">
+								<h:outputText value="#{messageSource['cargaArchivos.error.estructura']}" />
+								<p:dataTable id="tb_ListadoErrores" var="errorItem" styleClass="ui-message-error"
+									value="#{mbCargaArchivos.listadoErrores}" rows="10" paginator="true"
+									paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+									currentPageReportTemplate="{currentPage} de {totalPages}"
+									rowsPerPageTemplate="10,20,50,100,300,500"
+									binding="#{mbCargaArchivos.tablaErroresBinding}">
+									<p:column headerText="Línea">
+										<h:outputText value="#{errorItem.codigo}" />
+									</p:column>
+									<p:column headerText="Mensaje">
+										<h:outputText value="#{messageSource[(errorItem.mensaje)]}" />
+									</p:column>
+								</p:dataTable>
+								<center>
+								<p:commandLink id="repErroresXls" ajax="false">									
+									<p:graphicImage library="img" name="icono_xls.png" width="40" height="40"/>
+									<pe:exporter type="xlsx"
+											     target="tb_ListadoErrores" 
+									 			 fileName="listadoErrores"
+									 			 datasetPadding="4"></pe:exporter>
+								</p:commandLink>&nbsp;
+								</center>
+							</h:panelGroup>
+						</p:outputPanel>
+						
+				</section>
+		</h:form>		
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:c="http://java.sun.com/jsp/jstl/core"
+	  xmlns:h="http://java.sun.com/jsf/html"
+	  xmlns:f="http://java.sun.com/jsf/core"
+	  xmlns:p ="http://primefaces.org/ui"
+	  xmlns:sec="http://www.springframework.org/security/tags"
+	  xmlns:ui="http://java.sun.com/jsf/facelets" lang="es-MX" xml:lang="es-MX"
+	  xmlns:composite="http://java.sun.com/jsf/composite"
+	  >
+	
+	<composite:interface>
+			<composite:attribute name="inputId" type="java.lang.String" required="true"/>
+			<composite:attribute name="value" type="java.lang.String"/>
+			<composite:attribute name="required" type="java.lang.Boolean" default="false" />
+			<composite:attribute name="requiredMessage" type="java.lang.String" default="Este campo es requerido"/>
+			<composite:attribute name="labelText" type="java.lang.String"/>
+			<composite:attribute name="maxLength" type="java.lang.Integer" />
+			<composite:attribute name="validatorMessage" type="java.lang.String" default="Formato no valido"/>
+			<composite:attribute name="regexPattern" type="java.lang.String"/>
+			<composite:attribute name="onKeyPress" type="java.lang.String"/>
+			<composite:attribute name="inputStyle" type="java.lang.String"/>
+			<composite:attribute name="watermark" type="java.lang.String"/>
+			<composite:attribute name="readonly" type="java.lang.Boolean" default="false"/> 
+			<composite:attribute name="isEmail" type="java.lang.Boolean" default="false" />
+			<composite:attribute name="isCurp" type="java.lang.Boolean" default="false" />
+			<composite:attribute name="isRfc" type="java.lang.Boolean" default="false" />
+			<composite:attribute name="ajaxBlurCallback" method-signature="void listener()"/>
+			
+	  </composite:interface>
+	  
+	  <composite:implementation>
+	  <h:panelGroup id="#{cc.attrs.inputId.concat('Panel')}">
+			<div class="form-group">
+			    <label>
+			    	<c:if test="#{cc.attrs.required!=null and cc.attrs.required==true and cc.attrs.labelText != ''}">
+			    		<span class="obligatorio">*</span>
+					</c:if>
+			    	<h:outputText value="#{cc.attrs.labelText}"/>:
+			    </label>
+			    <p:inputText id="#{cc.attrs.inputId}" 
+			    	value="#{cc.attrs.value}"
+			    	styleClass="form-control" 
+					required="#{cc.attrs.required}"
+					readonly="#{cc.attrs.readonly}"
+					requiredMessage="#{cc.attrs.requiredMessage}"
+ 					validatorMessage="#{cc.attrs.validatorMessage}"
+ 					converter="sifFormatConverter"
+ 					>
+ 					
+<!--  					<c:if test="#{not empty cc.attrs.value}"> -->
+<!--  						<f:attribute name="value" value="#{cc.attrs.value}"/> -->
+<!--  					</c:if> -->
+ 					
+ 					<c:if test="#{not empty cc.attrs.inputStyle}">
+ 						<f:attribute name="style" value="#{cc.attrs.inputStyle}"/>
+ 					</c:if>
+ 					
+ 					<c:if test="#{not empty cc.attrs.onKeyPress}">
+ 						<f:attribute name="onkeypress" value="#{cc.attrs.onKeyPress}"/>
+ 					</c:if>
+ 					
+ 					<c:if test="#{not empty cc.attrs.maxLength}">
+ 						<f:attribute name="maxlength" value="#{cc.attrs.maxLength}"/>
+ 					</c:if>
+ 					
+ 					<c:choose>
+ 						<c:when test="#{not empty cc.attrs.regexPattern}">
+ 							<f:validateRegex pattern="#{cc.attrs.regexPattern}" />
+ 						</c:when>
+ 						<c:when test="#{cc.attrs.isEmail==true}">
+ 							<f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+ 						</c:when>
+ 						<c:when test="#{cc.attrs.isCurp==true}">
+ 							<f:validateRegex pattern="^.*(?=.{18})(?=.*[0-9])(?=.*[A-ZÑ]).*$" />
+ 						</c:when>
+ 						<c:when test="#{cc.attrs.isRfc==true}">
+ 							<f:validateRegex pattern="^[A-Z,Ñ,&amp;]{3,4}[0-9]{2}[0-1][0-9][0-3][0-9][A-Z,0-9]?[A-Z,0-9]?[0-9,A-Z]?" />
+ 						</c:when>
+ 						
+ 					</c:choose>
+
+					<c:choose>
+						<c:when test="#{cc.getValueExpression('ajaxBlurCallback') != null}">
+							<p:ajax update="#{cc.attrs.inputId.concat('Panel')}" event="blur" listener="#{cc.attrs.ajaxBlurCallback}"/>
+						</c:when>
+						<c:otherwise>
+							<p:ajax update="#{cc.attrs.inputId.concat('Panel')}" event="blur"/>
+						</c:otherwise>
+					</c:choose>
+				</p:inputText>
+
+				<p:message id="#{cc.attrs.inputId.concat('Msg')}" for="#{cc.attrs.inputId}" errorStyle="color:red" display="text" />
+				<c:if test="#{cc.attrs.watermark != null}">
+					<p:watermark for="#{cc.attrs.inputId}" value="#{cc.attrs.watermark}" />
+				</c:if>
+			</div>
+	</h:panelGroup>
+	  </composite:implementation>
+</html>

@@ -1,0 +1,435 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:sf="http://www.springframework.org/tags/faces"
+	xmlns:sec="http://www.springframework.org/security/tags"
+	xmlns:deceyec="http://ine.mx/ui"
+	template="/templates/templateRep.xhtml">
+	<ui:define name="CONTENT">
+		<h:body>
+		
+		<style>
+.corrigePanel {
+	border: 0px solid #a8a8a8;
+	background: none;
+}
+.customHeader th{
+    background-color: black;
+}
+
+.rowInvis {
+	display: none;
+}
+</style>
+			<h:form id="formEstadosFinancieros">
+			<ol class="breadcrumb" style="text-align: right;">
+						<li><h:outputText value="#{mbEstadosFinancieros.fechaHTML}" />
+						</li>
+					</ol>
+					
+			<section>
+			<div class="bs-docs-grid">
+				<div class="row">
+					<div class="col-md-2">
+						<h:outputLabel value="Partido Político: " />
+					</div>
+					<div class="col-md-8">
+						<h:outputLabel value="PARTIDO ACCIÓN NACIONAL"
+							style="font-weight: normal" />
+					</div>
+				</div>
+				<div class="row show-grid">
+					<div class="col-md-2">
+						<h:outputLabel value="Tipo Ordinario: " />
+					</div>
+					<div class="col-md-8">
+						<h:outputLabel value="ORDINARIO FEDERAL"
+							style="font-weight: normal" />
+					</div>
+				</div>
+				<div class="row show-grid">
+					<div class="col-md-2">
+						<h:outputLabel value="Entidad: " />
+					</div>
+					<div class="col-md-8">
+						<h:outputLabel value="COMITÉ EJECUTIVO NACIONAL"
+							style="font-weight: normal" />
+					</div>
+				</div>
+			</div>
+			</section>
+			<h:panelGroup id="tablas"
+				rendered="#{mbEstadosFinancieros.muestraHTMLtabla}">
+			<section>
+				<h:panelGroup id="muestraPosicionFechaHTML"
+					rendered="#{mbEstadosFinancieros.muestraPosicionFechaHTML}">
+					<p:dataTable id="muestraTablaPosicionAlaFechaEncabezado"
+						var="arregloCuentas"
+						value="#{mbEstadosFinancieros.dtoEstadofinanciero.cuentasFijas1}"
+						emptyMessage="#{messageSource['mensaje_general_emptyList']}">
+						<f:facet name="header" />
+						<p:columnGroup type="header">
+							<p:row>
+								<p:column colspan="12"
+									headerText="#{('ESTADO DE POSICION FINANCIERA POR FECHA '.concat(mbEstadosFinancieros.rangoFecha))}" />
+							</p:row>
+						</p:columnGroup>
+					</p:dataTable>
+
+					<div class="row">
+						<div class="col-md-6">
+
+
+							<p:dataTable id="muestraTablaPosicionAlaFechaActivo"
+								var="arregloCuentas"
+								value="#{mbEstadosFinancieros.dtoEstadofinanciero.cuentasFijas1}"
+								emptyMessage="#{messageSource['mensaje_general_emptyList']}">
+								<f:facet name="header" />
+								<p:columnGroup type="header">
+									<p:row>
+										<p:column
+											headerText="#{messageSource['etiqueta_descripcion_cuenta']}" />
+										<p:column headerText="#{messageSource['etiqueta_saldo']}" />
+										<p:column headerText="#{messageSource['etiqueta_total']}" />
+									</p:row>
+								</p:columnGroup>
+								<p:subTable var="arreglo"
+									value="#{mbEstadosFinancieros.dtoEstadofinanciero.arrayReporte}">
+									<f:facet name="header">
+										<h:outputText value="#{arregloCuentas.nombreCuenta}" />
+									</f:facet>
+									<p:column style="text-align: left"
+										styleClass="#{(arregloCuentas.tipoCuenta == arreglo.tipoCuenta)  ? null : 'rowInvis'}">
+										<h:outputText value="#{arreglo.descripcionCuenta}" />
+									</p:column>
+									<p:column style="text-align: right"
+										styleClass="#{(arregloCuentas.tipoCuenta == arreglo.tipoCuenta)  ? null : 'rowInvis'}">
+										<h:outputText value="#{arreglo.totalActualString}"
+											rendered="#{(arreglo.totalActualString=='0') ? 'false' : 'true'}">
+										</h:outputText>
+									</p:column>
+									<p:column style="text-align: right"
+										styleClass="#{(arregloCuentas.tipoCuenta == arreglo.tipoCuenta)  ? null : 'rowInvis'}">
+										<h:outputText value="#{arreglo.totalString}"
+											rendered="#{(arreglo.totalString=='0') ? 'false' : 'true'}">
+										</h:outputText>
+									</p:column>
+
+								</p:subTable>
+							</p:dataTable>
+
+						</div>
+						<div class="col-md-6">
+							<p:dataTable id="muestraTablaPosicionAlaFechaPasivo"
+								var="arregloCuentas"
+								value="#{mbEstadosFinancieros.dtoEstadofinanciero.cuentasFijas23}"
+								emptyMessage="#{messageSource['mensaje_general_emptyList']}">
+								<f:facet name="header" />
+								<p:columnGroup type="header">
+									<p:row>
+										<p:column
+											headerText="#{messageSource['etiqueta_descripcion_cuenta']}" />
+										<p:column headerText="#{messageSource['etiqueta_saldo']}" />
+										<p:column headerText="#{messageSource['etiqueta_total']}" />
+									</p:row>
+								</p:columnGroup>
+
+								<p:subTable var="arreglo"
+									value="#{mbEstadosFinancieros.dtoEstadofinanciero.arrayReporte}">
+									<f:facet name="header">
+										<h:outputText value="#{arregloCuentas.nombreCuenta}" />
+									</f:facet>
+									<p:column style="text-align: left"
+										styleClass="#{(arregloCuentas.tipoCuenta == arreglo.tipoCuenta)  ? null : 'rowInvis'}">
+										<h:outputText value="#{arreglo.descripcionCuenta}" />
+									</p:column>
+									<p:column style="text-align: right"
+										styleClass="#{(arregloCuentas.tipoCuenta == arreglo.tipoCuenta)  ? null : 'rowInvis'}">
+										<h:outputText value="#{arreglo.totalActualString}"
+											rendered="#{(arreglo.totalActualString=='0') ? 'false' : 'true'}">
+										</h:outputText>
+									</p:column>
+									<p:column style="text-align: right"
+										styleClass="#{(arregloCuentas.tipoCuenta == arreglo.tipoCuenta)  ? null : 'rowInvis'}">
+										<h:outputText value="#{arreglo.totalString}"
+											rendered="#{(arreglo.totalString=='0') ? 'false' : 'true'}">
+										</h:outputText>
+									</p:column>
+									<p:columnGroup type="footer">
+										<p:row
+											rendered="#{(arregloCuentas.tipoCuenta==2200000000)  ? 'true' : 'false'}">
+											<p:column footerText="TOTAL PASIVO: "
+												style="text-align:right" />
+											<p:column colspan="2"
+												footerText="#{mbEstadosFinancieros.pasivoString}"
+												style="text-align:right" />
+										</p:row>
+										<p:row
+											rendered="#{(arregloCuentas.tipoCuenta==3200000000)  ? 'true' : 'false'}">
+											<p:column footerText="TOTAL PATRIMONIO: "
+												style="text-align:right" />
+											<p:column colspan="2"
+												footerText="#{mbEstadosFinancieros.patrimonioString}"
+												style="text-align:right" />
+										</p:row>
+									</p:columnGroup>
+								</p:subTable>
+							</p:dataTable>
+						</div>
+					</div>
+					<p:dataTable id="muestraTablaPosicionAlaFechaResultados"
+						var="arregloCuentas"
+						value="#{mbEstadosFinancieros.dtoEstadofinanciero.cuentasFijas1}"
+						emptyMessage="#{messageSource['mensaje_general_emptyList']}">
+						<p:columnGroup type="footer">
+							<p:row>
+								<p:column resizable="false" colspan="6" 
+									footerText="TOTAL ACTIVO:" style="text-align:center; width: 265px;" />
+								<p:column colspan="2" resizable="false"
+									footerText="#{mbEstadosFinancieros.dtoEstadofinanciero.cuentasFijas1[0].totalString}"
+									style="text-align:right" />
+								<p:column colspan="4" resizable="false"
+									footerText="TOTAL PASIVO MAS PATRIMONIO: "
+									style="text-align:center" />
+								<p:column colspan="2" resizable="false"
+									footerText="#{mbEstadosFinancieros.pasivoPatrimonioString}"
+									style="text-align:right" />
+							</p:row>
+						</p:columnGroup>
+					</p:dataTable>
+
+				</h:panelGroup>
+
+
+
+
+				<h:panelGroup id="muestraTablaEstadoActividades"
+					rendered="#{mbEstadosFinancieros.muestraTablaEstadoActividades}">
+					<p:dataTable id="muestraTablaEstadoActividadesTabla"
+						var="arregloCuentas"
+						value="#{mbEstadosFinancieros.dtoEstadofinanciero.cuentasFijas45}"
+						emptyMessage="#{messageSource['mensaje_general_emptyList']}">
+						<f:facet name="header" />
+						<p:columnGroup type="header">
+							<p:row>
+								<p:column colspan="6"
+									headerText="#{('ESTADO DE ACTIVIDADES '.concat(mbEstadosFinancieros.rangoFecha))}" />
+							</p:row>
+							<p:row>
+								<p:column
+									headerText="#{messageSource['etiqueta_descripcion_cuenta']}" />
+								<p:column headerText="#{messageSource['etiqueta_total']}" />
+								<p:column
+									headerText="#{messageSource['etiqueta_total_anterior']}" />
+								<p:column headerText="#{messageSource['etiqueta_variacion']}" />
+							</p:row>
+						</p:columnGroup>
+						<p:subTable var="arreglo"
+							value="#{mbEstadosFinancieros.dtoEstadofinanciero.arrayReporteActividades}">
+							<f:facet name="header">
+								<h:outputText value="#{arregloCuentas.nombreCuenta}" />
+							</f:facet>
+							<p:column
+								style="#{(arreglo.tipoCuenta%100000000==0)  ? 'background-color: #DEDECE ; text-align: left ; font-weight: bold' : 'text-align: left'}"
+								styleClass="#{((arreglo.tipoCuenta>arregloCuentas.tipoCuenta)and((arregloCuentas.tipoCuenta+1000000000)>arreglo.tipoCuenta)) ? null : 'rowInvis'}">
+								<h:outputText value="#{arreglo.descripcionCuenta}" />
+							</p:column>
+							<p:column
+								style="#{(arreglo.tipoCuenta%100000000==0)  ? 'background-color: #DEDECE ; text-align: right ; font-weight: bold' : 'text-align: right'}"
+								styleClass="#{((arreglo.tipoCuenta>arregloCuentas.tipoCuenta)and((arregloCuentas.tipoCuenta+1000000000)>arreglo.tipoCuenta)) ? null : 'rowInvis'}">
+								<h:outputText value="#{arreglo.totalActualString}"
+									rendered="#{(arreglo.totalActualString=='0') ? 'false' : 'true'}">
+								</h:outputText>
+							</p:column>
+							<p:column
+								style="#{(arreglo.tipoCuenta%100000000==0)  ? 'background-color: #DEDECE ; text-align: right ; font-weight: bold' : 'text-align: right'}"
+								styleClass="#{((arreglo.tipoCuenta>arregloCuentas.tipoCuenta)and((arregloCuentas.tipoCuenta+1000000000)>arreglo.tipoCuenta)) ? null : 'rowInvis'}">
+								<h:outputText value="#{arreglo.totalAnteriorString}"
+									rendered="#{(arreglo.totalAnteriorString=='0') ? 'false' : 'true'}">
+								</h:outputText>
+							</p:column>
+							<p:column
+								style="#{(arreglo.tipoCuenta%100000000==0)  ? 'background-color: #DEDECE ; text-align: right ; font-weight: bold' : 'text-align: right'}"
+								styleClass="#{((arreglo.tipoCuenta>arregloCuentas.tipoCuenta)and((arregloCuentas.tipoCuenta+1000000000)>arreglo.tipoCuenta)) ? null : 'rowInvis'}">
+								<h:outputText value="#{arreglo.variacionString}"
+									rendered="#{(arreglo.variacionString=='0') ? 'false' : 'true'}">
+								</h:outputText>
+							</p:column>
+							<p:columnGroup type="footer">
+								<p:row
+									rendered="#{(arregloCuentas.tipoCuenta==4000000000)  ? 'true' : 'false'}">
+									<p:column footerText="TOTAL INGRESOS: "
+										style="text-align:right" />
+									<p:column footerText="#{arregloCuentas.totalActualString}"
+										style="text-align:right" />
+									<p:column footerText="#{arregloCuentas.totalAnteriorString}"
+										style="text-align:right" />
+									<p:column footerText="#{arregloCuentas.variacionString}"
+										style="text-align:right" />
+								</p:row>
+								<p:row
+									rendered="#{(arregloCuentas.tipoCuenta==5000000000)  ? 'true' : 'false'}">
+									<p:column footerText="TOTAL EGRESOS: " style="text-align:right" />
+									<p:column footerText="#{arregloCuentas.totalActualString}"
+										style="text-align:right" />
+									<p:column footerText="#{arregloCuentas.totalAnteriorString}"
+										style="text-align:right" />
+									<p:column footerText="#{arregloCuentas.variacionString}"
+										style="text-align:right" />
+								</p:row>
+							</p:columnGroup>
+						</p:subTable>
+						<p:columnGroup type="footer">
+							<p:row>
+								<p:column
+									footerText="#{mbEstadosFinancieros.superavit.descripcionCuenta}" />
+								<p:column colspan="1"
+									footerText="#{mbEstadosFinancieros.superavit.totalActualString}"
+									style="text-align:right" />
+								<p:column colspan="1"
+									footerText="#{mbEstadosFinancieros.superavit.totalAnteriorString}"
+									style="text-align:right" />
+								<p:column colspan="1"
+									footerText="#{mbEstadosFinancieros.superavit.variacionString}"
+									style="text-align:right" />
+							</p:row>
+						</p:columnGroup>
+
+					</p:dataTable>
+
+				</h:panelGroup>
+
+
+				<h:panelGroup id="muestraTablaPosicionComparativa"
+					rendered="#{mbEstadosFinancieros.muestraTablaPosicionComparativa}">
+					<p:dataTable id="muestraTablaPosicionComparativaTabla"
+						var="arregloCuentas"
+						value="#{mbEstadosFinancieros.dtoEstadofinanciero.cuentasFijas123Posicion}"
+						emptyMessage="#{messageSource['mensaje_general_emptyList']}">
+						<f:facet name="header" />
+						<p:columnGroup type="header">
+							<p:row>
+								<p:column colspan="6"
+									headerText="#{('POSICION FINANCIERA COMPARATIVA '.concat(mbEstadosFinancieros.rangoFecha))}" />
+							</p:row>
+							<p:row>
+								<p:column 
+									headerText="#{messageSource['etiqueta_descripcion_cuenta']}" />
+								<p:column headerText="#{messageSource['etiqueta_total']}" />
+								<p:column 
+									headerText="#{messageSource['etiqueta_total_anterior']}" />
+								<p:column headerText="#{messageSource['etiqueta_variacion']}" />
+							</p:row>
+						</p:columnGroup>
+						<p:subTable var="arreglo" 
+							value="#{mbEstadosFinancieros.dtoEstadofinanciero.arrayReportePosicion}">
+							<f:facet name="header">
+								<h:outputText value="#{arregloCuentas.nombreCuenta}" />
+							</f:facet>
+							<p:column style="text-align: left"
+								styleClass="#{(arregloCuentas.tipoCuenta == arreglo.tipoCuenta)  ? null : 'rowInvis'}">
+								<h:outputText value="#{arreglo.descripcionCuenta}" />
+							</p:column>
+							<p:column style="text-align: right"
+								styleClass="#{(arregloCuentas.tipoCuenta == arreglo.tipoCuenta)  ? null : 'rowInvis'}">
+								<h:outputText value="#{arreglo.totalActualString}"
+									rendered="#{(arreglo.totalActualString=='0') ? 'false' : 'true'}">
+								</h:outputText>
+							</p:column>
+							<p:column style="text-align: right"
+								styleClass="#{(arregloCuentas.tipoCuenta == arreglo.tipoCuenta)  ? null : 'rowInvis'}">
+								<h:outputText value="#{arreglo.totalAnteriorString}"
+									rendered="#{(arreglo.totalAnteriorString=='0') ? 'false' : 'true'}">
+								</h:outputText>
+							</p:column>
+							<p:column style="text-align: right"
+								styleClass="#{(arregloCuentas.tipoCuenta == arreglo.tipoCuenta)  ? null : 'rowInvis'}">
+								<h:outputText value="#{arreglo.variacionString}"
+									rendered="#{(arreglo.variacionString=='0') ? 'false' : 'true'}">
+								</h:outputText>
+							</p:column>
+							<p:columnGroup type="footer">
+								<p:row
+									rendered="#{((arregloCuentas.tipoCuenta==1000000000) or (arregloCuentas.tipoCuenta==2000000000) or (arregloCuentas.tipoCuenta==3000000000))  ? 'false' : 'true'}">
+									<p:column
+										footerText="#{('TOTAL '.concat(arregloCuentas.nombreCuenta))}"
+										style="text-align:left; background-color: #F0C2FF" />
+									<p:column footerText="#{arregloCuentas.totalActualString}"
+										style="text-align:right; background-color: #F0C2FF" />
+									<p:column footerText="#{arregloCuentas.totalAnteriorString}"
+										style="text-align:right; background-color: #F0C2FF" />
+									<p:column footerText="#{arregloCuentas.variacionString}"
+										style="text-align:right; background-color: #F0C2FF" />
+								</p:row>
+								<p:row
+									rendered="#{(arregloCuentas.tipoCuenta==1200000000)  ? 'true' : 'false'}">
+									<p:column footerText="TOTAL ACTIVO: " style="text-align:right" />
+									<p:column colspan="1"
+										footerText="#{mbEstadosFinancieros.totalActivo.totalActualString}"
+										style="text-align:right" />
+									<p:column colspan="1"
+										footerText="#{mbEstadosFinancieros.totalActivo.totalAnteriorString}"
+										style="text-align:right" />
+									<p:column colspan="1"
+										footerText="#{mbEstadosFinancieros.totalActivo.variacionString}"
+										style="text-align:right" />
+								</p:row>
+								<p:row
+									rendered="#{(arregloCuentas.tipoCuenta==2200000000)  ? 'true' : 'false'}">
+									<p:column footerText="TOTAL PASIVO: " style="text-align:right" />
+									<p:column colspan="1"
+										footerText="#{mbEstadosFinancieros.totalPasivo.totalActualString}"
+										style="text-align:right" />
+									<p:column colspan="1"
+										footerText="#{mbEstadosFinancieros.totalPasivo.totalAnteriorString}"
+										style="text-align:right" />
+									<p:column colspan="1"
+										footerText="#{mbEstadosFinancieros.totalPasivo.variacionString}"
+										style="text-align:right" />
+								</p:row>
+								<p:row
+									rendered="#{(arregloCuentas.tipoCuenta==3200000000)  ? 'true' : 'false'}">
+									<p:column footerText="TOTAL PATRIMONIO: "
+										style="text-align: right"  />
+									<p:column colspan="1"
+										footerText="#{mbEstadosFinancieros.totalPatrimonio.totalActualString}"
+										style="text-align: right" />
+									<p:column colspan="1"
+										footerText="#{mbEstadosFinancieros.totalPatrimonio.totalAnteriorString}"
+										style="text-align: right" />
+									<p:column colspan="1"
+										footerText="#{mbEstadosFinancieros.totalPatrimonio.variacionString}"
+										style="text-align: right" />
+								</p:row>
+							</p:columnGroup>
+						</p:subTable>
+						<p:columnGroup type="footer">
+							<p:row>
+								<p:column
+									footerText="#{mbEstadosFinancieros.pasivoPatrimonioPosicion.descripcionCuenta}" />
+								<p:column colspan="1"
+									footerText="#{mbEstadosFinancieros.pasivoPatrimonioPosicion.totalActualString}"
+									style="text-align:right" />
+								<p:column colspan="1"
+									footerText="#{mbEstadosFinancieros.pasivoPatrimonioPosicion.totalAnteriorString}"
+									style="text-align:right" />
+								<p:column colspan="1"
+									footerText="#{mbEstadosFinancieros.pasivoPatrimonioPosicion.variacionString}"
+									style="text-align:right" />
+							</p:row>
+						</p:columnGroup>
+
+					</p:dataTable>
+
+				</h:panelGroup>
+</section>
+			</h:panelGroup>
+				</h:form>
+		</h:body>
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:sf="http://www.springframework.org/tags/faces"
+	xmlns:sec="http://www.springframework.org/security/tags"
+	template="/templates/template.xhtml">
+
+	<ui:define name="CONTENT">   
+ 
+			<h:form>
+			<section>
+					<ui:fragment rendered="#{mbUsuario.cdatoSinContabilidad == true}">	
+						<h3>Usuario sin operaciones </h3>
+						 <br /><br /><br />
+						 	En este momento su cuenta no tiene operaciones que pueda trabajar dentro del proceso de precampaña del Sistema Integral de Fiscalización.
+						 	Las operaciones son creadas a través del Registro Nacional de Candidatos, cuando tenga operaciones vinculadas a su cuenta, las visualizará en el proceso de precampaña. 
+					 </ui:fragment>
+					 <ui:fragment rendered="#{mbUsuario.usuarioErrorneo == true }">
+						<c:choose>
+					 	    <c:when test="#{mbUsuario.usuarioLogin.idRol == -1 }">
+						 	    <h3>Estatus del usuario </h3>
+							 	  <br />
+							 	<div align="center">
+								 	  Este usuario no cuenta con permiso para ingresar al aplicativo de precampaña
+								 	  <br /><br />
+						 	    	  Causa : No se cuenta con un rol en el sistema
+						 	    	 <br /><br />
+									<p:panelGrid columns="2" style="font-size:10px">
+									<f:facet name="header">
+								        <p:row>
+								            <p:column colspan="2">Información del usuario</p:column>
+								        </p:row>
+								    </f:facet>
+									    <h:outputText value="Nombre :"  />
+									    <h:outputText value="#{mbUsuario.usuarioLogin.nombreUsuario  }" />
+									    <h:outputText value="Apellidos :" />
+									    <h:outputText value="#{mbUsuario.usuarioLogin.apellidosUsuario  }" />
+									     <h:outputText value="Rfc:" />
+									    <h:outputText value="#{mbUsuario.usuarioLogin.rfc}" />
+									     <h:outputText value="Curp:" />
+									    <h:outputText value="#{mbUsuario.usuarioLogin.curp}" />
+									    <h:outputText value="Estado:" />
+									    <h:outputText value="#{mbUsuario.usuarioLogin.idEstado}" />
+									    <h:outputText value="Distrito:" />
+									    <h:outputText value="#{mbUsuario.usuarioLogin.idDistrito}" />
+									    <h:outputText value="Estado de Visibilidad:" />
+									    <h:outputText value="#{mbUsuario.usuarioLogin.idEstadoVisibilidad}" />
+									    <h:outputText value="Identificador Usuario:" />
+									    <h:outputText value="#{mbUsuario.usuarioLogin.idUsuario}" />
+									    <h:outputText value="Usuario:" />
+									    <h:outputText value="#{mbUsuario.usuarioLogin.usuario}" />
+									    <h:outputText value="Identificador Rol:" />
+									    <h:outputText value="#{mbUsuario.usuarioLogin.idRol}" />
+									    <h:outputText value="Entidad SO:" />
+									   	<h:outputText value="#{mbUsuario.usuarioLogin.idEntidadSO}" />
+									    <h:outputText value="Tipo SO:" />
+									    <h:outputText value="#{mbUsuario.usuarioLogin.idTipoSO}" />
+									     <h:outputText value="Identificador SO:" />
+									    <h:outputText value="#{mbUsuario.usuarioLogin.idSO}" />
+									     <h:outputText value="Operaciones Asociadas:"/>
+									    <h:outputText value="#{mbUsuario.usuarioLogin.idsContbilidadesAsociadas.size()}" />
+									</p:panelGrid>
+								</div>
+					 	 </c:when>
+					 	 <c:when test="#{(mbUsuario.usuarioLogin.idSO == null || mbUsuario.usuarioLogin.idSO == 0) and (mbUsuario.usuarioLogin.idRol != null and  mbUsuario.usuarioLogin.idRol != 1 and mbUsuario.usuarioLogin.idRol != 3 and mbUsuario.usuarioLogin.idRol != 4 and mbUsuario.usuarioLogin.idRol != 5 and mbUsuario.usuarioLogin.idRol != 6)}">
+					 	    	<h3>Estatus del usuario </h3>
+							 	  <br />
+							 <div align="center">
+							 	  Este usuario no cuenta con permiso para ingresar al aplicativo de precampaña
+							 	  <br />
+					 	    		Causa : No se encuentra asociado a ningun Sujeto Obligado
+					 	    	 <br /><br />
+							 	  
+									<p:panelGrid columns="2" style="font-size:10px">
+									<f:facet name="header">
+								        <p:row>
+								            <p:column colspan="2">Información del usuario</p:column>
+								        </p:row>
+								    </f:facet>
+									    <h:outputText value="Nombre :"  />
+									    <h:outputText value="#{mbUsuario.usuarioLogin.nombreUsuario  }" />
+									    <h:outputText value="Apellidos :" />
+									    <h:outputText value="#{mbUsuario.usuarioLogin.apellidosUsuario  }" />
+									     <h:outputText value="Rfc:" />
+									    <h:outputText value="#{mbUsuario.usuarioLogin.rfc}" />
+									     <h:outputText value="Curp:" />
+									    <h:outputText value="#{mbUsuario.usuarioLogin.curp}" />
+									    <h:outputText value="Estado:" />
+									    <h:outputText value="#{mbUsuario.usuarioLogin.idEstado}" />
+									    <h:outputText value="Distrito:" />
+									    <h:outputText value="#{mbUsuario.usuarioLogin.idDistrito}" />
+									    <h:outputText value="Estado de Visibilidad:" />
+									    <h:outputText value="#{mbUsuario.usuarioLogin.idEstadoVisibilidad}" />
+									    <h:outputText value="Identificador Usuario:" />
+									    <h:outputText value="#{mbUsuario.usuarioLogin.idUsuario}" />
+									    <h:outputText value="Usuario:" />
+									    <h:outputText value="#{mbUsuario.usuarioLogin.usuario}" />
+									    <h:outputText value="Identificador Rol:" />
+									    <h:outputText value="#{mbUsuario.usuarioLogin.idRol}" />
+									    <h:outputText value="Entidad SO:" />
+									   	<h:outputText value="#{mbUsuario.usuarioLogin.idEntidadSO}" />
+									    <h:outputText value="Tipo SO:" />
+									    <h:outputText value="#{mbUsuario.usuarioLogin.idTipoSO}" />
+									     <h:outputText value="Identificador SO:" />
+									    <h:outputText value="#{mbUsuario.usuarioLogin.idSO}" />
+									     <h:outputText value="Operaciones Asociadas:"/>
+									    <h:outputText value="#{mbUsuario.usuarioLogin.idsContbilidadesAsociadas.size()}" />
+									</p:panelGrid>
+								</div>
+					 	    </c:when>
+					 	    <c:otherwise>
+					 	    	<h3>Codigo: 500 </h3>
+							 	 <br /><br />
+							 	 <div align="center">
+						        	Se gener&oacute; una solicitud no v&aacute;lida en el sistema en el inicio de sesión.
+						         </div>
+						    </c:otherwise>
+					 	</c:choose>
+					 </ui:fragment>
+					<div align="center">
+						<br /><br />
+						<p style="font-size: 12px">Nota: Las cuentas de usuario generadas para SIF 1.7 no tendrán acceso a esta versión.</p>
+						<p style="font-size: 12px">Si tienes alguna duda comunícate con el administrador del sistema o llama a INETEL al  01 8004332000.</p>
+						
+						<br /><br />
+						<p>
+							<a href="${request.contextPath}/logout" class="btn btn-default"> Volver al menú<h:outputText  rendered="#{SPRING_SECURITY_CONTEXT!=null}" /></a>
+						</p>
+					</div>
+				
+			</section>
+			</h:form>
+	</ui:define>
+</ui:composition>

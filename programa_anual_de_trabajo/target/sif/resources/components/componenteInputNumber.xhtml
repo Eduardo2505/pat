@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:c="http://java.sun.com/jsp/jstl/core"
+	  xmlns:h="http://java.sun.com/jsf/html"
+	  xmlns:f="http://java.sun.com/jsf/core"
+	  xmlns:p ="http://primefaces.org/ui"
+	  xmlns:sec="http://www.springframework.org/security/tags"
+	  xmlns:ui="http://java.sun.com/jsf/facelets" lang="es-MX" xml:lang="es-MX"
+	  xmlns:composite="http://java.sun.com/jsf/composite"
+	  xmlns:pe="http://primefaces.org/ui/extensions">
+	
+	<composite:interface>
+			<composite:attribute name="inputId" type="java.lang.String" required="true"/>
+			<composite:attribute name="inputValue" type="java.lang.String" />
+			<composite:attribute name="required" type="java.lang.Boolean" default="false" />
+			<composite:attribute name="requiredMessage" type="java.lang.String" default="Este campo es requerido"/>
+			<composite:attribute name="labelText" type="java.lang.String"/>
+			<composite:attribute name="validatorMessage" type="java.lang.String" default="Formato no valido"/>
+			<composite:attribute name="ajaxBlurInput" method-signature="void listener()"/>
+			<composite:attribute name="watermarkInput" type="java.lang.String"/>
+			<composite:attribute name="minnum" type="java.lang.String"/>
+			<composite:attribute name="maxnum" type="java.lang.String"/>
+			<composite:attribute name="autocomplete" type="java.lang.Boolean" default="false"/>
+			<composite:attribute name="preventPaste" type="java.lang.Boolean" default="false"/>
+	  </composite:interface>
+	  
+	  <composite:implementation>
+			    <label>
+			    	<c:if test="#{cc.attrs.required!=null and cc.attrs.required==true and cc.attrs.labelText != ''}">
+			    		<span class="obligatorio">*</span>
+					</c:if>
+			    	<h:outputText value="#{cc.attrs.labelText}"/>
+			    </label>
+			    <div class="input-group">
+				    <span class="input-group-addon">$</span>
+				    <pe:inputNumber 
+				    	id="#{cc.attrs.inputId}" 
+				    	value="#{cc.attrs.inputValue}" 
+						required="#{cc.attrs.required}"
+						requiredMessage="#{cc.attrs.requiredMessage}"
+	 					validatorMessage="#{messageSource['etiqueta_formato_invalido']}"
+	 					autocomplete = "#{cc.attrs.autocomplete}"
+	 					preventPaste = "#{cc.attrs.preventPaste}"
+	 					>
+	 					<c:if test="#{not empty cc.attrs.minnum and not empty cc.attrs.maxnum}">
+	 						<f:validateDoubleRange minimum="#{cc.attrs.minnum}" maximum="#{cc.attrs.maxnum}" />
+	 					</c:if>
+	 					
+						<c:choose>
+							<c:when test="#{cc.getValueExpression('ajaxBlurInput') != null}">
+								<p:ajax update="#{cc.attrs.inputId.concat('Msg')}" event="blur" listener="#{cc.attrs.ajaxBlurInput}"/>
+							</c:when>
+							<c:otherwise>
+								<p:ajax update="#{cc.attrs.inputId.concat('Msg')}" event="blur"/>
+							</c:otherwise>
+						</c:choose>
+					</pe:inputNumber>
+					
+					<p:message id="#{cc.attrs.inputId.concat('Msg')}" for="#{cc.attrs.inputId}" errorStyle="color:red" display="text" />
+					<c:if test="#{cc.getValueExpression('watermarkInput') != null}">
+						<p:watermark for="#{cc.attrs.inputId}" value="#{cc.attrs.watermarkInput}" />
+					</c:if>
+				</div>
+			
+	  </composite:implementation>
+</html>

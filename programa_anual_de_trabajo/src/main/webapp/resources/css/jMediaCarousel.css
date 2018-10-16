@@ -1,0 +1,28 @@
+/**********		GENERAL		**********/
+
+body{
+	position:relative;
+}
+
+.carrousel-arrows.affix{
+	position: fixed;
+	top: 10px;
+	z-index: 1;
+}
+	
+.carrousel-arrows .previous a,.carrousel-arrows .next a{
+	opacity: .6;
+}
+	
+.carrousel-arrows .previous a:hover,.carrousel-arrows .next a:hover{
+	opacity: 1;
+}
+
+.affix-top{
+	position: static;
+}
+
+.affix-bottom{
+	position:absolute;
+	bottom:auto !important;
+}

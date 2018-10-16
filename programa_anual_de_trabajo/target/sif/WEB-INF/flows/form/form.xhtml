@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:sec="http://www.springframework.org/security/tags"
+	template="/templates/template.xhtml">
+	
+	<ui:define name="CONTENT">
+	<h:form>
+		<div class="col-md-12">
+			<h1>Form din&aacute;mico</h1>
+		</div>
+		<section>
+			<div class="row">
+				<div class="col-md-3">
+					<p:commandButton value="Agregar Inputs" update="wolala" actionListener="#{mbEjemploFormDinamico.agregarInput}" />
+				</div>
+				<div class="col-md-9">
+					<h:panelGroup id="wolala">
+					<c:forEach items="#{mbEjemploFormDinamico.inputsElements}" var="text">
+						<label>Input: </label>
+						<h:inputText styleClass="form-control" value="#{text}" />
+					</c:forEach>
+					</h:panelGroup>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-3">
+					<p:commandButton update="wolala2" value="Imprimir Datos Inputs"  actionListener="#{mbEjemploFormDinamico.printInputs}" />
+				</div>
+				<div class="col-md-9">
+					<h:panelGroup id="wolala2">
+					<label>Salida: </label>
+					<c:forEach items="#{mbEjemploFormDinamico.inputsElements}" var="text">
+						<h:outputText value="#{text}" />
+					</c:forEach>
+					</h:panelGroup>
+				</div>
+			</div>
+			<hr/>
+			<div class="row">
+				<div class="col-md-12">
+					<a href="#{request.contextPath}/app/home">Home</a>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<a href="#{request.contextPath}/app/tablas">Tablas</a>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<a href="#{request.contextPath}/app/validaciones">Validaciones
+						de texto y n&uacute;mero</a>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<a href="#{request.contextPath}/app/seleccion">Combos y
+						selecci&oacute;n</a>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<a href="#{request.contextPath}/app/fechas">Fechas</a>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<a href="#{request.contextPath}/app/botones">Botones y mensajes</a>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<a href="#{request.contextPath}/app/form">Form din&aacute;mico</a>
+				</div>
+			</div>
+		</section>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

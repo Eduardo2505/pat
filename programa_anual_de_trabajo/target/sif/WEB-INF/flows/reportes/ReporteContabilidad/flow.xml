@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow"
+	  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	  xsi:schemaLocation="http://www.springframework.org/schema/webflow
+        				  http://www.springframework.org/schema/webflow/spring-webflow-2.0.xsd">
+        				  
+	<!-- 	<secured match="any" 
+	attributes="ROLE_SIF.SUPERVISORFISCALIZACION.OC 
+ 					,ROLE_SIF.AUDITOR.OC 
+ 					,ROLE_SIF.CONSULTARESTRINGIDA.OC 
+ 					,ROLE_SIF.CONSULTA.OC 
+ 					,ROLE_SIF.CAPTURISTA.OC
+ 					,ROLE_SIF.REPRESENTANTEFINANZAS.OC
+ 					,ROLE_SIF.REPRESENTANTEFINANZAS.JL
+ 					,ROLE_SIF.CANDIDATO.OC, ROLE_SIF.CANDIDATOIND.OC
+ 					,ROLE_SIF.TRANSPARENCIA.OC
+ 					,ROLE_SIF.INE_ADMIN.OC" />  -->
+
+	
+	<!-- <decision-state id="tienePermiso">
+		<on-entry>
+			<evaluate expression="mbContabilidad.restriccionCapturista()"></evaluate>
+		</on-entry>
+		<<if test="mbContabilidad.dtoCandidato.isCapturista"
+			then="sinPermiso"
+			else="filtroCandidato"/> 
+	</decision-state> -->
+	
+	<view-state id="filtroCandidato" view="filtroCandidato.xhtml">
+			<on-entry> 
+		  		<evaluate expression="mbContabilidad.inicializaComponentes()"></evaluate>  
+		  	</on-entry>	  
+	</view-state> 
+        				  
+</flow>

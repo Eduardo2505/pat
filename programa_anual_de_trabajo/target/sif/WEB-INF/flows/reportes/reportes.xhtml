@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:sec="http://www.springframework.org/security/tags"
+	xmlns:deceyec="http://ine.mx/ui" template="/templates/template.xhtml">
+
+	<ui:define name="CONTENT">
+		<ol class="breadcrumb">
+			<li><a href="${request.contextPath}/app/home">#{messageSource['etiqueta_inicio']}</a></li>
+			<li class="active">#{messageSource['etiqueta_reportes']}</li>
+			<!-- 			                <c:if test="#{mbReportes.dto.opcion eq 'listados'}"> -->
+			<!-- 			                	<li class="active">#{messageSource['etiqueta_titulo_listados']}</li> -->
+			<!-- 			                </c:if> -->
+			<!-- 			                <c:if test="#{mbReportes.dto.opcion eq 'cedulas'}"> -->
+			<!-- 			                	<li class="active">#{messageSource['etiqueta_titulo_cedulas']}</li> -->
+			<!-- 			                </c:if> -->
+		</ol>
+		<h:form id="formReportes" enctype="multipart/form-data">
+
+			<!-- BLOCKUI -->
+			<pe:blockUI id="bloqContForm" target="formReportes"
+				content="blockUIContent" widgetVar="bloqContForm" />
+
+			<!-- BLOCKUICONTENT -->
+			<h:panelGrid id="blockUIContent" columns="2" style="display:none;">
+				<h:graphicImage library="img" name="loader.gif" width="70" />
+				<h:outputText value="procesando" style="white-space: nowrap;" />
+			</h:panelGrid>
+			<!-- FIN BLOCKUICONTENT -->
+
+			 			    <div class="titulo row">
+		             <deceyec:hamburguesa 
+		                   exportaLink="#"
+			               capturaLink="#"
+			               consultaLink="#" 
+			               modificaLink="#" 
+			               eliminaLink="#" 
+			               ayudaLink="https://intranet.ife.org.mx/tutoriales/sistemas/Electorales/2015/SAE/reportes.html"
+			               accion="#"/>				
+					<h1 style="margin-left: 15px">#{messageSource['etiqueta_reportes']}</h1>
+				</div>
+ 
+			<h3>#{messageSource['etiqueta_titulo_listados']}</h3>
+
+			<section class="selecciona">
+			<div class="row">
+				<div class="col-md-12">
+					<c:choose>
+						<c:when test="#{mbReportes.muestraLinkReporteEstadosFinancieros}">
+							<a
+								href="#{request.contextPath}/app/reportes/estadosFinancieros">Estados Financieros</a>
+							<br />
+						</c:when>
+					</c:choose>
+					<div class="row">
+					<div class="col-md-12">
+						<a href="#{request.contextPath}/app/reportes/diarioYMayor">#{messageSource['etiqueta_diarioM']}</a>
+					</div>
+				</div>
+				</div>
+			</div>
+			</section>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

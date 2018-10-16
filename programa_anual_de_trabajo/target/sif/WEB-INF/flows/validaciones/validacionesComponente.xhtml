@@ -1,0 +1,414 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:sec="http://www.springframework.org/security/tags"
+	xmlns:sif="http://java.sun.com/jsf/composite/components"
+	template="/templates/template.xhtml">
+
+	<ui:define name="CONTENT">
+	
+		<!-- Se importa la clase Constantes para las validaciones -->
+		<pe:importConstants className="mx.ine.sif.util.Constantes" var="Constantes" />
+	
+		<!-- Migaja de pan del módulo -->
+		<ol class="breadcrumb">
+           <li><a href="${request.contextPath}/app/home">#{messageSource['etiqueta_inicio']}</a></li>
+           <li>#{messageSource['etiqueta_subnivel1']}</li>
+           <li class="active">#{messageSource['etiqueta_subnivel2']}</li>
+	    </ol>
+			    
+		<div class="row" >
+			<div class="titulo btn-group col-md-1" style="text-align:left;">
+				<!-- Menú hamburguesa-->
+				<button type="button" class="btn btn-default btn-sm dropdown-toggle"  data-toggle="dropdown">    
+			       <i class="fa fa-bars fa-2x"></i>
+			    </button>
+				<ul class="dropdown-menu" role="menu">
+				   <!-- >>>>> Capturar >>>>>>-->
+	 			   <li class="text-muted activo" value="">#{messageSource['etiqueta_captura']}</li>
+					<!-- >>>>> Consultar >>>>>>-->		
+				   <li class="text-muted inactivo">#{messageSource['etiqueta_consulta']}</li>		
+					<!-- >>>>> Modificar >>>>>>-->	
+				   <li class="text-muted inactivo">#{messageSource['etiqueta_modifica']}</li>			   				
+				   <!-- >>>>> Eliminar >>>>>>-->	
+	   			   <li class="text-muted inactivo">#{messageSource['etiqueta_elimina']}</li>			   				
+				   <li class="divider"></li>
+	   			   <!-- >>>>> Descargar >>>>>>-->	
+				   <li class="text-muted inactivo">#{messageSource['etiqueta_descarga']}</li>   			   
+	   			   <!-- >>>>> Imprimir >>>>>>-->					  
+				   <li class="text-muted inactivo">#{messageSource['etiqueta_imprime']}</li>
+				   <li class="divider"></li>
+				   <!-- >>>>> Ayuda >>>>>>-->					
+				   <li><p:commandLink value="#{messageSource['etiqueta_ayuda']}" action="#" immediate="true"/></li>
+				</ul>	      
+			</div>
+			<!-- Título del módulo-->		 
+			<div class="col-md-11">
+				<h1>#{messageSource['etiqueta_nombre_modulo']}</h1>
+			</div>
+		</div>
+		
+		<!-- Leyenda de campos requeridos -->	
+		<div class="row">
+			<div class="col-md-11">
+				<p>
+					<small> #{messageSource['etiqueta_requerido_1']} <span class="obligatorio">*</span>
+						#{messageSource['etiqueta_requerido_2']}
+					</small>
+				</p>
+			</div>
+		</div>
+		
+		<!-- Se inicia el formulario de validaciones-->
+		<h:form>
+
+			<!-- Se Mensaje de error -->
+			<p:growl id="growl" life="2000" />
+			
+			<!-- Titulo del formulario -->
+			<h3>#{messageSource['titulo_registro_datos']}</h3>
+			<section class="contenidoTabla">
+				
+				<!-- Se agrega la siguiente linea si el campo es obligatorio llenar  -->
+				<label><span class="obligatorio">#{messageSource['etiqueta_requerido']}</span>#{messageSource['etiqueta_clave_elector']}</label>
+				<!-- Fila el tamaño de está es de 12 col -->
+				<div class="row">
+					<!-- Columna y su tamaño -->
+				    <div class="col-md-2">
+				    	<!--InputText contiene: id= con el que se identificará el input, styleClass= Estilo, required= si el campo es obligatorio true de lo contrario false 
+				    	    style="text-transform: uppercase" convierte la entrada en Mayuscualas, requiredMessage = Mensaje cuando el campo es requerido, 
+				    	    validatorMessage = Mensaje de que la validacion es incorrecta, value= valor del campo, maxlength= máximo tamaño del campo
+				    	-->
+				    	<sif:componenteInput inputId="claveElectoral1" 
+				    						   required ="true"
+				    						   labelText = "" 
+				    						   regexPattern ="#{Constantes.REG_EX_VALIDA_CVE_ELECTOR_PRIMERA_PARTE}" 
+				    						   eventOnKeyPress ="return esLetra(event);" 
+				    						   validatorMessage = "#{messageSource['etiqueta_mensaje_cve_elector_incorrecta']}"
+				    						   inputStyle = "text-transform: uppercase"
+				    						   maxlength = "6"
+				    						   inputValue = "#{mbValidaciones.dtoValidaciones.claveElector1}"
+				    						   />
+					</div>
+					<div class="col-md-2">
+						<sif:componenteInput inputId="claveElectoral2" 
+				    						   required ="true" 
+				    						   labelText = ""
+				    						   regexPattern ="#{Constantes.REG_EX_VALIDA_CVE_ELECTOR_SEGUNDA_PARTE}" 
+				    						   eventOnKeyPress ="return esNumero(event);" 
+				    						   validatorMessage = "#{messageSource['etiqueta_mensaje_cve_elector_incorrecta']}"
+				    						   maxlength = "6"
+				    						   inputValue = "#{mbValidaciones.dtoValidaciones.claveElector2}"
+				    						   />
+				    						   
+					</div>
+					<div class="col-md-2">
+						<sif:componenteInput inputId="claveElectoral3" 
+				    						   required ="true"
+				    						   labelText = ""
+				    						   regexPattern ="#{Constantes.REG_EX_VALIDA_CVE_ELECTOR_TERCERA_PARTE}" 
+				    						   eventOnKeyPress ="return esAlfanumerico(event);" 
+				    						   validatorMessage = "#{messageSource['etiqueta_mensaje_cve_elector_incorrecta']}"
+				    						   inputStyle = "text-transform: uppercase"
+				    						   maxlength = "6"
+				    						   inputValue = "#{mbValidaciones.dtoValidaciones.claveElector3}"
+				    						   />
+					</div>
+				</div>
+				<br />
+				
+				<!-- Leyenda-->	
+				<p style="background-color: highlight;" >#{messageSource['leyenda_apellidos']}</p>
+				<br />
+				
+				<div class="row">
+					<div class="form-group col-md-4">
+						<sif:componenteInput inputId="primerApellido" 
+				    						   required ="true"
+				    						   labelText = "#{messageSource['etiqueta_primer_apellido']}"
+				    						   regexPattern ="#{Constantes.REG_EX_VALIDA_APELLIDOS_PERSONA}" 
+				    						   eventOnKeyPress ="return esLetraSpace(event);" 
+				    						   validatorMessage = "#{messageSource['etiqueta_formato_invalido']}"
+				    						   inputStyle = "text-transform: uppercase"
+				    						   inputValue = "#{mbValidaciones.dtoValidaciones.primerApellido}"
+				    						   maxlength = "40"
+				    						   />
+					</div>
+					<div class="form-group col-md-4">
+						<sif:componenteInput inputId="segundoApellido" 
+				    						   labelText = "#{messageSource['etiqueta_segundo_apellido']}"
+				    						   regexPattern ="#{Constantes.REG_EX_VALIDA_APELLIDOS_PERSONA}" 
+				    						   eventOnKeyPress ="return esLetraSpace(event);" 
+				    						   validatorMessage = "#{messageSource['etiqueta_formato_invalido']}"
+				    						   inputStyle = "text-transform: uppercase"
+				    						   inputValue = "#{mbValidaciones.dtoValidaciones.segundoApellido}"
+				    						   maxlength = "40"
+				    						   />
+					</div>
+					<div class="form-group col-md-4">
+						<sif:componenteInput inputId="segundoApellido" 
+											   required ="true"
+				    						   labelText = "#{messageSource['etiqueta_nombres']}"
+				    						   regexPattern ="#{Constantes.REG_EX_VALIDA_NOMBRE_PERSONA}" 
+				    						   eventOnKeyPress ="return esLetraSpace(event);" 
+				    						   validatorMessage = "#{messageSource['etiqueta_formato_invalido']}"
+				    						   inputStyle = "text-transform: uppercase"
+				    						   inputValue = "#{mbValidaciones.dtoValidaciones.nombre}"
+				    						   maxlength = "40"
+				    						   />
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="form-group col-md-4">
+						<sif:componenteInput inputId="rfc" 
+											   required ="true"
+				    						   labelText = "#{messageSource['etiqueta_rfc']}"
+				    						   regexPattern ="#{Constantes.PATRON_RFC}" 
+				    						   eventOnKeyPress ="return esAlfanumericoRFC_CURP(event);" 
+				    						   validatorMessage = "#{messageSource['etiqueta_formato_invalido']}"
+				    						   inputStyle = "text-transform: uppercase"
+				    						   inputValue = "#{mbValidaciones.dtoValidaciones.rfc}"
+				    						   maxlength = "13"
+				    						   />
+					</div>
+					<div class="form-group col-md-4">
+						<sif:componenteInput inputId="curp" 
+											   required ="true"
+				    						   labelText = "#{messageSource['etiqueta_curp']}"
+				    						   regexPattern ="#{Constantes.PATRON_CURP}" 
+				    						   eventOnKeyPress ="return esAlfanumericoRFC_CURP(event);" 
+				    						   validatorMessage = "#{messageSource['etiqueta_formato_invalido']}"
+				    						   inputStyle = "text-transform: uppercase"
+				    						   inputValue = "#{mbValidaciones.dtoValidaciones.curp}"
+				    						   maxlength = "18"
+				    						   />
+					</div>
+					<div class="form-group col-md-4">
+						<label for="sexo"><span class="obligatorio">#{messageSource['etiqueta_requerido']}</span> #{messageSource['etiqueta_sexo']}</label>
+						<p:selectOneRadio id="sexo" required="true"
+							requiredMessage="#{messageSource['mensaje_validacion_datoRequerido']}"
+							value="#{mbValidaciones.dtoValidaciones.sexo}">
+							<f:selectItem itemLabel="Hombre" itemValue="H"/>
+							<f:selectItem itemLabel="Mujer" itemValue="M"/>
+						</p:selectOneRadio>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="form-group col-md-4">
+						<sif:componenteInput inputId="ocupacion" 
+											   required ="true"
+				    						   labelText = "#{messageSource['etiqueta_ocupacion']}"
+				    						   regexPattern ="#{Constantes.REG_EX_VALIDA_OCUPACION}" 
+				    						   eventOnKeyPress ="return esLetraSpace(event);" 
+				    						   validatorMessage = "#{messageSource['etiqueta_formato_invalido']}"
+				    						   inputStyle = "text-transform: uppercase"
+				    						   inputValue = "#{mbValidaciones.dtoValidaciones.ocupacion}"
+				    						   maxlength = "50"
+				    						   />
+					</div>
+				</div>
+				<div class="row">
+					<div class="form-group col-md-4">
+						<sif:componenteInput inputId="emailPersonal" 
+											   required ="true"
+				    						   labelText = "#{messageSource['etiqueta_email_personal']}"
+				    						   regexPattern ="#{Constantes.REG_EX_VALIDA_EMAIL}" 
+				    						   validatorMessage = "#{messageSource['etiqueta_formato_invalido']}"
+				    						   inputStyle = "text-transform: uppercase"
+				    						   inputValue = "#{mbValidaciones.dtoValidaciones.emailPersonal}"
+				    						   maxlength = "50"
+				    						   />
+					</div>
+				</div>
+			</section>
+			
+			<!--subtitulo de otra sección del formulario -->
+			<section>
+				<div class="row subtitulos">
+					<h4>
+						<p:outputLabel value="#{messageSource['titulo_registro_datos']}"/>
+					</h4>	
+				</div>
+				<div class="row">
+					<div class="form-group col-md-6">
+						<sif:componenteInput inputId="calle" 
+											   required ="true"
+				    						   labelText = "#{messageSource['etiqueta_calle']}"
+				    						   regexPattern ="#{Constantes.REG_EX_VALIDA_CALLE}" 
+				    						   validatorMessage = "#{messageSource['etiqueta_formato_invalido']}"
+				    						   inputStyle = "text-transform: uppercase"
+				    						   inputValue = "#{mbValidaciones.dtoValidaciones.calle}"
+				    						   maxlength = "80"
+				    						   />
+					</div>
+					<div class="form-group col-md-2">
+						<sif:componenteInput inputId="numExterior" 
+											   required ="true"
+				    						   labelText = "#{messageSource['etiqueta_numero_exterior']}"
+				    						   regexPattern ="#{Constantes.REG_EX_VALIDA_NUM_EXT_INT}" 
+				    						   eventOnKeyPress ="return esNumero(event);" 
+				    						   validatorMessage = "#{messageSource['etiqueta_formato_invalido']}"
+				    						   inputValue = "#{mbValidaciones.dtoValidaciones.numeroExterior}"
+				    						   maxlength = "5"
+				    						   />
+					</div>
+					<div class="form-group col-md-2">
+						<sif:componenteInput inputId="numInterior" 
+											   required ="false"
+				    						   labelText = "#{messageSource['etiqueta_numero_interior']}"
+				    						   regexPattern ="#{Constantes.REG_EX_VALIDA_NUM_EXT_INT}" 
+				    						   eventOnKeyPress ="return esNumero(event);" 
+				    						   validatorMessage = "#{messageSource['etiqueta_formato_invalido']}"
+				    						   inputValue = "#{mbValidaciones.dtoValidaciones.numeroInterior}"
+				    						   maxlength = "5"
+				    						   />
+					</div>
+				</div>
+					
+				<div class="row">
+					<div class="form-group col-md-6">
+						<sif:componenteInput inputId="colonia" 
+											   required ="true"
+				    						   labelText = "#{messageSource['etiqueta_calle']}"
+				    						   regexPattern ="#{Constantes.REG_EX_VALIDA_COLONIA}" 
+				    						   validatorMessage = "#{messageSource['etiqueta_formato_invalido']}"
+				    						   inputStyle = "text-transform: uppercase"
+				    						   inputValue = "#{mbValidaciones.dtoValidaciones.colonia}"
+				    						   maxlength = "80"
+				    						   />
+					</div>
+					<div class="form-group col-md-2">
+						<sif:componenteInput inputId="codigoPostal" 
+											   required ="true"
+				    						   labelText = "#{messageSource['etiqueta_codigo_postal']}"
+				    						   regexPattern ="#{Constantes.PATRON_CODIGO_POSTAL}" 
+				    						   eventOnKeyPress ="return esNumero(event);" 
+				    						   validatorMessage = "#{messageSource['etiqueta_formato_invalido']}"
+				    						   inputValue = "#{mbValidaciones.dtoValidaciones.codigoPostal}"
+				    						   maxlength = "5"
+				    						   />
+					</div>
+				</div>
+				<div class="row">
+					<div class="form-group col-md-5">
+						<label for="ladaDomicilio">#{messageSource['etiqueta_domicilio']}</label>
+						<div class="row">
+							<div class="form-group col-md-5">
+								<sif:componenteInput inputId="ladaDomicilio" 
+											   required ="true"
+				    						   labelText = ""
+				    						   regexPattern ="#{Constantes.REG_EX_VALIDA_LADA}" 
+				    						   eventOnKeyPress ="return esNumero(event);" 
+				    						   validatorMessage = "#{messageSource['etiqueta_formato_invalido']}"
+				    						   inputValue = "#{mbValidaciones.dtoValidaciones.ladaDomicilio}"
+				    						   maxlength = "3"
+				    						   watermarkInput = "#{messageSource['marca_agua_lada']}"
+				    						   />
+							</div>
+							<div class="form-group col-md-7">
+								<sif:componenteInput inputId="telDomicilio" 
+											   required ="true"
+				    						   labelText = ""
+				    						   regexPattern ="#{Constantes.REG_EX_VALIDA_TELEFONO}" 
+				    						   eventOnKeyPress ="return esNumero(event);" 
+				    						   validatorMessage = "#{messageSource['etiqueta_formato_invalido']}"
+				    						   inputValue = "#{mbValidaciones.dtoValidaciones.telefonoDomicilio}"
+				    						   maxlength = "7"
+				    						   watermarkInput = "#{messageSource['marca_agua_telefono']}"
+				    						   />
+							</div>
+						</div>
+					</div>
+					<div class="form-group col-md-7">
+						<label for="ladaOficina">#{messageSource['etiqueta_oficina']}</label>
+						<div class="row">
+							<div class="form-group col-md-3">
+								<sif:componenteInput inputId="ladaOficina" 
+											   required ="true"
+				    						   labelText = ""
+				    						   regexPattern ="#{Constantes.REG_EX_VALIDA_LADA}" 
+				    						   eventOnKeyPress ="return esNumero(event);" 
+				    						   validatorMessage = "#{messageSource['etiqueta_formato_invalido']}"
+				    						   inputValue = "#{mbValidaciones.dtoValidaciones.ladaOficina}"
+				    						   maxlength = "3"
+				    						   watermarkInput = "#{messageSource['marca_agua_lada']}"
+				    						   />
+							</div>
+							<div class="form-group col-md-6">
+								<sif:componenteInput inputId="telOficina" 
+											   required ="true"
+				    						   labelText = ""
+				    						   regexPattern ="#{Constantes.REG_EX_VALIDA_TELEFONO}" 
+				    						   eventOnKeyPress ="return esNumero(event);" 
+				    						   validatorMessage = "#{messageSource['etiqueta_formato_invalido']}"
+				    						   inputValue = "#{mbValidaciones.dtoValidaciones.telefonoDomicilio}"
+				    						   maxlength = "7"
+				    						   watermarkInput = "#{messageSource['marca_agua_telefono']}"
+				    						   />
+							</div>
+							<div class="form-group col-md-3">
+									<sif:componenteInput inputId="extension" 
+												   required ="false"
+					    						   labelText = ""
+					    						   regexPattern ="#{Constantes.REG_EX_VALIDA_EXTENSION}" 
+					    						   eventOnKeyPress ="return esNumero(event);" 
+					    						   validatorMessage = "#{messageSource['etiqueta_formato_invalido']}"
+					    						   inputValue = "#{mbValidaciones.dtoValidaciones.extensionOficina}"
+					    						   maxlength = "5"
+					    						   watermarkInput = "#{messageSource['marca_agua_extension']}"
+					    						   />
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+			<section>
+				<div class="row subtitulos">
+					<h4>
+						<p:outputLabel value="#{messageSource['titulo_registro_datos']}"/>
+					</h4>	
+				</div>
+				<div class="row">
+					<div class="form-group col-md-3">
+						<sif:componenteInputNumber inputId = "monto" 
+											   required = "true"
+											   autocomplete = "off" 
+											   preventPaste = "true"
+				    						   labelText = ""
+				    						   validatorMessage = "#{messageSource['mensaje_validacion_monto']}"
+				    						   inputValue = "#{mbValidaciones.dtoValidaciones.monto}"
+				    						   watermarkInput = "#{messageSource['marca_agua_monto']}"
+				    						   minnum ="0.10"
+				    						   maxnum = "99999999999.99" 
+				    						   />
+					</div>
+				</div>
+				<div class="row">
+					<div class="form-group col-md-6">
+						<sif:componenteInputArea inputId = "descripcion" 
+											   required = "false"
+											   rows = "5"
+											   autoResize = "false"
+											   labelText = "#{messageSource['etiqueta_descripcion']}"
+				    						   inputValue = "#{mbValidaciones.dtoValidaciones.descripcion}"
+				    						   watermarkInput = "#{messageSource['marca_agua_descripcion']}"
+				    						   />
+					</div>
+				</div>
+			</section>
+			<div align="center">
+				<p:commandButton value="Aceptar" ajax="false" icon="ui-icon-check" actionListener="#{mbValidaciones.validarCampos}"/>
+			</div>			
+		</h:form>
+	</ui:define>
+</ui:composition>

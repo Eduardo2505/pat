@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans
+            xmlns:security="http://www.springframework.org/schema/security"
+            xmlns:beans="http://www.springframework.org/schema/beans"
+            xmlns:context="http://www.springframework.org/schema/context"
+            xmlns:jee="http://www.springframework.org/schema/jee"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="
+                http://www.springframework.org/schema/security
+                http://www.springframework.org/schema/security/spring-security-3.1.xsd
+                http://www.springframework.org/schema/beans
+                http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+                http://www.springframework.org/schema/context
+                http://www.springframework.org/schema/context/spring-context.xsd  
+                http://www.springframework.org/schema/jee
+                http://www.springframework.org/schema/jee/spring-jee-3.1.xsd">
+       
+<!-- ***********************************FILTRO DE preautenticacion con LDAP ************************************* -->
+		  
+		  
+         
+        <security:http pattern="/app/javax.faces.resource/**" security="none"/>
+        
+        <security:http pattern="/sidjwebdav/**" security="none"/>
+        <security:http auto-config="false" create-session="ifRequired" use-expressions="true"
+                entry-point-ref="authenticationEntryPoint" disable-url-rewriting="true">
+                
+        	<security:logout logout-url="/logout" delete-cookies="JSESSIONID" logout-success-url="/../menuUTF"/>
+               
+            <security:intercept-url pattern="/app/javax.faces.resource/**" access="permitAll"/>
+                <security:intercept-url pattern="/app/resources/img/faviconINE.ico" access="permitAll"/>
+             
+        <security:intercept-url pattern="/app/error*" access="permitAll"/>             
+                <security:intercept-url pattern="/app/javax.faces.resource/**" access="permitAll"/>
+                <security:intercept-url pattern="/app/resources/img/BG-encabezado.png" access="permitAll"/>
+                <security:intercept-url pattern="/app/resources/js/jquery.flexslider-2.1.js" access="permitAll"/>
+                <security:intercept-url pattern="/app/resources/js/html5shiv.js-v3.6.2.js" access="permitAll"/>        
+                <security:intercept-url pattern="/app/resources/img/process_warning_32.png" access="permitAll"/>
+               
+                <!--            Quitar al asignar IMG a secciones fuera de campus  -->
+                <security:intercept-url pattern="/app/resources/img/icons.png" access="permitAll"/>
+                <security:intercept-url pattern="/app/resources/img/icons-blanco.png" access="permitAll"/>
+                <security:intercept-url pattern="/app/resources/img/icons-negro.png" access="permitAll"/>
+                <security:intercept-url pattern="/app/resources/img/noticia1.jpg" access="permitAll"/>
+                <security:intercept-url pattern="/app/resources/img/noticia2.jpg" access="permitAll"/>
+                <security:intercept-url pattern="/app/resources/img/bg_direction_nav.png" access="permitAll"/>  
+
+       
+        <security:intercept-url pattern="/**" access="isAuthenticated()"/>
+                     
+            <security:custom-filter position="PRE_AUTH_FILTER" ref="preAuthFilter" />
+            <security:custom-filter position="CONCURRENT_SESSION_FILTER" ref="concurrencyFilter" />        
+           
+            <security:session-management session-fixation-protection="newSession"/>
+            <security:custom-filter ref="sessionManagementFilter" before="SESSION_MANAGEMENT_FILTER"/>
+        </security:http>
+               
+        <beans:bean id="preAuthFilter" class="mx.ine.sif.security.PreAuthenticationFilter">
+                <beans:property name="authenticationManager" ref="authenticationManager" />                    
+                <beans:property name="continueFilterChainOnUnsuccessfulAuthentication" value="false" />
+        </beans:bean>  
+         
+        <security:authentication-manager alias="authenticationManager">  
+                <security:authentication-provider ref="preAuthenticatedAuthenticationProvider" />
+                <security:authentication-provider ref="preAuthenticatedAuthenticationProviderSif" />
+        </security:authentication-manager>
+         
+         
+         <beans:bean id="preAuthenticatedAuthenticationProvider" class="org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider">
+        <beans:property name="preAuthenticatedUserDetailsService" >
+                <beans:bean class="org.springframework.security.core.userdetails.UserDetailsByNameServiceWrapper" >
+                <beans:property name="userDetailsService" ref="userDetailsService" />
+                </beans:bean>
+        </beans:property>
+        </beans:bean>
+ 
+         <beans:bean id="preAuthenticatedAuthenticationProviderSif" class="org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider">
+        <beans:property name="preAuthenticatedUserDetailsService" >
+                <beans:bean class="org.springframework.security.core.userdetails.UserDetailsByNameServiceWrapper" >
+                <beans:property name="userDetailsService" ref="userDetailsServiceSif" />
+                </beans:bean>
+        </beans:property>
+        </beans:bean>
+         
+         
+        <beans:bean id="userDetailsService" class="org.springframework.security.ldap.userdetails.LdapUserDetailsService" >
+        <beans:constructor-arg index="0" ref="ldapUserSearch"/>
+                <beans:constructor-arg index="1" ref="ldapAuthoritiesPopulator"/>
+                <beans:property name="userDetailsMapper" >
+                        <beans:bean class="mx.ine.sif.security.CustomUserDetailsMapper" />
+                </beans:property>
+        </beans:bean>
+         
+         <beans:bean id="ldapUserSearch" class="org.springframework.security.ldap.search.FilterBasedLdapUserSearch">
+        <beans:constructor-arg index="0" value=""/>
+        <beans:constructor-arg index="1" value="uid={0}"/>
+        <beans:constructor-arg index="2" ref="contextSource"/>                  
+        <beans:property name="searchSubtree" value="true"/>    
+   </beans:bean>
+         
+         <beans:bean id="ldapAuthoritiesPopulator" class="org.springframework.security.ldap.userdetails.DefaultLdapAuthoritiesPopulator">
+                                <beans:constructor-arg ref="contextSource"/>
+                                <beans:constructor-arg value="ou=grupos"/>
+                                <beans:property name="searchSubtree" value="true"/>
+                                <beans:property name="groupRoleAttribute" value="cn"/>
+                                <beans:property name="groupSearchFilter" value="memberUid={1}"/>
+  </beans:bean>          
+ 
+        <beans:bean id="userDetailsServiceSif" class="org.springframework.security.ldap.userdetails.LdapUserDetailsService" >
+        <beans:constructor-arg index="0" ref="ldapUserSearchSif"/>
+                <beans:constructor-arg index="1" ref="ldapAuthoritiesPopulatorSif"/>
+                <beans:property name="userDetailsMapper" >
+                        <beans:bean class="mx.ine.sif.security.CustomUserDetailsMapper" />
+                </beans:property>
+        </beans:bean>
+ 
+         <beans:bean id="ldapUserSearchSif" class="org.springframework.security.ldap.search.FilterBasedLdapUserSearch">
+        <beans:constructor-arg index="0" value=""/>
+        <beans:constructor-arg index="1" value="uid={0}"/>
+        <beans:constructor-arg index="2" ref="contextSourceSif"/>                  
+        <beans:property name="searchSubtree" value="true"/>    
+   </beans:bean>
+         
+         <beans:bean id="ldapAuthoritiesPopulatorSif" class="org.springframework.security.ldap.userdetails.DefaultLdapAuthoritiesPopulator">
+                                <beans:constructor-arg ref="contextSourceSif"/>
+                                <beans:constructor-arg value="ou=grupos"/>
+                                <beans:property name="searchSubtree" value="true"/>
+                                <beans:property name="groupRoleAttribute" value="cn"/>
+                                <beans:property name="groupSearchFilter" value="memberUid={1}"/>
+  </beans:bean>          
+       
+  <!-- ******************************************************************************************************* -->
+ 
+       
+<!--********************** Configuración para la conexión por jndi al LDAP necesaria  *************************-->
+       
+        <beans:bean id="authenticationEntryPoint"  class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+                <beans:property name="loginFormUrl" value="/app/recepcion"/>
+        </beans:bean>  
+       
+        <jee:jndi-lookup id="jndiLdapServer" jndi-name="${ldap.url}" />
+        <jee:jndi-lookup id="jndiLdapServerSif" jndi-name="${ldapSif.url}" />
+ 
+        <security:ldap-server url="#{jndiLdapServer}/dc=ife.org.mx"/>  
+        <security:ldap-server url="#{jndiLdapServerSif}/dc=ife.org.mx"/>       
+       
+               
+        <beans:bean id="contextSource" class="org.springframework.ldap.core.support.LdapContextSource">
+                <!-- Importante deshabilitar el pool porque causa el error 500:
+                         org.springframework.ldap.ServiceUnavailableException: <ldap>; socket closed; nested exception is javax.naming.ServiceUnavailableException:
+                         Este error causa esa excepción porque no fue configurado pool de la JVM con el argumento -Dcom.sun.jndi.ldap.connect.pool.timeout -->
+        <beans:property name="pooled" value="false"/>
+                <beans:property name="url" value="#{jndiLdapServer}"/>
+                <beans:property name="base" value="dc=ife.org.mx"/>
+                <beans:property name="baseEnvironmentProperties">
+                        <beans:map>
+                                <beans:entry key="com.sun.jndi.ldap.connect.timeout" value="100000" />
+                                <beans:entry key="com.sun.jndi.ldap.read.timeout" value="100000" />
+                                <beans:entry key="java.naming.security.authentication" value="simple" />
+                        </beans:map>
+                </beans:property>
+        </beans:bean>  
+ 
+    <beans:bean id="ldapAuthoritiesPopulatorFilter" class="org.springframework.security.ldap.authentication.NullLdapAuthoritiesPopulator"/>
+       
+       
+         <beans:bean id="ldapTemplate" class="org.springframework.ldap.core.LdapTemplate">
+        <beans:constructor-arg ref="contextSource" />
+    </beans:bean>
+   
+    <beans:bean id="ldapUserSearchUID" class="org.springframework.security.ldap.search.FilterBasedLdapUserSearch">
+        <beans:constructor-arg index="0" value=""/>
+        <beans:constructor-arg index="1" value="uid={0}"/>
+        <beans:constructor-arg index="2" ref="contextSource"/>      
+        <beans:property name="searchSubtree" value="true"/>    
+   </beans:bean>
+               
+        <beans:bean id="contextSourceSif" class="org.springframework.ldap.core.support.LdapContextSource">
+                <!-- Importante deshabilitar el pool porque causa el error 500:
+                         org.springframework.ldap.ServiceUnavailableException: <ldap>; socket closed; nested exception is javax.naming.ServiceUnavailableException:
+                         Este error causa esa excepción porque no fue configurado pool de la JVM con el argumento -Dcom.sun.jndi.ldap.connect.pool.timeout -->
+        <beans:property name="pooled" value="false"/>
+                <beans:property name="url" value="#{jndiLdapServerSif}"/>
+                <beans:property name="base" value="dc=ife.org.mx"/>
+                <beans:property name="baseEnvironmentProperties">
+                        <beans:map>
+                                <beans:entry key="com.sun.jndi.ldap.connect.timeout" value="100000" />
+                                <beans:entry key="com.sun.jndi.ldap.read.timeout" value="100000" />
+                                <beans:entry key="java.naming.security.authentication" value="simple" />
+                        </beans:map>
+                </beans:property>
+        </beans:bean>
+ 
+    <!-- <beans:bean id="ldapAuthoritiesPopulatorFilter" class="org.springframework.security.ldap.authentication.NullLdapAuthoritiesPopulator"/> -->
+       
+       
+         <beans:bean id="ldapTemplateSif" class="org.springframework.ldap.core.LdapTemplate">
+        <beans:constructor-arg ref="contextSourceSif" />
+    </beans:bean>
+   
+    <beans:bean id="ldapUserSearchUIDSif" class="org.springframework.security.ldap.search.FilterBasedLdapUserSearch">
+        <beans:constructor-arg index="0" value=""/>
+        <beans:constructor-arg index="1" value="uid={0}"/>
+        <beans:constructor-arg index="2" ref="contextSourceSif"/>      
+        <beans:property name="searchSubtree" value="true"/>    
+   </beans:bean>
+       
+        <!-- ********************************************************************************************** -->
+       
+        <!-- ************ Otras configuraciones se sesion************************************************************ -->
+        <!-- Bean que permite la referencia al registro del filtro de sesión -->
+        <beans:bean id="concurrencyFilter"
+                            class="org.springframework.security.web.session.ConcurrentSessionFilter">
+                        <beans:property name="sessionRegistry" ref="sessionRegistry" />
+                        <beans:property name="expiredUrl" value="/app/error?error=sesEx" />
+        </beans:bean>
+       
+        <!-- INICIO - FILTRO PARA DETECTAR UNA SESIÓN INVÁLIDA -->   
+        <beans:bean id="sessionManagementFilter" class="org.springframework.security.web.session.SessionManagementFilter">
+                <beans:constructor-arg name="securityContextRepository" ref="httpSessionSecurityContextRepository" />
+                <!-- this permits redirection to session timeout page from javascript/ajax or http -->
+        <beans:property name="invalidSessionStrategy" ref="jsfRedirectStrategy" />
+        <beans:property name="sessionAuthenticationStrategy" ref="sessionAuthenticationStrategy" />
+        </beans:bean>
+ 
+        <beans:bean id="jsfRedirectStrategy" class="org.springframework.security.web.session.SimpleRedirectInvalidSessionStrategy">
+                <beans:constructor-arg name="invalidSessionUrl" value="/app/login?error=sesionInvalida"/>
+        </beans:bean>  
+       
+        <beans:bean id="httpSessionSecurityContextRepository" class="org.springframework.security.web.context.HttpSessionSecurityContextRepository"/>
+       
+        <!-- FIN - FILTRO PARA DETECTAR UNA SESIÓN INVÁLIDA -->      
+       
+        <!-- INICIO - FILTRO PARA EL MANEJO DE SESIONES CONCURRENTES -->       
+        <beans:bean id="sessionAuthenticationStrategy" class="org.springframework.security.web.authentication.session.ConcurrentSessionControlStrategy">
+                <beans:constructor-arg name="sessionRegistry" ref="sessionRegistry" />
+                <beans:property name="exceptionIfMaximumExceeded" value="true"/>
+                <beans:property name="maximumSessions" value="-1"/>
+        </beans:bean>
+       
+        <beans:bean id="sessionRegistry" class="org.springframework.security.core.session.SessionRegistryImpl"/>
+        <!-- FIN - FILTRO PARA EL MANEJO DE SESIONES CONCURRENTES -->  
+       
+        <!-- ********************************************************************************************** -->        
+</beans:beans>

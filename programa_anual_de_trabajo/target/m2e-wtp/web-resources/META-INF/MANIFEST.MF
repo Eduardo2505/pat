@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Class-Path: lib/primefaces-extensions-6.0.0.jar lib/primefaces-6.0.jar
+  lib/gson-2.2.4.jar lib/log4j-1.2.16.jar lib/javatuples-1.2.jar lib/j
+ asperreports-5.6.0.jar lib/itext-2.1.7.js2.jar lib/bcmail-jdk14-138.j
+ ar lib/bcprov-jdk14-138.jar lib/bctsp-jdk14-1.38.jar lib/bcprov-jdk14
+ -1.38.jar lib/bcmail-jdk14-1.38.jar lib/joda-time-2.7.jar lib/sax-2.0
+ .1.jar lib/jdom2-2.0.6.jar lib/json-simple-1.1.1.jar lib/jackson-data
+ bind-2.6.3.jar
+Build-Jdk: 1.7.0_71
+Built-By: victor.gonzalezs
+Created-By: Maven Integration for Eclipse
+

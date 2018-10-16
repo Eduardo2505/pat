@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:sec="http://www.springframework.org/security/tags"
+	template="/templates/template.xhtml">
+
+	<ui:define name="CONTENT">
+
+		<p:growl id="growl" for="mensaje_exito" autoUpdate="true"
+			showDetail="true" sticky="false" life="15000" />
+		<div class="col-md-12">
+			<h1>Tablas</h1>
+		</div>
+		<form>
+			<section class="container">
+
+			<div class="row">
+				<div class="col-md-12">
+					<a href="#{request.contextPath}/app/home">Home</a>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<a href="#{request.contextPath}/app/tablas">Tablas</a>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<a href="#{request.contextPath}/app/validaciones">Validaciones
+						de texto y n&uacute;mero</a>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<a href="#{request.contextPath}/app/seleccion">Combos y
+						selecci&oacute;n</a>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<a href="#{request.contextPath}/app/fechas">Fechas</a>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<a href="#{request.contextPath}/app/botones">Botones y mensajes</a>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<a href="#{request.contextPath}/app/form">Form din&aacute;mico</a>
+				</div>
+			</div>
+			</section>
+		</form>
+		<!--Comienza tabla de seleccion multiple-->
+		<section> <h:form id="formTabla">
+			<pe:blockUI id="bloqContForm" target="formTabla"
+				content="blockUIContent" widgetVar="bloqContForm" />
+			<h:panelGrid id="blockUIContent" columns="2" style="display:none;">
+				<h:graphicImage library="img" name="loader.gif" width="70" />
+				<h:outputText value="Procesando Informaci&oacute;n"
+					style="white-space: nowrap;" />
+			</h:panelGrid>
+			<p:dataTable var="filtro" paginator="true"
+				rows="10" value="#{mbTablas.listaFiltros}"
+				emptyMessage="Sin registros"
+				rowsPerPageTemplate="10,20,50,100,300,500"
+				paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+				currentPageReportTemplate="(P&aacute;gina: {currentPage}/{totalPages})"
+				selection="#{mbTablas.listaFiltrosSeleccionados}"
+				rowKey="#{filtro.idEstado}" id="tablaFiltros">
+				<!--
+				la propiedad "var" es para distinguir cada registro de la tabla
+				la propiedad "value" apunta a una lista de objetos de nuestro MB para llenar nuestra tabla 
+				la propiedad "seleccion" apunta a otra lista de objetos donde se guardaran los registros que seleccionesmos
+				la propiedad "row key" es el campo de nuestra lista de objetos que funcionara como ID para diferenciar cada registro seleccionado
+				-->
+
+				<p:ajax event="filter" onstart="PF('bloqContForm').block()"
+					onsuccess="PF('bloqContForm').unblock()" />
+				<!-- La propiedad ajax event="filter" indica que un evento se ejecutara cuando se use algun filtro -->
+				<p:column selectionMode="multiple" headerText="Selección"
+					style="text-align:center" />
+				<!-- selectionMode="multiple" indica que estamos habilitando la tabla para que este campo de seleccion nos permita marcar varios registros -->
+				<p:column headerText="Nombre estado" filterBy="nombreEstado">
+					<h:outputText value="#{filtro.nombreEstado}" />
+				</p:column>
+				<!-- filterBy="nombreEstado" nos permite poner un campo de texto en el encabezado para realizar una busqueda denro de los datos que se encuentran en la tabla -->
+				<p:column headerText="Id distrito" filterBy="idDistrito">
+					<h:outputText value="#{filtro.idDistrito}" />
+				</p:column>
+				<!-- filterMatchMode="contains" nos permite realizar una busqueda mas flexible ya que no necesita ser exacta -->
+				<p:column headerText="Nombre distrito" filterBy="nombreDistrito"
+					filterMatchMode="contains">
+					<h:outputText value="#{filtro.nombreDistrito}" />
+				</p:column>
+				<!-- La siguiente columna nos permitira ver el detalle del registro especificado -->
+				<p:column style="width:32px" headerText="Ver">
+					<p:commandButton update=":formTabla:display" value="Ver"
+						oncomplete="PF('filtroDialog').show()" icon="ui-icon-search">
+						<f:setPropertyActionListener value="#{filtro}"
+							target="#{mbTablas.selectedFiltro}" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+			<section>
+			<div class="row">
+				<div class="col-md-3">
+					<p:commandButton value="Llenar tabla" id="llenaTabla"
+						actionListener="#{mbTablas.llenaTabla()}" update=":formTabla"
+						onstart="PF('bloqContForm').block()"
+						onsuccess="PF('bloqContForm').unblock()" icon="ui-icon-pencil">
+					</p:commandButton>
+				</div>
+				<div class="col-md-3">
+					<p:commandButton value="Ver numero de selecciones"
+						id="numeroSelecciones"
+						actionListener="#{mbTablas.numeroSelecciones()}"
+						update=":formTabla" onstart="PF('bloqContForm').block()"
+						onsuccess="PF('bloqContForm').unblock()" icon="ui-icon-comment">
+					</p:commandButton>
+				</div>
+				<div class="col-md-3">
+					<p:commandButton value="Limpiar filtros de la tabla"
+						id="limpiaFiltros" actionListener="#{mbTablas.resetTabla()}"
+						update=":formTabla" onstart="PF('bloqContForm').block()"
+						onsuccess="PF('bloqContForm').unblock()" icon="ui-icon-trash">
+					</p:commandButton>
+				</div>
+				<div class="col-md-3">
+					<p:commandButton value="Limpiar tabla" id="limpiaTabla"
+						actionListener="#{mbTablas.limpiarTabla()}" update=":formTabla"
+						onstart="PF('bloqContForm').block()"
+						onsuccess="PF('bloqContForm').unblock()" icon="ui-icon-trash">
+					</p:commandButton>
+				</div>
+				<div class="col-md-1"></div>
+			</div>
+			</section>
+			<!-- Comienza seccion que se abrira cuando se seleccione un registro especifico de la tabla -->
+			<p:dialog header="Detalle Filtro" widgetVar="filtroDialog"
+				resizable="false" draggable="false" showEffect="fade"
+				hideEffect="fade" modal="true">
+				<p:outputPanel id="display">
+					<h:panelGrid columns="4" cellpadding="4"
+						rendered="#{not empty mbTablas.selectedFiltro}">
+						<div class="row">
+							<div class="col-md-4">
+								<h:outputText value="Nombre estado:" />
+							</div>
+							<div class="col-md-8">
+								<h:outputText value="#{mbTablas.selectedFiltro.nombreEstado}"
+									style="font-weight:bold" />
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-4">
+								<h:outputText value="ID distrito:" />
+							</div>
+							<div class="col-md-8">
+								<h:outputText value="#{mbTablas.selectedFiltro.idDistrito}"
+									style="font-weight:bold" />
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-4">
+								<h:outputText value="Nombre distrito:" />
+							</div>
+							<div class="col-md-8">
+								<h:outputText value="#{mbTablas.selectedFiltro.nombreDistrito}"
+									style="font-weight:bold" />
+							</div>
+						</div>
+					</h:panelGrid>
+				</p:outputPanel>
+			</p:dialog>
+			<!-- Termina seccion que se abrira cuando se seleccione un registro especifico de la tabla -->
+		</h:form> </section>
+		<!--Termina tabla de seleccion multiple-->
+	</ui:define>
+
+</ui:composition>

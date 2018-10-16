@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
+						http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd
+						http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.1.xsd
+						http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd">
+	
+	<context:property-placeholder location="classpath:ApplicationConfig.properties"/>	
+	
+	<context:annotation-config/>
+	<context:component-scan base-package="mx.ine.sif, mx.org.ine.servicios"/>
+	
+	
+	
+	<jee:jndi-lookup id="ldapSif_user" jndi-name="java:/util/ldap_sif/user" />
+	<jee:jndi-lookup id="ldapSif_password" jndi-name="java:/util/ldap_sif/password" />
+	
+	<bean id="parametrosLdapSif" class="mx.ine.sif.soapws.adminusuarios.ParametrosLdap">
+		<property name="alias" value="${ldap_sif.alias}"></property>
+		<property name="ldapUserDn" value="#{ldapSif_user}"></property>
+		<property name="ldapPass" value="#{ldapSif_password}"></property>
+		<property name="base" value="${ldap_sif.baseExterno}"></property>
+	</bean>
+	
+	<jee:jndi-lookup id="ldapInst_user" jndi-name="java:/util/ldap_inst/user" />
+	<jee:jndi-lookup id="ldapInst_password" jndi-name="java:/util/ldap_inst/password" />
+	
+	<bean id="parametrosLdapInstitucional" class="mx.ine.sif.soapws.adminusuarios.ParametrosLdap">
+		<property name="alias" value="${ldap_institucional.alias}"></property>
+		<property name="ldapUserDn" value="#{ldapInst_user}"></property>
+		<property name="ldapPass" value="#{ldapInst_password}"></property>
+		<property name="base" value="${ldap_institucional.basePeople}"></property>
+	</bean>
+	
+	
+	<util:map id="ldapParameters" map-class="java.util.HashMap">
+				<entry key="ldap_sif.alias" value="${ldap_sif.alias}" />
+				<entry key="ldap_sif.userDn" value="#{ldapSif_user}" />
+				<entry key="ldap_sif.pass" value="#{ldapSif_password}" />
+				<entry key="ldap_sif.baseExterno" value="${ldap_sif.baseExterno}" />
+				
+				<entry key="ldap_institucional.alias" value="${ldap_institucional.alias}" />
+				<entry key="ldap_institucional.userDn" value="#{ldapInst_user}" />
+				<entry key="ldap_institucional.pass" value="#{ldapInst_password}" />
+				<entry key="ldap_institucional.basePeople" value="${ldap_institucional.basePeople}" />
+	</util:map>
+	
+	  <jee:jndi-lookup id="jndiSoapwsAdminUsuarios" jndi-name="${soapws.adminUsuarios}" />
+		
+		<!-- Service AdminUsuario -->
+	<bean id="adminUsuariosService" class="mx.ine.sif.soapws.adminusuarios.AdminUsuariosService" >
+		<constructor-arg >
+		<bean class="java.net.URL">
+				  <!-- <constructor-arg value="http://10.0.28.73:8080/aus/adminUsuariosService?wsdl" type="java.lang.String"></constructor-arg>  --> 
+				  <!-- <constructor-arg value="https://pruebas-sif.ine.mx/aus/adminUsuariosService?wsdl" type="java.lang.String"></constructor-arg>  -->
+				 <constructor-arg value="#{jndiSoapwsAdminUsuarios}" type="java.lang.String"></constructor-arg> 
+			</bean>
+		</constructor-arg>
+	</bean> 
+	
+	<!-- Beans de la aplicacion definidos por el desarrollador -->
+	
+  	<bean id="currentDate" class="java.util.Date" scope="request"/>
+
+	<!-- Resuelve las vistas del tipo xhtml que funcionan con faces -->
+
+	<bean class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+		<property name="viewClass" value="org.springframework.faces.mvc.JsfView" />
+		<property name="prefix" value="/WEB-INF/views/" />
+		<property name="suffix" value=".xhtml" />
+	</bean>
+	
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basenames">
+	   		<list>
+				<value>ApplicationResources</value>
+				<value>GenericConstants</value>
+				<value>ValidationMessages</value> 
+	   		</list>
+		</property>
+  	</bean>	
+</beans>

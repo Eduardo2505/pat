@@ -1,0 +1,34 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pu="http://primefaces.org/ultima">
+
+	<h:form id="menuform">
+		<div class="layout-menu #{guestPreferences.menuClass}">
+			<div class="nano">
+				<div class="nano-content menu-scroll-content">
+
+
+					<ui:fragment>
+						<div class="profile" >
+
+							<div style="display: flex; align-items: center;">
+								<div style="margin-left: 70px; margin-top: -30px;">
+								<h:graphicImage id="logoAud" library="ultima-layout"
+									name="images/2_Ordinario.png"/>
+								</div>
+							</div>
+						</div>
+					</ui:fragment>
+					<pu:menu model="#{mbUsuario.model}" toggleable="true"
+						widgetVar="me" />
+
+
+
+				</div>
+			</div>
+		</div>
+	</h:form>
+</ui:composition>

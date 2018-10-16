@@ -1,0 +1,49 @@
+div.barra_desp {
+	height: 10px;
+	cursor: pointer;
+	text-align: left;
+	width: 100%;
+}
+
+div.barra_desp span.posicion {
+	width: 0;
+	display: inline-block;
+	height: 10px;
+	background-color: red;
+	position: absolute;
+}
+
+div.barra_desp span.cargado {
+	width: 0;
+	display: inline-block;
+	height: 10px;
+	background-color: #888888;
+	position: absolute;
+}
+
+.boton {
+	margin: 0 5px 0;
+	cursor: pointer;
+	font-size: 30px !important;
+}
+
+.boton:hover {
+	color: #2b3135 !important;
+}
+
+.tiempo {
+	width: 40px;
+	padding: 2px !important;
+	display: inline-block;
+	vertical-align: 60%;
+}
+
+.lienzo-class {
+	display: inline-block;
+	width: 100%;
+	height: 100%;
+}
+
+.mediaPlayer .ui-dialog-content {
+	
+}

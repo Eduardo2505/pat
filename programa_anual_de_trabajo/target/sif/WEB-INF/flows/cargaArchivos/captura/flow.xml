@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow"
+	  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	  xsi:schemaLocation="http://www.springframework.org/schema/webflow
+        				  http://www.springframework.org/schema/webflow/spring-webflow-2.0.xsd"
+	  start-state="cargaArchivosCaptura" parent="parent-flow">
+	
+    <var name="mbCargaArchivos" class="mx.ine.sif.mb.MBCargaArchivos"/>
+    
+    <view-state id="cargaArchivos_view" view="captura.xhtml">
+		<transition on="consultar" to="consulta_view" />
+	</view-state>	
+	
+    <decision-state id="cargaArchivosCaptura">
+    	<on-entry>
+    		<evaluate expression="mbCargaArchivos.inicio()"></evaluate>
+    	</on-entry>
+    	<if test="1==1"
+    		then="cargaArchivos_view"
+    		else="usuarioNoPermitido"/>
+    </decision-state>
+    	  	
+	
+	
+	<view-state id="usuarioNoPermitido" view="externalRedirect:contextRelative:/app/sinpermiso">
+	</view-state>
+	
+	<view-state id="consulta_view" view="externalRedirect:servletRelative:/cargaArchivos/consulta" />
+	
+</flow>

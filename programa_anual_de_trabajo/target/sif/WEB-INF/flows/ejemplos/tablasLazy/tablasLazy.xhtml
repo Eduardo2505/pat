@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:sec="http://www.springframework.org/security/tags"
+	xmlns:sif="http://java.sun.com/jsf/composite/components"
+	template="/templates/template.xhtml">
+
+	<ui:define name="CONTENT">
+
+		<p:growl id="growl" for="mensaje_exito" autoUpdate="true"
+			showDetail="true" sticky="false" life="15000" />
+		<div class="col-md-12">
+			<h1>Tablas</h1>
+		</div>
+		<form>
+			<section class="container">
+
+			<div class="row">
+				<div class="col-md-12">
+					<a href="#{request.contextPath}/app/home">Home</a>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<a href="#{request.contextPath}/app/tablas">Tablas</a>
+				</div>
+			</div>
+			<div class="row">
+      				<div class="col-md-12">
+      					<a href="#{request.contextPath}/app/ejemplos/tablasLazy">Tablas Lazy</a>
+      				</div>
+				</div>
+			<div class="row">
+				<div class="col-md-12">
+					<a href="#{request.contextPath}/app/validaciones">Validaciones
+						de texto y n&uacute;mero</a>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<a href="#{request.contextPath}/app/seleccion">Combos y
+						selecci&oacute;n</a>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<a href="#{request.contextPath}/app/fechas">Fechas</a>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<a href="#{request.contextPath}/app/botones">Botones y mensajes</a>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<a href="#{request.contextPath}/app/form">Form din&aacute;mico</a>
+				</div>
+			</div>
+			</section>
+		</form>
+		<!--Comienza tabla de seleccion multiple-->
+			<h:form id="formTabla">
+				<section>
+				<pe:blockUI id="bloqContForm" target="formTabla" content="blockUIContent" widgetVar="bloqContForm" />
+				<h:panelGrid id="blockUIContent" columns="2" style="display:none;">
+					<h:graphicImage library="img" name="loader.gif" width="70" />
+					<h:outputText value="Procesando Informaci&oacute;n" style="white-space: nowrap;" />
+				</h:panelGrid>
+				<div class="row">
+					<div class="col-xs-3">
+						<sif:componentePrueba1 inputId="nombre" inputValue="#{mbEjemploTablasLazy.nombre}" required="true" labelText="Nombre" ajaxBlurInput="#{mbEjemploTablasLazy.onNombreBlur}"/>
+					</div>
+					<div class="col-xs-3">
+						<sif:componentePrueba1 inputId="primerApellido" required="true" labelText="Primer Apellido"/>
+					</div>
+					<div class="col-xs-3">
+						<sif:componentePrueba1 inputId="segundoApellido" required="false" labelText="Segundo Apellido"/>
+					</div>
+					<div class="col-xs-3">
+						<sif:componentePrueba1 inputId="username" required="false" labelText="Username" maxlength="10"/>
+					</div>
+				</div>
+				
+				<div class="row">
+					<div class="form-group col-md-4">
+					    <label>Rol:</label>
+					    <p:selectOneMenu id="idRol" value="#{mbEjemploTablasLazy.idRol}">
+					    	<p:ajax event="change" listener="#{mbEjemploTablasLazy.onRolChange}" update="@form" 
+					    	onstart="PF('bloqContForm').block()" onsuccess="PF('bloqContForm').unblock()"/>
+					    	<f:selectItem itemLabel="Seleccione un rol" itemValue="" noSelectionOption="true" />
+	                		<f:selectItem itemLabel="Admin" itemValue="1"/>
+				            <f:selectItem itemLabel="Supervisor tipo A" itemValue="2" />
+				            <f:selectItem itemLabel="Supervisor tipo B" itemValue="3" />
+				        </p:selectOneMenu>
+					</div>
+				</div>
+		
+				
+				<div class="row">
+					<div class="col-xs-12">
+						<p:dataTable var="persona"  paginator="true"
+								rows="10" value="#{mbEjemploTablasLazy.lazyDataModel}"
+								emptyMessage="Sin registros"
+								rowsPerPageTemplate="10,20,50,100,300,500"
+								paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+								currentPageReportTemplate="(P&aacute;gina: {currentPage}/{totalPages})"
+								style="font-size:0.8em;" 
+		 						selectionMode="single" id="personasTable" lazy="true">
+		 						
+						        <p:ajax event="page" onstart="PF('bloqContForm').block()" onsuccess="PF('bloqContForm').unblock()"/>
+						        <p:ajax event="sort" onstart="PF('bloqContForm').block()" onsuccess="PF('bloqContForm').unblock()"/>
+						        <p:ajax event="filter" onstart="PF('bloqContForm').block()" onsuccess="PF('bloqContForm').unblock()"/>
+						        
+						        <p:column headerText="Id" sortBy="idPersona" filterBy="idPersona">
+						            <h:outputText value="#{persona.idPersona}" />
+						        </p:column>
+						        <p:column headerText="Nombre" sortBy="nombre" filterBy="nombre">
+						            <h:outputText value="#{persona.nombre}" />
+						        </p:column>
+						        <p:column headerText="Primer Apellido" sortBy="primerApellido" filterBy="primerApellido">
+						            <h:outputText value="#{persona.primerApellido}" />
+						        </p:column>
+						        <p:column headerText="Segundo Apellido" sortBy="segundoApellido" filterBy="segundoApellido">
+						            <h:outputText value="#{persona.segundoApellido}" />
+						        </p:column>
+						        <p:column headerText="Edad" sortBy="edad" filterBy="edad">
+						            <h:outputText value="#{persona.edad}" />
+						        </p:column>
+						        <p:column headerText="Pais" sortBy="idPais" filterBy="idPais" filterOptions="#{mbEjemploTablasLazy.paises}">
+						            <h:outputText value="#{persona.idPais}" />
+						        </p:column>
+		<!-- 				        <p:column headerText="#{messageSource['etiqueta_adminUsuarios_estado']}" sortBy="idEstado" filterBy="idEstado" filterOptions="#{mbAdminUsuarios.estados}"> -->
+		<!-- 				            <h:outputText value="#{cuentaPersona.cuenta.estado.nombreEstado}" /> -->
+		<!-- 				        </p:column> -->
+						    </p:dataTable>
+					</div>
+				</div>
+				</section>
+			</h:form> 
+		<!--Termina tabla de seleccion multiple-->
+	</ui:define>
+
+</ui:composition>

@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<facelet-taglib xmlns="http://java.sun.com/xml/ns/javaee"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facelettaglibrary_2_0.xsd"
+		version="2.0">
+	<namespace>http://sif.taglib.mx/tags</namespace>
+    
+    <tag>
+    	<tag-name>sifUploadFile</tag-name>
+    	<component>
+    		<component-type>mx.ine.sif.custom.components.FileUploadCustom</component-type>
+			<renderer-type>mx.ine.sif.custom.components.FileUploadRendererCustom</renderer-type>
+		</component>
+    	<!-- <description>Cargador de archivos adaptado a las necesidades de SIF</description> -->
+		<attribute>
+			<description><![CDATA[Unique identifier of the component in a namingContainer.]]></description>
+			<name>id</name>
+			<required>false</required>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description><![CDATA[Boolean value to specify the rendering of the component, when set to false component will not be rendered.]]></description>
+			<name>rendered</name>
+			<required>false</required>
+			<type>java.lang.Boolean</type>
+		</attribute>
+		<attribute>
+			<description><![CDATA[An el expression referring to a server side UIComponent instance in a backing bean.]]></description>
+			<name>binding</name>
+			<required>false</required>
+			<type>javax.faces.component.UIComponent</type>
+		</attribute>
+		<attribute>
+			<description><![CDATA[Value of the component.]]></description>
+			<name>value</name>
+			<required>false</required>
+			<type>java.lang.Object</type>
+		</attribute>
+		<attribute>
+			<description><![CDATA[An el expression or a literal text that defines a converter for the component. When it's an EL expression, it's resolved to a converter instance. 
+    		In case it's a static text, it must refer to a converter id.]]></description>
+			<name>converter</name>
+			<required>false</required>
+			<type>java.faces.convert.Converter</type>
+		</attribute>
+		<attribute>
+			<description><![CDATA[When set true, process validations logic is executed at apply request values phase for this component. Default is false.]]></description>
+			<name>immediate</name>
+			<required>false</required>
+			<type>java.lang.Boolean</type>
+		</attribute>
+		<attribute>
+			<description><![CDATA[Marks component as required.]]></description>
+			<name>required</name>
+			<required>false</required>
+			<type>java.lang.Boolean</type>
+		</attribute>
+		<attribute>
+			<description><![CDATA[A method expression referring to a method validationg the input.]]></description>
+			<name>validator</name>
+			<required>false</required>
+			<type>javax.faces.validator.Validator</type>
+		</attribute>
+		<attribute>
+			<description><![CDATA[A method binding expression referring to a method for handling a valuchangeevent.]]></description>
+			<name>valueChangeListener</name>
+			<required>false</required>
+			<type>javax.faces.event.ValueChangeListener</type>
+		</attribute>
+		<attribute>
+			<description><![CDATA[Message to display when required field validation fails.]]></description>
+			<name>requiredMessage</name>
+			<required>false</required>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description><![CDATA[Message to display when conversion fails.]]></description>
+			<name>converterMessage</name>
+			<required>false</required>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description><![CDATA[Message to display when validation fails.]]></description>
+			<name>validatorMessage</name>
+			<required>false</required>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description><![CDATA[Name of the client side widget.]]></description>
+			<name>widgetVar</name>
+			<required>false</required>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description><![CDATA[Inline style of the main component.]]></description>
+			<name>style</name>
+			<required>false</required>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description><![CDATA[Style class of the component.]]></description>
+			<name>styleClass</name>
+			<required>false</required>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description><![CDATA[Component(s) to be updated after fileupload completes.]]></description>
+			<name>update</name>
+			<required>false</required>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description><![CDATA[Component(s) to be processed during fileupload request.]]></description>
+			<name>process</name>
+			<required>false</required>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description><![CDATA[Method expression to listen file upload events.]]></description>
+			<name>fileUploadListener</name>
+			<required>false</required>
+			<type>javax.el.MethodExpression</type>
+		</attribute>
+		<attribute>
+			<description><![CDATA[Allows choosing of multi file uploads from native file browse dialog, turned off by default.]]></description>
+			<name>multiple</name>
+			<required>false</required>
+			<type>java.lang.Boolean</type>
+		</attribute>
+		<attribute>
+			<description><![CDATA[When set to true, selecting a file starts the upload process implicitly. Default is false.]]></description>
+			<name>auto</name>
+			<required>false</required>
+			<type>java.lang.Boolean</type>
+		</attribute>
+		<attribute>
+			<description><![CDATA[Label of the browse button, default is 'Choose'.]]></description>
+			<name>label</name>
+			<required>false</required>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description><![CDATA[Regular expression for accepted file types, e.g. /(\.|\/)(gif|jpe?g|png)$/]]></description>
+			<name>allowTypes</name>
+			<required>false</required>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description><![CDATA[Maximum number of files to be uploaded.]]></description>
+			<name>fileLimit</name>
+			<required>false</required>
+			<type>java.lang.Integer</type>
+		</attribute>
+		<attribute>
+			<description><![CDATA[Individual file size limit in bytes. Default is unlimited.]]></description>
+			<name>sizeLimit</name>
+			<required>false</required>
+			<type>java.lang.Long</type>
+		</attribute>
+		<attribute>
+			<description><![CDATA[Mode of the uploader, valid values are "simple" and "advanced".]]></description>
+			<name>mode</name>
+			<required>false</required>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description><![CDATA[Label of the upload button, default is 'Upload'.]]></description>
+			<name>uploadLabel</name>
+			<required>false</required>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description><![CDATA[Label of the cancel button, default is 'Cancel'.]]></description>
+			<name>cancelLabel</name>
+			<required>false</required>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description><![CDATA[Message to display when file size validation fails.]]></description>
+			<name>invalidSizeMessage</name>
+			<required>false</required>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description><![CDATA[Message to display when file limit validation fails.]]></description>
+			<name>invalidFileMessage</name>
+			<required>false</required>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description><![CDATA[Message to display when file count validation fails.]]></description>
+			<name>fileLimitMessage</name>
+			<required>false</required>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description><![CDATA[Specifies dragdrop based file selection from filesystem, default is true and works only on supported browsers.]]></description>
+			<name>dragDropSupport</name>
+			<required>false</required>
+			<type>java.lang.Boolean</type>
+		</attribute>
+		<attribute>
+			<description><![CDATA[Callback to execute at the beginning of fileupload.]]></description>
+			<name>onstart</name>
+			<required>false</required>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description><![CDATA[Callback to execute after fileupload request completes.]]></description>
+			<name>oncomplete</name>
+			<required>false</required>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description><![CDATA[Callback to execute after fileupload request fails.]]></description>
+			<name>onerror</name>
+			<required>false</required>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description><![CDATA[Disables fileupload user interface interaction.]]></description>
+			<name>disabled</name>
+			<required>false</required>
+			<type>java.lang.Boolean</type>
+		</attribute>
+		<attribute>
+			<description><![CDATA[Message template to use when displaying file validation errors. Default is "{name} {size}".]]></description>
+			<name>messageTemplate</name>
+			<required>false</required>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description><![CDATA[Width for image previews in pixels. Default value is 80.]]></description>
+			<name>previewWidth</name>
+			<required>false</required>
+			<type>java.lang.Integer</type>
+		</attribute>
+		<attribute>
+			<description><![CDATA[Applies theming to simple uploader, default is false.]]></description>
+			<name>skinSimple</name>
+			<required>false</required>
+			<type>java.lang.Boolean</type>
+		</attribute>
+		<attribute>
+			<description><![CDATA[To filter files in native file browser dialog.]]></description>
+			<name>accept</name>
+			<required>false</required>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description><![CDATA[Uploads are concurrent by default set this option to true for sequential uploads.]]></description>
+			<name>sequential</name>
+			<required>false</required>
+			<type>java.lang.Boolean</type>
+		</attribute>
+		<attribute>
+			<description><![CDATA[Especifica si es para completar una carga pendiente.]]></description>
+			<name>completar</name>
+			<required>false</required>
+			<type>java.lang.Boolean</type>
+		</attribute>
+	</tag>    
+</facelet-taglib>

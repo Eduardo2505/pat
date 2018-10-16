@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:sec="http://www.springframework.org/security/tags"
+	xmlns:sif="http://java.sun.com/jsf/composite/components">
+	  	  
+	<ui:composition>
+		<p:dialog id="mediaDialog"
+				  widgetVar="mediaDialog"
+				  closable="true"
+				  modal="true"
+				  style="mediaPlayer">
+			<div style="text-align: center;">
+				<div id="headerMedia" style="font-weight: bold;"></div>
+				<div id="mediaView">
+				</div>				
+			</div>
+						
+			<p:ajax event="close" onstart="cerrarVideo()" update="@this"/>
+			
+			<f:facet name="footer">
+				<div class="barra_desp">
+				</div>
+
+				<div style="text-align: center;">
+					<div id="duracion" class="tiempo"></div>
+					
+					<span id="atrasar" class="boton ui-icon ui-icon-fast-rewind">
+					</span>
+					
+					<span id="pause" class="boton ui-icon ui-icon-pause-circle-outline">
+					</span>
+					
+					<span id="play" class="boton ui-icon ui-icon-play-circle-outline">
+					</span>
+					
+					<span id="stop" class="boton ui-icon ui-icon-stop">
+					</span>
+					
+					<span id="adelantar" class="boton ui-icon ui-icon-fast-forward">
+					</span>
+					
+					<div id="reloj" class="tiempo"></div>
+					
+					<h:inputHidden id="idVolumen" value="50"/>
+					<p:slider widgetVar="volumen"
+							  for="idVolumen"
+							  style="width: 30%;"
+							  onSlideEnd="cambiarVolumen()"
+							  onSlide="cambiarVolumen()"
+							  step="5"
+							  minValue="0"
+							  maxValue="100"/>
+				</div>
+			</f:facet>
+		</p:dialog>		
+	</ui:composition>
+</html>

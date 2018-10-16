@@ -1,0 +1,754 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:sec="http://www.springframework.org/security/tags"
+	xmlns:sif="http://java.sun.com/jsf/composite/components"
+	xmlns:deceyec="http://ine.mx/ui" template="/templates/template.xhtml">
+
+	<ui:define name="CONTENT">
+		<style>
+.corrigePanel {
+	border: 0px solid #a8a8a8;
+	background: none;
+}
+
+.rowInvis {
+	display: none;
+}
+</style>
+		<h:outputScript library="js" name="calendar_es.js" />
+
+		<ol class="breadcrumb">
+			<li><a href="${request.contextPath}/app/home">#{messageSource['etiqueta_inicio']}</a></li>
+			<li>#{messageSource['etiqueta_reportes']}</li>
+			<li class="active">Estados Financieros</li>
+		</ol>
+
+		<h:form id="formEstadosFinancieros">
+			<p:messages id="msgsEstructura" autoUpdate="true" />
+			<pe:blockUI id="bloqContForm" target="formEstadosFinancieros "
+				content="blockUIContent" widgetVar="bloqContForm" />
+			<h:panelGrid id="blockUIContent" columns="2" style="display:none;">
+				<h:graphicImage library="img" name="loader.gif" width="70" />
+				<h:outputText value="#{messageSource['etiqueta_procesando_info']}"
+					style="white-space: nowrap;" />
+			</h:panelGrid>
+			<p>
+				<small>Los datos con (<span class="obligatorio">*</span>)
+					son requeridos.
+				</small>
+			</p>
+			<h3>Estados Financieros</h3>
+
+			<!-- ////////////////////////////////ENCABEZADO DE LA PAGINA/////////////////////////////////////////////////////////////////////////////////////// -->
+			<section>
+			<div class="bs-docs-grid">
+				<div class="row">
+					<div class="col-md-2">
+						<h:outputLabel value="Partido Político: " />
+					</div>
+					<div class="col-md-8">
+						<h:outputLabel value="PARTIDO ACCIÓN NACIONAL"
+							style="font-weight: normal" />
+					</div>
+				</div>
+				<div class="row show-grid">
+					<div class="col-md-2">
+						<h:outputLabel value="Tipo Ordinario: " />
+					</div>
+					<div class="col-md-8">
+						<h:outputLabel value="ORDINARIO FEDERAL"
+							style="font-weight: normal" />
+					</div>
+				</div>
+				<div class="row show-grid">
+					<div class="col-md-2">
+						<h:outputLabel value="Entidad: " />
+					</div>
+					<div class="col-md-8">
+						<h:outputLabel value="COMITÉ EJECUTIVO NACIONAL"
+							style="font-weight: normal" />
+					</div>
+				</div>
+			</div>
+			</section>
+
+			<!-- ////////////////////SELECCION DEL TIPO DE ESTADO Y FECHA//////////////////////////////////////////////////////////// -->
+			<h:panelGroup id="opcionesFechas">
+				<section>
+				<div class="row show-grid">
+					<div class="col-md-3">
+						<label><span class="obligatorio">#{messageSource['etiqueta_requerido']}
+						</span> <h:outputText value="Estado Financiero:" /> </label>
+						<p:selectOneMenu id="estadofinanciero" styleClass="form-control"
+							required="true"
+							requiredMessage="Estado Financiero: se necesita un valor."
+							process="@this"
+							value="#{mbEstadosFinancieros.tipoestadofinanciero}"
+							converter="javax.faces.Integer">
+							<f:selectItem itemLabel="#{messageSource['etiqueta_selecciona']}" />
+							<f:selectItems
+								value="#{mbEstadosFinancieros.listaEstadoFinanciero}" />
+							<p:ajax event="change" process="@this"
+								listener="#{mbEstadosFinancieros.cargaTipoFecha()}"
+								update="tipoFecha fechaInicial fechaFinal selectAnio @form selectAnioCompleto opcionesFechas selectMes generarHtml downloadXls downloadPdf opcionfechas"
+								onstart="PF('bloqContForm').block()"
+								onsuccess="PF('bloqContForm').unblock()" />
+						</p:selectOneMenu>
+					</div>
+					<!-- 		///////////////////////////////////////////     TIPO DE POSICION FINANCIERA ////////////////////////////////////////// -->
+					<div class="col-md-3">
+						<h:panelGroup id="muestraTipoPosicion"
+							rendered="#{mbEstadosFinancieros.muestraTipoPosicion}">
+							<label><span class="obligatorio">#{messageSource['etiqueta_requerido']}
+							</span> <h:outputText value="Tipo:" /> </label>
+							<p:selectOneMenu id="posicionTipo" styleClass="form-control"
+								required="true" requiredMessage="Tipo: se necesita un valor."
+								process="@this" value="#{mbEstadosFinancieros.tipoPosicion}"
+								converter="javax.faces.Integer">
+								<f:selectItem
+									itemLabel="#{messageSource['etiqueta_selecciona']}" />
+								<f:selectItems value="#{mbEstadosFinancieros.listaTipoEstado}" />
+								<p:ajax event="change" process="@this"
+									listener="#{mbEstadosFinancieros.cargaTipoFecha()}"
+									update="tipoFecha fechaInicial muestraFechaAl fechaFinal @form selectAnio opcionesFechas selectAnioCompleto opcionesFechas selectMes generarHtml downloadXls downloadPdf opcionfechas"
+									onstart="PF('bloqContForm').block()"
+									onsuccess="PF('bloqContForm').unblock()" />
+							</p:selectOneMenu>
+						</h:panelGroup>
+
+
+
+
+						<h:panelGroup id="opcionfechas"
+							rendered="#{mbEstadosFinancieros.muestraTipoFechas}">
+							<label><span class="obligatorio">#{messageSource['etiqueta_requerido']}
+							</span> <h:outputText value="Tipo fecha:" /></label>
+							<p:selectOneMenu id="tipoFecha" styleClass="form-control"
+								converter="javax.faces.Integer"
+								value="#{mbEstadosFinancieros.tipoFecha}" required="true"
+								requiredMessage="Campo Tipo Fecha: se necesita un valor."
+								disabled="#{mbEstadosFinancieros.combotipofecha}">
+								<f:selectItem
+									itemLabel="#{messageSource['etiqueta_selecciona']}" />
+								<f:selectItems value="#{mbEstadosFinancieros.listaTipoFecha}" />
+								<p:ajax event="change"
+									listener="#{mbEstadosFinancieros.activaFechaMensual()}"
+									update="selectAnio selectAnioCompleto generarHtml @form downloadXls downloadPdf"
+									onstart="PF('bloqContForm').block()"
+									onsuccess="PF('bloqContForm').unblock()" />
+								<p:ajax event="change" process="@this"
+									listener="#{mbEstadosFinancieros.determinaTipoFecha()}"
+									update="tipoFecha fechaInicial fechaFinal generarHtml @form downloadXls downloadPdf opcionesFechas"
+									onstart="PF('bloqContForm').block()"
+									onsuccess="PF('bloqContForm').unblock()" />
+							</p:selectOneMenu>
+						</h:panelGroup>
+					</div>
+					<div class="col-md-6">
+						<h:panelGroup id="muestraFechasDesdeHasta"
+							rendered="#{mbEstadosFinancieros.muestraFechasDesdeHasta}">
+							<div class="row">
+								<div class="col-md-2">
+									<label><span class="obligatorio">#{messageSource['etiqueta_requerido']}
+									</span></label>
+									<h:outputLabel for="fechaInicial" value=" Desde:" />
+								</div>
+								<div class="col-md-4">
+									<p:calendar id="fechaInicial"
+										value="#{mbEstadosFinancieros.fechaInicial}"
+										pattern="dd/MM/yyyy" required="true" locale="es"
+										maxdate="#{mbEstadosFinancieros.maxDate}"
+										disabled="#{mbEstadosFinancieros.combofechainicial}"
+										requiredMessage="Campo Desde: se necesita un valor."
+										autocomplete="off" onpaste="return false"
+										onkeypress="return false" onkeydown="return false">
+										<p:ajax event="dateSelect"
+											listener="#{mbEstadosFinancieros.restrictedDate()}"
+											update="fechaFinal @form"
+											onstart="PF('bloqContForm').block()"
+											onsuccess="PF('bloqContForm').unblock()" />
+									</p:calendar>
+
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-2">
+									<label><span class="obligatorio">#{messageSource['etiqueta_requerido']}
+									</span></label>
+									<h:outputLabel for="fechaFinal" value=" Hasta:" />
+								</div>
+								<div class="col-md-2">
+									<p:calendar id="fechaFinal" locale="es"
+										value="#{mbEstadosFinancieros.fechaFinal}"
+										pattern="dd/MM/yyyy" required="true"
+										mindate="#{mbEstadosFinancieros.minDate}"
+										maxdate="#{mbEstadosFinancieros.maxDate}"
+										requiredMessage="CAMPO HASTA: SE NECESITA UN VALOR."
+										disabled="#{mbEstadosFinancieros.combofechafinal}"
+										autocomplete="off" onpaste="return false"
+										onkeypress="return false" onkeydown="return false">
+										<p:ajax event="dateSelect"
+											listener="#{mbEstadosFinancieros.restrictedDate()}"
+											update="fechaFinal @form"
+											onstart="PF('bloqContForm').block()"
+											onsuccess="PF('bloqContForm').unblock()" />
+									</p:calendar>
+								</div>
+							</div>
+						</h:panelGroup>
+
+						<h:panelGroup id="muestraFechaAl"
+							rendered="#{mbEstadosFinancieros.muestraFechaAl}">
+							<div class="row">
+								<div class="col-md-3">
+									<label><span class="obligatorio">#{messageSource['etiqueta_requerido']}
+									</span></label>
+									<h:outputLabel for="fechaFinalAl" value=" Fecha al:" />
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-3">
+
+									<p:calendar id="fechaFinalAl" locale="es"
+										value="#{mbEstadosFinancieros.fechaFinalAl}"
+										pattern="dd/MM/yyyy" required="true"
+										maxdate="#{mbEstadosFinancieros.maxDate}"
+										requiredMessage="Campo Fecha al: se necesita un valor."
+										autocomplete="off" onpaste="return false"
+										onkeypress="return false" onkeydown="return false">
+										<p:ajax event="dateSelect"
+											listener="#{mbEstadosFinancieros.cargaMes()}"
+											update="fechaFinal @form"
+											onstart="PF('bloqContForm').block()"
+											onsuccess="PF('bloqContForm').unblock()" />
+									</p:calendar>
+									<p:message id="msgMFA" for="fechaFinalAl"
+										errorStyle="color:red" display="text" />
+								</div>
+							</div>
+						</h:panelGroup>
+
+
+						<h:panelGroup id="muestraFechasAnioMes"
+							rendered="#{mbEstadosFinancieros.muestraFechasAnioMes}">
+							<div class="row">
+								<div class="col-md-2">
+									<label><span class="obligatorio">#{messageSource['etiqueta_requerido']}
+									</span> <h:outputText
+											value="#{messageSource['etiqueta_anio']}&nbsp;&nbsp;" /> </label>
+								</div>
+								<div class="col-md-5">
+									<p:selectOneMenu id="selectAnio" required="true"
+										requiredMessage="#{messageSource['mensaje_validacion_datoRequerido']}"
+										styleClass="form-control"
+										value="#{mbEstadosFinancieros.anioSelect}">
+										<f:selectItem
+											itemLabel="#{messageSource['etiqueta_selecciona']}"
+											itemValue="" />
+										<f:selectItems value="#{mbEstadosFinancieros.listaAnio}" />
+										<p:ajax event="change" process="@this"
+											listener="#{mbEstadosFinancieros.cargaMes()}"
+											update="selectMes @form" onstart="PF('bloqContForm').block()"
+											onsuccess="PF('bloqContForm').unblock()" />
+									</p:selectOneMenu>
+									<p:message id="msgSM" for="selectAnio" errorStyle="color:red"
+										display="text" />
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-2">
+									<label><span class="obligatorio">#{messageSource['etiqueta_requerido']}
+									</span> <h:outputText
+											value="#{messageSource['etiqueta_mes']}&nbsp;&nbsp;" /> </label>
+								</div>
+								<div class="col-md-5">
+									<p:selectOneMenu id="selectMes" required="true"
+										requiredMessage="#{messageSource['mensaje_validacion_datoRequerido']}"
+										styleClass="form-control"
+										value="#{mbEstadosFinancieros.mesSelect}">
+										<f:selectItem
+											itemLabel="#{messageSource['etiqueta_selecciona']}"
+											itemValue="" />
+										<f:selectItems value="#{mbEstadosFinancieros.listaMes}" />
+										<p:ajax event="change" process="@this"
+											listener="#{mbEstadosFinancieros.determinaTipoFecha()}"
+											update="selectMes @form" onstart="PF('bloqContForm').block()"
+											onsuccess="PF('bloqContForm').unblock()" />
+									</p:selectOneMenu>
+									<p:message id="msgSA" for="selectMes" errorStyle="color:red"
+										display="text" />
+								</div>
+							</div>
+						</h:panelGroup>
+
+
+						<h:panelGroup id="muestraFechasAnuales"
+							rendered="#{mbEstadosFinancieros.muestraFechasAnuales}">
+							<div class="row">
+								<div class="col-md-4">
+									<label><span class="obligatorio">#{messageSource['etiqueta_requerido']}
+									</span> <h:outputText
+											value="#{messageSource['etiqueta_anio_completo']}" />
+									</label>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-6">
+									<p:selectOneMenu id="selectAnioCompleto" required="true"
+										requiredMessage="#{messageSource['mensaje_validacion_datoRequerido']}"
+										styleClass="form-control"
+										value="#{mbEstadosFinancieros.anioSelectCompleto}">
+										<f:selectItem
+											itemLabel="#{messageSource['etiqueta_selecciona']}"
+											itemValue="" />
+										<f:selectItems
+											value="#{mbEstadosFinancieros.listaAnioCompletos}" />
+										<p:ajax event="change" process="@this"
+											listener="#{mbEstadosFinancieros.determinaTipoFecha()}"
+											update="selectMes @form" onstart="PF('bloqContForm').block()"
+											onsuccess="PF('bloqContForm').unblock()" />
+									</p:selectOneMenu>
+									<p:message id="msgAC" for="selectAnioCompleto"
+										errorStyle="color:red" display="text" />
+								</div>
+							</div>
+						</h:panelGroup>
+					</div>
+				</div>
+				</section>
+
+			</h:panelGroup>
+
+			<section>
+			<div class="row show-grid">
+				<div class="col-md-4">
+					<div class="form-group">
+						<div class="text-center">
+							<p:commandButton id="generarHtml"
+								value="#{messageSource['etiqueta_get_html']}" ajax="false"
+								actionListener="#{mbEstadosFinancieros.generaListadoHtml()}"
+								process="@form" update="@form"
+								onstart="PF('bloqContForm').block()" styleClass="fa-file-pdf-o:hover"
+								onsuccess="PF('bloqContForm').unblock()" icon="ui-icon-document"
+								disabled="#{mbEstadosFinancieros.botonhtml}" action="estadoHTML"
+								onclick="form.target = '_blank'">
+<!-- 								<h:graphicImage name="img/ID.png" /> -->
+							</p:commandButton>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="form-group">
+						<div class="text-center">
+							<p:commandButton id="downloadXls"
+								disabled="#{mbEstadosFinancieros.botonxls}" ajax="false"
+								process="@form" update="@form"
+								onstart="PF('bloqContForm').block()"
+								onsuccess="PF('bloqContForm').unblock()"
+								value="#{messageSource['etiqueta_get_xls']}"
+								icon="ui-icon-document"
+								actionListener="#{mbEstadosFinancieros.getXLS()}">
+								<p:fileDownload value="#{mbEstadosFinancieros.streamXls}" />
+							</p:commandButton>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="form-group">
+						<div class="text-center">
+							<p:commandButton id="downloadPdf"
+								disabled="#{mbEstadosFinancieros.botonpdf}" ajax="false"
+								onstart="PF('bloqContForm').block()"
+								onsuccess="PF('bloqContForm').unblock()"
+								value="#{messageSource['etiqueta_get_pdf']}"
+								icon="ui-icon-document"
+								actionListener="#{mbEstadosFinancieros.getPDF()}">
+								<p:fileDownload value="#{mbEstadosFinancieros.streamPdf}" />
+							</p:commandButton>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			</section>
+
+
+			<!-- 			 <h:panelGroup id="tablas"
+				rendered="#{mbEstadosFinancieros.muestraHTMLtabla}">
+
+				<h:panelGroup id="muestraPosicionFechaHTML"
+					rendered="#{mbEstadosFinancieros.muestraPosicionFechaHTML}">
+					<p:dataTable id="muestraTablaPosicionAlaFechaEncabezado"
+						var="arregloCuentas"
+						value="#{mbEstadosFinancieros.dtoEstadofinanciero.cuentasFijas1}"
+						emptyMessage="#{messageSource['mensaje_general_emptyList']}">
+						<f:facet name="header" />
+						<p:columnGroup type="header">
+							<p:row>
+								<p:column colspan="12"
+									headerText="#{('ESTADO DE POSICION FINANCIERA POR FECHA '.concat(mbEstadosFinancieros.rangoFecha))}" />
+							</p:row>
+						</p:columnGroup>
+					</p:dataTable>
+
+					<div class="row">
+						<div class="col-md-6">
+
+
+							<p:dataTable id="muestraTablaPosicionAlaFechaActivo"
+								var="arregloCuentas"
+								value="#{mbEstadosFinancieros.dtoEstadofinanciero.cuentasFijas1}"
+								emptyMessage="#{messageSource['mensaje_general_emptyList']}">
+								<f:facet name="header" />
+								<p:columnGroup type="header">
+									<p:row>
+										<p:column
+											headerText="#{messageSource['etiqueta_descripcion_cuenta']}" />
+										<p:column headerText="#{messageSource['etiqueta_saldo']}" />
+										<p:column headerText="#{messageSource['etiqueta_total']}" />
+									</p:row>
+								</p:columnGroup>
+								<p:subTable var="arreglo"
+									value="#{mbEstadosFinancieros.dtoEstadofinanciero.arrayReporte}">
+									<f:facet name="header">
+										<h:outputText value="#{arregloCuentas.nombreCuenta}" />
+									</f:facet>
+									<p:column style="text-align: left"
+										styleClass="#{(arregloCuentas.tipoCuenta == arreglo.tipoCuenta)  ? null : 'rowInvis'}">
+										<h:outputText value="#{arreglo.descripcionCuenta}" />
+									</p:column>
+									<p:column style="text-align: right"
+										styleClass="#{(arregloCuentas.tipoCuenta == arreglo.tipoCuenta)  ? null : 'rowInvis'}">
+										<h:outputText value="#{arreglo.totalActualString}"
+											rendered="#{(arreglo.totalActualString=='0') ? 'false' : 'true'}">
+										</h:outputText>
+									</p:column>
+									<p:column style="text-align: right"
+										styleClass="#{(arregloCuentas.tipoCuenta == arreglo.tipoCuenta)  ? null : 'rowInvis'}">
+										<h:outputText value="#{arreglo.totalString}"
+											rendered="#{(arreglo.totalString=='0') ? 'false' : 'true'}">
+										</h:outputText>
+									</p:column>
+
+								</p:subTable>
+							</p:dataTable>
+
+						</div>
+						<div class="col-md-6">
+							<p:dataTable id="muestraTablaPosicionAlaFechaPasivo"
+								var="arregloCuentas"
+								value="#{mbEstadosFinancieros.dtoEstadofinanciero.cuentasFijas23}"
+								emptyMessage="#{messageSource['mensaje_general_emptyList']}">
+								<f:facet name="header" />
+								<p:columnGroup type="header">
+									<p:row>
+										<p:column
+											headerText="#{messageSource['etiqueta_descripcion_cuenta']}" />
+										<p:column headerText="#{messageSource['etiqueta_saldo']}" />
+										<p:column headerText="#{messageSource['etiqueta_total']}" />
+									</p:row>
+								</p:columnGroup>
+
+								<p:subTable var="arreglo"
+									value="#{mbEstadosFinancieros.dtoEstadofinanciero.arrayReporte}">
+									<f:facet name="header">
+										<h:outputText value="#{arregloCuentas.nombreCuenta}" />
+									</f:facet>
+									<p:column style="text-align: left"
+										styleClass="#{(arregloCuentas.tipoCuenta == arreglo.tipoCuenta)  ? null : 'rowInvis'}">
+										<h:outputText value="#{arreglo.descripcionCuenta}" />
+									</p:column>
+									<p:column style="text-align: right"
+										styleClass="#{(arregloCuentas.tipoCuenta == arreglo.tipoCuenta)  ? null : 'rowInvis'}">
+										<h:outputText value="#{arreglo.totalActualString}"
+											rendered="#{(arreglo.totalActualString=='0') ? 'false' : 'true'}">
+										</h:outputText>
+									</p:column>
+									<p:column style="text-align: right"
+										styleClass="#{(arregloCuentas.tipoCuenta == arreglo.tipoCuenta)  ? null : 'rowInvis'}">
+										<h:outputText value="#{arreglo.totalString}"
+											rendered="#{(arreglo.totalString=='0') ? 'false' : 'true'}">
+										</h:outputText>
+									</p:column>
+									<p:columnGroup type="footer">
+										<p:row
+											rendered="#{(arregloCuentas.tipoCuenta==2200000000)  ? 'true' : 'false'}">
+											<p:column footerText="TOTAL PASIVO: "
+												style="text-align:right" />
+											<p:column colspan="2"
+												footerText="#{mbEstadosFinancieros.pasivoString}"
+												style="text-align:right" />
+										</p:row>
+										<p:row
+											rendered="#{(arregloCuentas.tipoCuenta==3200000000)  ? 'true' : 'false'}">
+											<p:column footerText="TOTAL PATRIMONIO: "
+												style="text-align:right" />
+											<p:column colspan="2"
+												footerText="#{mbEstadosFinancieros.patrimonioString}"
+												style="text-align:right" />
+										</p:row>
+									</p:columnGroup>
+								</p:subTable>
+							</p:dataTable>
+						</div>
+					</div>
+					<p:dataTable id="muestraTablaPosicionAlaFechaResultados"
+						var="arregloCuentas"
+						value="#{mbEstadosFinancieros.dtoEstadofinanciero.cuentasFijas1}"
+						emptyMessage="#{messageSource['mensaje_general_emptyList']}">
+						<p:columnGroup type="footer">
+							<p:row>
+								<p:column resizable="false" colspan="6" rowspan="5"
+									footerText="TOTAL ACTIVO:" style="text-align:right" />
+								<p:column colspan="2" resizable="false"
+									footerText="#{mbEstadosFinancieros.dtoEstadofinanciero.cuentasFijas1[0].totalString}"
+									style="text-align:right" />
+								<p:column colspan="4" resizable="false"
+									footerText="TOTAL PASIVO MAS PATRIMONIO: "
+									style="text-align:right" />
+								<p:column colspan="2" resizable="false"
+									footerText="#{mbEstadosFinancieros.pasivoPatrimonioString}"
+									style="text-align:right" />
+							</p:row>
+						</p:columnGroup>
+					</p:dataTable>
+
+				</h:panelGroup>
+
+
+
+
+				<h:panelGroup id="muestraTablaEstadoActividades"
+					rendered="#{mbEstadosFinancieros.muestraTablaEstadoActividades}">
+					<p:dataTable id="muestraTablaEstadoActividadesTabla"
+						var="arregloCuentas"
+						value="#{mbEstadosFinancieros.dtoEstadofinanciero.cuentasFijas45}"
+						emptyMessage="#{messageSource['mensaje_general_emptyList']}">
+						<f:facet name="header" />
+						<p:columnGroup type="header">
+							<p:row>
+								<p:column colspan="6"
+									headerText="#{('ESTADO DE ACTIVIDADES '.concat(mbEstadosFinancieros.rangoFecha))}" />
+							</p:row>
+							<p:row>
+								<p:column
+									headerText="#{messageSource['etiqueta_descripcion_cuenta']}" />
+								<p:column headerText="#{messageSource['etiqueta_total']}" />
+								<p:column
+									headerText="#{messageSource['etiqueta_total_anterior']}" />
+								<p:column headerText="#{messageSource['etiqueta_variacion']}" />
+							</p:row>
+						</p:columnGroup>
+						<p:subTable var="arreglo"
+							value="#{mbEstadosFinancieros.dtoEstadofinanciero.arrayReporteActividades}">
+							<f:facet name="header">
+								<h:outputText value="#{arregloCuentas.nombreCuenta}" />
+							</f:facet>
+							<p:column
+								style="#{(arreglo.tipoCuenta%100000000==0)  ? 'background-color: #DEDECE ; text-align: left' : 'text-align: left'}"
+								styleClass="#{((arreglo.tipoCuenta>arregloCuentas.tipoCuenta)and((arregloCuentas.tipoCuenta+1000000000)>arreglo.tipoCuenta)) ? null : 'rowInvis'}">
+								<h:outputText value="#{arreglo.descripcionCuenta}" />
+							</p:column>
+							<p:column
+								style="#{(arreglo.tipoCuenta%100000000==0)  ? 'background-color: #DEDECE ; text-align: right' : 'text-align: right'}"
+								styleClass="#{((arreglo.tipoCuenta>arregloCuentas.tipoCuenta)and((arregloCuentas.tipoCuenta+1000000000)>arreglo.tipoCuenta)) ? null : 'rowInvis'}">
+								<h:outputText value="#{arreglo.totalActualString}"
+									rendered="#{(arreglo.totalActualString=='0') ? 'false' : 'true'}">
+								</h:outputText>
+							</p:column>
+							<p:column
+								style="#{(arreglo.tipoCuenta%100000000==0)  ? 'background-color: #DEDECE ; text-align: right' : 'text-align: right'}"
+								styleClass="#{((arreglo.tipoCuenta>arregloCuentas.tipoCuenta)and((arregloCuentas.tipoCuenta+1000000000)>arreglo.tipoCuenta)) ? null : 'rowInvis'}">
+								<h:outputText value="#{arreglo.totalAnteriorString}"
+									rendered="#{(arreglo.totalAnteriorString=='0') ? 'false' : 'true'}">
+								</h:outputText>
+							</p:column>
+							<p:column
+								style="#{(arreglo.tipoCuenta%100000000==0)  ? 'background-color: #DEDECE ; text-align: right' : 'text-align: right'}"
+								styleClass="#{((arreglo.tipoCuenta>arregloCuentas.tipoCuenta)and((arregloCuentas.tipoCuenta+1000000000)>arreglo.tipoCuenta)) ? null : 'rowInvis'}">
+								<h:outputText value="#{arreglo.variacionString}"
+									rendered="#{(arreglo.variacionString=='0') ? 'false' : 'true'}">
+								</h:outputText>
+							</p:column>
+							<p:columnGroup type="footer">
+								<p:row
+									rendered="#{(arregloCuentas.tipoCuenta==4000000000)  ? 'true' : 'false'}">
+									<p:column footerText="TOTAL INGRESOS: "
+										style="text-align:right" />
+									<p:column footerText="#{arregloCuentas.totalActualString}"
+										style="text-align:right" />
+									<p:column footerText="#{arregloCuentas.totalAnteriorString}"
+										style="text-align:right" />
+									<p:column footerText="#{arregloCuentas.variacionString}"
+										style="text-align:right" />
+								</p:row>
+								<p:row
+									rendered="#{(arregloCuentas.tipoCuenta==5000000000)  ? 'true' : 'false'}">
+									<p:column footerText="TOTAL EGRESOS: " style="text-align:right" />
+									<p:column footerText="#{arregloCuentas.totalActualString}"
+										style="text-align:right" />
+									<p:column footerText="#{arregloCuentas.totalAnteriorString}"
+										style="text-align:right" />
+									<p:column footerText="#{arregloCuentas.variacionString}"
+										style="text-align:right" />
+								</p:row>
+							</p:columnGroup>
+						</p:subTable>
+						<p:columnGroup type="footer">
+							<p:row>
+								<p:column
+									footerText="#{mbEstadosFinancieros.superavit.descripcionCuenta}" />
+								<p:column colspan="1"
+									footerText="#{mbEstadosFinancieros.superavit.totalActualString}"
+									style="text-align:right" />
+								<p:column colspan="1"
+									footerText="#{mbEstadosFinancieros.superavit.totalAnteriorString}"
+									style="text-align:right" />
+								<p:column colspan="1"
+									footerText="#{mbEstadosFinancieros.superavit.variacionString}"
+									style="text-align:right" />
+							</p:row>
+						</p:columnGroup>
+
+					</p:dataTable>
+
+				</h:panelGroup>
+
+
+				<h:panelGroup id="muestraTablaPosicionComparativa"
+					rendered="#{mbEstadosFinancieros.muestraTablaPosicionComparativa}">
+					<p:dataTable id="muestraTablaPosicionComparativaTabla"
+						var="arregloCuentas"
+						value="#{mbEstadosFinancieros.dtoEstadofinanciero.cuentasFijas123Posicion}"
+						emptyMessage="#{messageSource['mensaje_general_emptyList']}">
+						<f:facet name="header" />
+						<p:columnGroup type="header">
+							<p:row>
+								<p:column colspan="6"
+									headerText="#{('POSICION FINANCIERA COMPARATIVA '.concat(mbEstadosFinancieros.rangoFecha))}" />
+							</p:row>
+							<p:row>
+								<p:column
+									headerText="#{messageSource['etiqueta_descripcion_cuenta']}" />
+								<p:column headerText="#{messageSource['etiqueta_total']}" />
+								<p:column
+									headerText="#{messageSource['etiqueta_total_anterior']}" />
+								<p:column headerText="#{messageSource['etiqueta_variacion']}" />
+							</p:row>
+						</p:columnGroup>
+						<p:subTable var="arreglo"
+							value="#{mbEstadosFinancieros.dtoEstadofinanciero.arrayReportePosicion}">
+							<f:facet name="header">
+								<h:outputText value="#{arregloCuentas.nombreCuenta}" />
+							</f:facet>
+							<p:column style="text-align: left"
+								styleClass="#{(arregloCuentas.tipoCuenta == arreglo.tipoCuenta)  ? null : 'rowInvis'}">
+								<h:outputText value="#{arreglo.descripcionCuenta}" />
+							</p:column>
+							<p:column style="text-align: right"
+								styleClass="#{(arregloCuentas.tipoCuenta == arreglo.tipoCuenta)  ? null : 'rowInvis'}">
+								<h:outputText value="#{arreglo.totalActualString}"
+									rendered="#{(arreglo.totalActualString=='0') ? 'false' : 'true'}">
+								</h:outputText>
+							</p:column>
+							<p:column style="text-align: right"
+								styleClass="#{(arregloCuentas.tipoCuenta == arreglo.tipoCuenta)  ? null : 'rowInvis'}">
+								<h:outputText value="#{arreglo.totalAnteriorString}"
+									rendered="#{(arreglo.totalAnteriorString=='0') ? 'false' : 'true'}">
+								</h:outputText>
+							</p:column>
+							<p:column style="text-align: right"
+								styleClass="#{(arregloCuentas.tipoCuenta == arreglo.tipoCuenta)  ? null : 'rowInvis'}">
+								<h:outputText value="#{arreglo.variacionString}"
+									rendered="#{(arreglo.variacionString=='0') ? 'false' : 'true'}">
+								</h:outputText>
+							</p:column>
+							<p:columnGroup type="footer">
+								<p:row
+									rendered="#{((arregloCuentas.tipoCuenta==1000000000) or (arregloCuentas.tipoCuenta==2000000000) or (arregloCuentas.tipoCuenta==3000000000))  ? 'false' : 'true'}">
+									<p:column
+										footerText="#{('TOTAL '.concat(arregloCuentas.nombreCuenta))}"
+										style="text-align:left" />
+									<p:column footerText="#{arregloCuentas.totalActualString}"
+										style="text-align:right" />
+									<p:column footerText="#{arregloCuentas.totalAnteriorString}"
+										style="text-align:right" />
+									<p:column footerText="#{arregloCuentas.variacionString}"
+										style="text-align:right" />
+								</p:row>
+								<p:row
+									rendered="#{(arregloCuentas.tipoCuenta==1200000000)  ? 'true' : 'false'}">
+									<p:column footerText="TOTAL ACTIVO: " style="text-align:right" />
+									<p:column colspan="1"
+										footerText="#{mbEstadosFinancieros.totalActivo.totalActualString}"
+										style="text-align:right" />
+									<p:column colspan="1"
+										footerText="#{mbEstadosFinancieros.totalActivo.totalAnteriorString}"
+										style="text-align:right" />
+									<p:column colspan="1"
+										footerText="#{mbEstadosFinancieros.totalActivo.variacionString}"
+										style="text-align:right" />
+								</p:row>
+								<p:row
+									rendered="#{(arregloCuentas.tipoCuenta==2200000000)  ? 'true' : 'false'}">
+									<p:column footerText="TOTAL PASIVO: " style="text-align:right" />
+									<p:column colspan="1"
+										footerText="#{mbEstadosFinancieros.totalPasivo.totalActualString}"
+										style="text-align:right" />
+									<p:column colspan="1"
+										footerText="#{mbEstadosFinancieros.totalPasivo.totalAnteriorString}"
+										style="text-align:right" />
+									<p:column colspan="1"
+										footerText="#{mbEstadosFinancieros.totalPasivo.variacionString}"
+										style="text-align:right" />
+								</p:row>
+								<p:row
+									rendered="#{(arregloCuentas.tipoCuenta==3200000000)  ? 'true' : 'false'}">
+									<p:column footerText="TOTAL PATRIMONIO: "
+										style="text-align: right " />
+									<p:column colspan="1"
+										footerText="#{mbEstadosFinancieros.totalPatrimonio.totalActualString}"
+										style="text-align: right" />
+									<p:column colspan="1"
+										footerText="#{mbEstadosFinancieros.totalPatrimonio.totalAnteriorString}"
+										style="text-align: right" />
+									<p:column colspan="1"
+										footerText="#{mbEstadosFinancieros.totalPatrimonio.variacionString}"
+										style="text-align: right" />
+								</p:row>
+							</p:columnGroup>
+						</p:subTable>
+						<p:columnGroup type="footer">
+							<p:row>
+								<p:column
+									footerText="#{mbEstadosFinancieros.pasivoPatrimonioPosicion.descripcionCuenta}" />
+								<p:column colspan="1"
+									footerText="#{mbEstadosFinancieros.pasivoPatrimonioPosicion.totalActualString}"
+									style="text-align:right" />
+								<p:column colspan="1"
+									footerText="#{mbEstadosFinancieros.pasivoPatrimonioPosicion.totalAnteriorString}"
+									style="text-align:right" />
+								<p:column colspan="1"
+									footerText="#{mbEstadosFinancieros.pasivoPatrimonioPosicion.variacionString}"
+									style="text-align:right" />
+							</p:row>
+						</p:columnGroup>
+
+					</p:dataTable>
+
+				</h:panelGroup>
+
+			</h:panelGroup>  -->
+
+		</h:form>
+	</ui:define>
+</ui:composition>

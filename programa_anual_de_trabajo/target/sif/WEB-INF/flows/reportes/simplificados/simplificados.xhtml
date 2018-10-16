@@ -1,0 +1,656 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:sec="http://www.springframework.org/security/tags"
+	xmlns:sif="http://java.sun.com/jsf/composite/components"
+	template="/templates/template.xhtml">
+
+	<ui:define name="CONTENT">
+		<style>
+.corrigePanel {
+	border: 0px solid #a8a8a8;
+	background: none;
+}
+
+.rowInvis {
+	display: none;
+}
+.backPanel{
+	background: #D0D0D0;
+}
+</style>
+	<script type="text/javascript">
+		function start() {
+		    PF('statusDialog').show();
+		}
+		 
+		function stop() {
+		    PF('statusDialog').hide();
+		   
+		}
+		
+		function apretarBoton(xhr, status, args) {
+			if (args.encontroResultados)
+				document.getElementById('descarga:getFile').click();
+			else
+				scrollTo(0, 0);
+
+			console.log(args.encontroResultados);
+		}
+
+		function iniciaSondeoReporte() 
+		{
+			segundos = new Date();
+			tiempoTranscurrido = null;
+			start();
+						
+		 	varSondeo = setInterval(sondea, 1000);
+		}
+
+		function sondeoReporte(xhr, status, args) {
+			diferencia = ((new Date()) - segundos) / 1000;
+
+			console.log(diferencia);
+			
+			if (!args.termino)
+				return;
+			
+			clearInterval(varSondeo);
+			stop();
+			
+			if (!args.encontroResultados)
+				window.scrollTo(0, 0);
+			
+			document.getElementById('descarga:getPdfFile').click();
+		}
+	</script> 
+<!-- <script type="text/javascript">
+	function ocultaTabla(){
+		   if(document.getElementById) 
+			   document.getElementById("dihtml").style.visibility = 'hidden'
+		}
+</script> -->
+	
+	 
+	<h:form id="diarioMayorForm" enctype="multipart/form-data">
+	<p:dialog modal="true" widgetVar="statusDialog" draggable="false" closable="false" resizable="false">
+				<h:graphicImage library="img" name="loader.gif" width="200"  style="vertical-align: middle;horizontal-align: middle;"/>
+				<!-- <h:outputText value="#{messageSource['etiqueta_procesando_info']}" style="white-space: nowrap;" /> -->
+			</p:dialog>
+		<!-- BLOCKUI -->
+		<pe:blockUI id="bloqContForm" target="diarioMayorForm" content="blockUIContent" widgetVar="bloqContForm" />
+		<!-- BLOCKUICONTENT -->
+		<h:panelGrid id="blockUIContent" columns="2" style="display:none;">
+			<h:graphicImage library="img" name="loader.gif" width="200" />
+			<h:outputText value="" style="white-space: nowrap;" />
+		</h:panelGrid>
+		<!-- FIN BLOCKUICONTENT -->
+			<!-- FIN BLOCKUICONTENT -->
+		<h:outputScript library="js" name="calendar_es.js" />
+		<div class="card page-title-box">
+		  <div class="left">
+		    <h2>#{messageSource['etiqueta_simplificado']}</h2>
+		  </div>
+		  <div class="right">
+		    <ul class="action-list">
+		      
+		      <li><a href="#">#{messageSource['etiqueta_captura']}</a></li>
+		      <li><a href="#" class="active">#{messageSource['etiqueta_consulta']}</a></li>
+		      <li><a href="#">#{messageSource['etiqueta_modifica']}</a></li>
+		    </ul>
+		  </div>
+		</div>
+		<div>
+			<p:messages id="mensajes" for="mensajes" autoUpdate="true" closable="true" showDetail="true" escape="true" />
+		</div>
+		<div class="ui-g">
+			<div class="ui-g-12 ui-g-nopad">
+				
+					<small> #{messageSource['etiqueta_requerido_1']} <span class="info-ine">*</span>
+						#{messageSource['etiqueta_requerido_2']}
+					</small>
+				
+			</div>
+		</div>
+		
+		<div class="ui-g">
+			<div class="ui-g-12 ui-g-nopad">
+				<div class="card card-w-title">
+					<h1>
+						<h:outputText value="#{messageSource['etiqueta_infoPartido']}" />
+					</h1>
+		
+<!-- 			<sec:authorize access="hasAnyRole('ROLE_SIF.SUPERVISORFISCALIZACION.OC')"> -->
+<!-- 			<a href="#{request.contextPath}/app/reportes/mayorMasivo">Masivo</a><br/> -->
+<!-- 			</sec:authorize> -->
+			<div class="ui-g ui-fluid">	
+			<div class="ui-g-12 ui-md-4 ">
+					<div class="form-group">
+					<h:outputLabel value="#{messageSource['etiqueta_nombre_so']}"/>
+				</div></div>
+				<div class="ui-g-12 ui-md-6 ">
+					<div class="form-group">
+					<h:outputLabel value="#{mbReporteSimplificado.so}" />
+				</div>
+			</div>
+		<!-- 	<div class="row show-grid">
+				<div class="col-md-2">
+					<h:outputLabel value="#{messageSource['etiqueta_rfc']}" />
+				</div>
+				<div class="col-md-10">
+					<h:outputLabel value="#{mbReporteSimplificado.rfc}" />
+				</div>
+			</div> -->
+			<div class="ui-g-12 ui-md-4 ">
+					<div class="form-group">
+					<h:outputLabel value="#{messageSource['etiqueta_ambito_diario']}" />
+				</div></div>
+				<div class="ui-g-12 ui-md-6 ">
+					<div class="form-group">
+					<h:outputLabel value="#{mbReporteSimplificado.ambito}" />
+				</div>
+			</div>
+			
+			<div class="ui-g-12 ui-md-4 ">
+					<div class="form-group">
+					<h:outputLabel value="Comité:" />
+				</div></div>
+				<div class="ui-g-12 ui-md-6 ">
+					<div class="form-group">
+					<h:outputLabel value="#{mbReporteSimplificado.usuarioLogin.getComite()}" />
+				</div>
+			</div>
+						
+			<div class="ui-g-12 ui-md-4 ">
+					<div class="form-group">
+					<h:outputLabel value="#{messageSource['etiqueta_entidad']}" />
+				</div></div>
+				<div class="ui-g-12 ui-md-6 ">
+					<div class="form-group">
+					<h:outputLabel value="#{mbReporteSimplificado.entidad}" />
+				</div>
+			</div>
+		</div>
+		</div>
+	</div>
+</div>
+		
+		<div class="ui-g">
+			<div class="ui-g-12 ui-md-12 ui-g-nopad">
+					<div class="card card-w-title">
+
+						<div class="ui-g ui-fluid">
+							<div class="ui-g-12 ui-md-6 ui-lg-4">
+								<div class="form-group">
+									<span class="obligatorio">*</span><label>#{messageSource['etiqueta_tipo_reporte']}:</label>
+									<p:selectOneMenu id="tipoReporte" required="true"
+										requiredMessage="Dato requerido."
+										value="#{mbReporteSimplificado.tipoReporteSelect}">
+										<f:selectItem itemLabel="SELECCIONA" noSelectionOption="true" />
+										<f:selectItems
+											value="#{mbReporteSimplificado.tipoReporteList}" />
+										<p:ajax event="change" onstart="start()" onsuccess="stop()"
+											update="@form"
+											listener="#{mbReporteSimplificado.renderTipoReportSection()}" />
+									</p:selectOneMenu>
+								</div>
+							</div>
+						</div>
+
+						<div class="ui-g ui-fluid">
+							<div class="ui-g-12 ui-md-6 ui-lg-4">
+								<div class="form-group">
+									<span class="obligatorio">*</span><label>Año:</label>
+									<p:selectOneMenu id="anio" required="true" defaultOption="true"
+										requiredMessage="Dato requerido."
+										value="#{mbReporteSimplificado.anioSelect}"
+										disabled="#{!mbReporteSimplificado.activarAnio}">
+										<f:selectItem itemLabel="SELECCIONA" noSelectionOption="true" />
+										<f:selectItems value="#{mbReporteSimplificado.listaAnio}" />
+										<p:ajax event="change" update="@form"
+											listener="#{mbReporteSimplificado.limpiarSeleccionesParaFechas()}"
+											onstart="start()" onsuccess="stop()" />
+									</p:selectOneMenu>
+								</div>
+							</div>
+						</div>
+
+						<div class="ui-g ui-fluid">
+							<div class="ui-g-12 ui-md-6 ui-lg-4">
+								<span class="obligatorio">*</span><label>#{messageSource['etiqueta_tipo_fecha']}:</label>
+								<p:selectOneMenu id="tipoFechaDiario" required="true"
+									requiredMessage="#{messageSource['javax.faces.component.UISelectOne.INVALID']}"
+									disabled="#{!mbReporteSimplificado.activarSeleccionFecha}"
+									value="#{mbReporteSimplificado.tipoFecha}">
+									<f:selectItem itemLabel="SELECCIONA" noSelectionOption="true" />
+									<f:selectItems value="#{mbReporteSimplificado.tiposFecha}" />
+									<p:ajax event="change" update="@form" listener="#{mbReporteSimplificado.setPeriodicidad()}"
+											onstart="PF('bloqContForm').block()" onsuccess="PF('bloqContForm').unblock()"/>
+								</p:selectOneMenu>
+
+								<p:message for="tipoFechaDiario" errorStyle="color:red"
+									display="text" />
+							</div>
+						</div>
+
+						<div class="ui-g ui-fluid">
+							<div class="ui-g-12 ui-md-6 ui-lg-4">
+								<div class="form-group">
+									<span class="obligatorio">*</span><label>#{messageSource['etiqueta_tipo_periodo']}:</label>
+									<p:selectOneMenu id="tipoPeriodicidad" required="true"
+										requiredMessage="Dato requerido."
+										disabled="#{!mbReporteSimplificado.activarPeriodicidad}"
+										value="#{mbReporteSimplificado.tipoPeriodo}"
+										itemsValue="#{mbReporteSimplificado.tiposPeriodo}">
+										<f:selectItem itemLabel="SELECCIONA" noSelectionOption="true" />
+										<f:selectItems value="#{mbReporteSimplificado.tiposPeriodo}" />
+										<p:ajax event="change" update="@form" listener="#{mbReporteSimplificado.renderPeriodo()}"
+										        onstart="PF('bloqContForm').block()" onsuccess="PF('bloqContForm').unblock()"/>
+									</p:selectOneMenu>
+								</div>
+							</div>
+							<!-- <c:if
+								test="#{mbReporteSimplificado.seleccion eq mbReporteSimplificado.anual and mbReporteSimplificado.tieneCierre}">
+								<div class="ui-g-12 ui-md-6 ui-lg-4">
+									<div class="form-group">
+										<span class="obligatorio">*</span><label>#{messageSource['etiqueta_tipo_cierre']}:</label>
+										<p:selectOneMenu id="tipoPeriodicidad2" required="true"
+											requiredMessage="Dato requerido."
+											value="#{mbReporteSimplificado.tipoCierre}">
+											<f:selectItem itemLabel="SELECCIONA" noSelectionOption="true" />
+											<f:selectItem itemLabel="SIN CIERRE" itemValue="0" />
+											<f:selectItem itemLabel="CON CIERRE" itemValue="1" />
+											<c:if test="#{mbReporteSimplificado.tipoReporteSelect == 1}">
+												<f:selectItem itemLabel="SOLO CIERRE" itemValue="2" />
+											</c:if>
+											<p:ajax event="change" listener="#{mbReporteSimplificado.seleccionoCierre()}" update="@form"
+													onstart="PF('bloqContForm').block()" onsuccess="PF('bloqContForm').unblock()"/>
+										</p:selectOneMenu>
+
+										<p:message for="tipoPeriodicidad2" errorStyle="color:red"
+											severity="error" />
+									</div>
+								</div>
+							</c:if> -->
+						</div>
+
+						<div class="ui-g ui-fluid">
+							<c:choose>
+								<c:when
+									test="#{mbReporteSimplificado.seleccion eq mbReporteSimplificado.fechas}">
+									<div class="ui-g-4 ui-md-4 ui-lg-4">
+										<sif:componenteCalendar calendarId="fechaDMDesde"
+											required="true"
+											requiredMessage="#{messageSource['javax.faces.component.UISelectOne.INVALID']}"
+											labelText="Fecha inicio"
+											value="#{mbReporteSimplificado.dateDMDesde}"
+											minDate="#{mbReporteSimplificado.fechaMinimaInicio}"
+											maxDate="#{mbReporteSimplificado.fechaMaxima}"
+											ajaxDateSelectCallback="#{mbReporteSimplificado.actualizaFechas()}"
+											ajaxDateSelectUpdate="@form" />
+									</div>
+									<div class="ui-g-4 ui-md-4 ui-lg-4">
+										<h:outputLabel value="*Fecha fin:" />
+										<p:calendar id="fechaDMHasta" required="true"
+											requiredMessage="#{messageSource['javax.faces.component.UISelectOne.INVALID']}"
+											value="#{mbReporteSimplificado.dateDMHasta}"
+											mindate="#{mbReporteSimplificado.fechaMinimaFin}"
+											maxdate="#{mbReporteSimplificado.fechaMaxima}" locale="es"
+											navigator="true"
+											disabled="#{!mbReporteSimplificado.renderizaFechasFin}"
+											pattern="dd/MM/yyyy">
+											<p:ajax event="dateSelect" onstart="PF('bloqContForm').block()" onsuccess="PF('bloqContForm').unblock()"/>
+										</p:calendar>
+									</div>
+								</c:when>
+								<c:when
+									test="#{mbReporteSimplificado.seleccion eq mbReporteSimplificado.mensual}">
+									<div class="ui-g-4 ui-md-4 ui-lg-4">
+										<span class="obligatorio">*</span><label>Mes inicio:</label>
+										<p:selectOneMenu id="mesInicio" required="true"
+											requiredMessage="#{messageSource['javax.faces.component.UISelectOne.INVALID']}"
+											value="#{mbReporteSimplificado.mesInicio}">
+											<f:selectItem itemLabel="SELECCIONA" noSelectionOption="true" />
+											<f:selectItems value="#{mbReporteSimplificado.mesesInicio}" />
+											<p:ajax event="change" listener="#{mbReporteSimplificado.actualizaPeriodos(1)}" update="@form"
+													onstart="PF('bloqContForm').block()" onsuccess="PF('bloqContForm').unblock()"/>
+										</p:selectOneMenu>
+										<p:message for="mesInicio" errorStyle="color:red"
+											display="text" />
+									</div>
+									<div class="ui-g-4 ui-md-4 ui-lg-4">
+										<span class="obligatorio">*</span><label>Mes fin:</label>
+										<p:selectOneMenu id="mesFin" required="true"
+											requiredMessage="#{messageSource['javax.faces.component.UISelectOne.INVALID']}"
+											value="#{mbReporteSimplificado.mesFin}"
+											disabled="#{!mbReporteSimplificado.renderizaMesesFin}">
+											<f:selectItem itemLabel="SELECCIONA" noSelectionOption="true" />
+											<f:selectItems value="#{mbReporteSimplificado.mesesFin}" />
+											
+											<p:ajax event="change" update="@form" onstart="PF('bloqContForm').block()" onsuccess="PF('bloqContForm').unblock()"/>
+										</p:selectOneMenu>
+										<p:message for="mesFin" errorStyle="color:red" display="text" />
+									</div>
+								</c:when>
+								<c:when
+									test="#{mbReporteSimplificado.seleccion eq mbReporteSimplificado.trimestral}">
+									<div class="ui-g-4 ui-md-4 ui-lg-4">
+										<div style="display: block;">
+											<span class="obligatorio">*</span><label>Trimestre
+												inicio:</label>
+										</div>
+										<p:selectOneMenu id="trimestreInicio" required="true"
+											requiredMessage="#{messageSource['javax.faces.component.UISelectOne.INVALID']}"
+											value="#{mbReporteSimplificado.trimestreInicio}">
+											<f:selectItem itemLabel="SELECCIONA" noSelectionOption="true" />
+											<f:selectItems
+												value="#{mbReporteSimplificado.trimestresInicio}" />
+											<p:ajax event="change"
+												listener="#{mbReporteSimplificado.actualizaPeriodos(2)}"
+												update="@form" onstart="PF('bloqContForm').block()" onsuccess="PF('bloqContForm').unblock()"/>
+										</p:selectOneMenu>
+										<p:message for="trimestreInicio" errorStyle="color:red"
+											display="text" />
+									</div>
+									<div class="ui-g-4 ui-md-4 ui-lg-4">
+										<div style="display: block;">
+											<span class="obligatorio">*</span><label>Trimestre
+												fin:</label>
+										</div>
+										<p:selectOneMenu id="trimestreFin" required="true"
+											requiredMessage="#{messageSource['javax.faces.component.UISelectOne.INVALID']}"
+											value="#{mbReporteSimplificado.trimestreFin}"
+											disabled="#{!mbReporteSimplificado.renderizaTrimestresFin}">
+											<f:selectItem itemLabel="SELECCIONA" noSelectionOption="true" />
+											<f:selectItems value="#{mbReporteSimplificado.trimestresFin}" />
+											<p:ajax event="change" update="@form"
+													onstart="PF('bloqContForm').block()" onsuccess="PF('bloqContForm').unblock()"/>
+										</p:selectOneMenu>
+										<p:message for="trimestreFin" errorStyle="color:red"
+											display="text" />
+									</div>
+								</c:when>
+							</c:choose>
+						</div>
+					</div>
+				</div>
+		</div>
+		
+		<c:choose>
+			<c:when test="#{mbReporteSimplificado.renderDiarioBolean}">
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-12 ui-g-nopad">
+						<div style="background-color: #96E1FC;">
+							<h:outputLabel value="Selecciona las opciones para generar el reporte considerando tipos o subtipos de pólizas en específico"/>
+						</div>
+					
+						<div class="card card-w-title">	
+							<div class="ui-g ui-fluid">	
+								<div class="ui-g-12 ui-md-4">
+									<div class="form-group ui-g-12 ui-md-6 ui-lg-8">
+										<h:outputLabel value="Tipo de póliza: " style="width:450px" />
+										
+						 				<p:selectManyCheckbox id="seleccionTiposPoliza"  layout="grid" columns="1"  
+						 					 				  value="#{mbReporteSimplificado.tiposSeleccionados}"
+						 					 				  rendered="#{mbReporteSimplificado.tipoReporteSelect == 1}">
+						 					<c:if test="#{mbReporteSimplificado.inicioEtapa(1)}">
+							 					<f:selectItem itemLabel="NORMAL" itemValue="1"/>
+							 				</c:if>
+							 				
+						 					<c:if test="#{mbReporteSimplificado.inicioEtapa(24)}">
+						 						<f:selectItem itemLabel="CIERRE ANUAL" itemValue="24" itemDisabled="#{mbReporteSimplificado.cierreHabilitado('24')}"/>
+							 				</c:if>
+
+					 						<c:choose>
+					 							<c:when test="#{mbReporteSimplificado.anioSelect le 2016}">		
+								 					<c:if test="#{mbReporteSimplificado.inicioEtapa(4)}">
+									 					<f:selectItem itemLabel="PRIMER AJUSTE" itemValue="4"/>
+									 				</c:if>
+		
+								 					<c:if test="#{mbReporteSimplificado.inicioEtapa(33)}">
+							 							<f:selectItem itemLabel="PRIMER AJUSTE-CIERRE ANUAL" itemValue="33" itemDisabled="#{mbReporteSimplificado.cierreHabilitado('33')}"/>
+									 				</c:if>
+		
+								 					<c:if test="#{mbReporteSimplificado.inicioEtapa(12)}">
+									 					<f:selectItem itemLabel="SEGUNDO AJUSTE" itemValue="12"/>
+									 				</c:if>
+		
+								 					<c:if test="#{mbReporteSimplificado.inicioEtapa(34)}">
+								 						<f:selectItem itemLabel="SEGUNDO AJUSTE-CIERRE ANUAL" itemValue="34" itemDisabled="#{mbReporteSimplificado.cierreHabilitado('34')}"/>
+									 				</c:if>
+									 			</c:when>
+									 			<c:otherwise>		
+								 					<c:if test="#{mbReporteSimplificado.inicioEtapa(4)}">
+									 					<f:selectItem itemLabel="PRIMERA CORRECCIÓN" itemValue="4"/>
+									 				</c:if>
+		
+								 					<c:if test="#{mbReporteSimplificado.inicioEtapa(33)}">
+							 							<f:selectItem itemLabel="PRIMERA CORRECCIÓN-CIERRE ANUAL" itemValue="33" itemDisabled="#{mbReporteSimplificado.cierreHabilitado('33')}"/>
+									 				</c:if>
+		
+								 					<c:if test="#{mbReporteSimplificado.inicioEtapa(12)}">
+									 					<f:selectItem itemLabel="SEGUNDA CORRECCIÓN" itemValue="12"/>
+									 				</c:if>
+		
+								 					<c:if test="#{mbReporteSimplificado.inicioEtapa(34)}">
+								 						<f:selectItem itemLabel="SEGUNDA CORRECCIÓN-CIERRE ANUAL" itemValue="34" itemDisabled="#{mbReporteSimplificado.cierreHabilitado('34')}"/>
+									 				</c:if>
+									 			</c:otherwise>
+								 			</c:choose>
+								 				
+							 				<p:ajax event="change" update="seleccionTiposPoliza" onstart="PF('bloqContForm').block()" onsuccess="PF('bloqContForm').unblock()"/>
+    									</p:selectManyCheckbox>
+									</div>
+																
+									<div class="form-group ui-g-12 ui-md-6 ui-lg-4">
+										<h:outputLabel value="Subtipo de póliza: " style="width:450px" />
+							 				<p:selectManyCheckbox id="basic"  layout="grid" columns="1" value="#{mbReporteSimplificado.opcionesSeleccionadas}" rendered="#{mbReporteSimplificado.tipoReporteSelect == 1}">
+							 					<c:if test="#{mbReporteSimplificado.anioSelect le 2016}">
+							 						<f:selectItem itemLabel="APERTURA " itemValue="4" />
+							 					</c:if>
+							 										 					
+						        				<f:selectItem itemLabel="DR" itemValue="1"/>
+						        				<f:selectItem itemLabel="IG" itemValue="2"/>
+						        				<f:selectItem itemLabel="EG" itemValue="3"/>
+						        				
+							 					<c:if test="#{mbReporteSimplificado.anioSelect ge 2017}">
+							        				<f:selectItem itemLabel="AJUSTE" itemValue="6"/>
+							        				<f:selectItem itemLabel="RECLASIFICACIÓN" itemValue="5"/>
+							        			</c:if>
+							        			
+												<c:if test="#{!mbReporteSimplificado.esCDE()}">
+							        				<f:selectItem itemLabel="TSP" itemValue="7"/>
+							        				<f:selectItem itemLabel="TSC" itemValue="8"/>
+							        			</c:if>
+							        			
+					        					<p:ajax update="@form" onstart="PF('bloqContForm').block()" onsuccess="PF('bloqContForm').unblock()"/>
+	    									</p:selectManyCheckbox>
+	    							</div>
+	    						</div>
+	   	    				</div>
+	   	    			</div>
+	   	    		</div>
+	   	    	</div>
+   	    	</c:when>
+	   	    <c:when test="#{mbReporteSimplificado.renderMayorBolean}">
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-12 ui-lg-12 ui-g-nopad">
+						<div style="background-color: #96E1FC;">
+							<h:outputLabel value="Selecciona la opción por la que deseas generar el reporte"/>
+						</div>
+					
+						<div class="card card-w-title">
+							<p:message for="booleanTablasCombos" errorStyle="color:red" display="text" style="display: block; margin: 10px 0 0;"/>
+							
+							<p:selectOneRadio id="booleanTablasCombos"  cellpadding="10" columns="2" value="#{mbReporteSimplificado.renderTablaCombo}">
+					            <f:selectItem itemLabel="Por todas las cuentas&nbsp;&nbsp;" itemValue="3"/>
+					            <f:selectItem itemLabel="Por cuentas de árbol&nbsp;&nbsp;" itemValue="1"/>
+					            <f:selectItem itemLabel="Por rango de cuentas&nbsp;&nbsp;" itemValue="2"/>
+					            <p:ajax update="@form" onstart="PF('bloqContForm').block()" onsuccess="PF('bloqContForm').unblock()"/>
+					        </p:selectOneRadio>
+						</div>
+					</div>
+				</div>
+			</c:when>
+   	    </c:choose>
+   	    
+   	    <c:choose>
+   	    	<c:when test="#{mbReporteSimplificado.renderMayorBolean and mbReporteSimplificado.renderTablaCombo==1}">
+		<div class="ui-g">
+					<div class="ui-g-12 ui-md-12 ui-g-nopad">
+						<div class="card card-w-title">	
+						
+				<p style="background-color: highlight;"> Utiliza la tecla "Control (Ctrl)" para seleccionar múltiples cuentas contables. </p>
+					<div class="row show-grid">
+						<div class="col-md-12">
+							<span class="info-ine">* </span><h:outputLabel value="#{messageSource['etiqueta_numero_cuenta']}" />
+							<p:scrollPanel mode="native" style="width:1100px;height:250px">
+								<p:treeTable
+								value="#{mbReporteSimplificado.rootCuentas}" var="document"
+								selectionMode="multiple"
+								selection="#{mbReporteSimplificado.selectedCuentas}"
+								id="arbol_tabla">
+								<p:ajax event="collapse" listener="#{mbReporteSimplificado.colapsar}" update="arbol_tabla"/>
+								<p:ajax event="expand" listener="#{mbReporteSimplificado.expandir}" update="arbol_tabla"/>
+								 <p:ajax event="select" listener="#{mbReporteSimplificado.pruebaEventos}" update="arbol_tabla"/> 
+								<p:ajax event="unselect" listener="#{mbReporteSimplificado.deseleccionar}" update="arbol_tabla"
+										onstart="PF('bloqContForm').block()" onsuccess="PF('bloqContForm').unblock()"/>
+							        <p:column headerText="Cuenta">
+							            <h:outputText value="#{document.numCuentaContable}"/>
+							        </p:column>
+							        <p:column headerText="Descripción">
+							            <h:outputText value="#{document.cuentaDescripcion}" />
+							        </p:column>
+							    </p:treeTable>
+						    </p:scrollPanel>
+					    </div>
+					</div>
+				</div>
+			</div>
+		</div>
+		</c:when>
+		<c:when test="#{mbReporteSimplificado.renderMayorBolean and mbReporteSimplificado.renderTablaCombo==2}">
+			
+						
+				<div class="ui-g">
+				<div class="ui-g-12 ui-md-12 ui-lg-12 ui-g-nopad">
+					<div class="card card-w-title">	
+						<div class="ui-g ui-fluid">	
+						<div class="ui-g-12 ui-md-3 ui-lg-12">
+							<div class="form-group">
+								<span><label>*</label></span>
+								<p:outputLabel value="Cuenta inicio:" />
+							</div>
+							</div>
+						</div>
+						<div class="ui-g ui-fluid">	
+						<div class="ui-g-4 ui-md-4 ui-lg-12">
+							<div class="form-group">
+								<p:selectOneMenu id="cuentas" value="#{mbReporteSimplificado.numeroCuentaInicio}"
+									  		  filterMatchMode="startsWith" filter="true" 
+									  		  style="width: 250px;"
+									   		requiredMessage="#{messageSource['etiqueta_generica_dato_requerido']}" required="true" widgetVar="wvCuentas">
+								           	<f:selectItem itemLabel="#{messageSource['etiqueta_seleccione']}" itemValue="0" noSelectionOption="true"  style="color:green; width: 250px;" />										            			           
+								          	<f:selectItems value="#{mbReporteSimplificado.listaMatrizCuentas}" var="matCuentas"  
+								          		itemLabel="#{matCuentas.numCuentaContable} #{matCuentas.cuentaDescripcion}"
+								           		itemValue="#{matCuentas.numCuentaContable}"/>							
+										          <p:ajax process="@this" event="change" update="cuentasFin" 
+													listener="#{mbReporteSimplificado.actualizaLista()}"
+										          	onstart="PF('bloqContForm').block()"
+												onsuccess="PF('bloqContForm').unblock()" />
+								        </p:selectOneMenu>
+									</div>
+								</div>
+							</div>
+								
+								
+				 <div class="ui-g ui-fluid">	
+						<div class="ui-g-12 ui-md-3 ui-lg-12">
+							<div class="form-group">
+								<span ><label>*</label></span>
+								<p:outputLabel value="Cuenta fin:" />
+							</div>
+							</div>
+						</div>
+					<div class="ui-g ui-fluid">	
+						<div class="ui-g-4 ui-md-4 ui-lg-12">
+							<div class="form-group">
+								<p:selectOneMenu id="cuentasFin" value="#{mbReporteSimplificado.numeroCuentaFin}"
+								filterMatchMode="startsWith" filter="true"
+								requiredMessage="#{messageSource['etiqueta_generica_dato_requerido']}" required="true" widgetVar="wvCuentas2">
+								<f:selectItem itemLabel="#{messageSource['etiqueta_seleccione']}" itemValue="0" noSelectionOption="true"  style="color:green;" />
+								<f:selectItems  value="#{mbReporteSimplificado.listaMatrizCuentasFin}" var="matCuentasFin"  
+								          		itemLabel="#{matCuentasFin.numCuentaContable} #{matCuentasFin.cuentaDescripcion}"
+								           		itemValue="#{matCuentasFin.numCuentaContable}"/>
+								           		<p:ajax process="@this" event="change" 
+										          	onstart="PF('bloqContForm').block()"
+												onsuccess="PF('bloqContForm').unblock()" />
+						        </p:selectOneMenu>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				</div>
+			</c:when>
+   	    </c:choose>
+	
+		<div align="right">
+			<p:outputPanel id="botones">
+			<p align="right">
+					 <B>Descargar reporte:&nbsp;&nbsp;&nbsp;&nbsp;</B>
+						<p:commandLink 	ajax="true" 
+										title="XLS"
+										update="diarioMayorForm"
+										onclick="PrimeFaces.monitorDownload(start, stop)"
+										oncomplete="apretarBoton(xhr, status, args)"
+										actionListener="#{mbReporteSimplificado.getXls()}"
+										timeout="20000000">
+						<span style="color:green;font-size: 20pt" class="fa fa-file-excel-o fa-lg"></span>
+					</p:commandLink>
+  					&nbsp;&nbsp;
+						<p:commandLink ajax="true" 
+									   title="PDF"
+									   update="@form"
+									   onclick="start()"
+									   oncomplete="iniciaSondeoReporte()"
+									   actionListener="#{mbReporteSimplificado.getPdf()}">						       
+							<span style="color:red;font-size: 20pt" class="fa fa-file-pdf-o fa-lg"></span>		
+						</p:commandLink>
+				</p>
+			</p:outputPanel>
+		</div> 
+	</h:form>
+		<h:form id="descarga" enctype="multipart/form-data">
+			<h:commandButton id="getFile" style="display: none"
+							 actionListener="#{mbReporteSimplificado.getFile()}"						 
+							 onclick="PrimeFaces.monitorDownload(start, stop);">
+			</h:commandButton>
+			
+			<p:commandButton id="boton2" value="Descargar" style="display: none"
+									onstart="PF('bloqContForm').block()" ajax="false"
+									onsuccess="PF('bloqContForm').unblock()"
+									actionListener="#{mbReporteSimplificado.getPdf()}"
+									onclick="PrimeFaces.monitorDownload(start, stop);"
+									>
+									<p:fileDownload value="#{mbReporteSimplificado.streamXls}"/>
+			</p:commandButton>
+			
+			<p:remoteCommand name="sondea" actionListener="#{mbReporteSimplificado.sondeoReporte()}"
+							 oncomplete="sondeoReporte(xhr, status, args)"/>
+							 
+			<h:commandButton id="getPdfFile" style="display: none"
+							 actionListener="#{mbReporteSimplificado.getPdfFile()}"						 
+							 onclick="PrimeFaces.monitorDownload(start, stop);">
+			</h:commandButton>
+		</h:form>
+	</ui:define>
+</ui:composition>

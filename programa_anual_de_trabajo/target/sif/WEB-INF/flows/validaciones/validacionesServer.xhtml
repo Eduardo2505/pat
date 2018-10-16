@@ -1,0 +1,465 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:sec="http://www.springframework.org/security/tags"
+	template="/templates/template.xhtml">
+
+	<ui:define name="CONTENT">
+	
+		<!-- Se importa la clase Constantes para las validaciones -->
+		<pe:importConstants className="mx.ine.sif.util.Constantes" var="Constantes" />
+	
+		<!-- Migaja de pan del módulo -->
+		<ol class="breadcrumb">
+           <li><a href="${request.contextPath}/app/home">#{messageSource['etiqueta_inicio']}</a></li>
+           <li>#{messageSource['etiqueta_subnivel1']}</li>
+           <li class="active">#{messageSource['etiqueta_subnivel2']}</li>
+	    </ol>
+			    
+		<div class="row" >
+			<div class="titulo btn-group col-md-1" style="text-align:left;">
+				<!-- Menú hamburguesa-->
+				<button type="button" class="btn btn-default btn-sm dropdown-toggle"  data-toggle="dropdown">    
+			       <i class="fa fa-bars fa-2x"></i>
+			    </button>
+				<ul class="dropdown-menu" role="menu">
+				   <!-- >>>>> Capturar >>>>>>-->
+	 			   <li class="text-muted activo" value="">#{messageSource['etiqueta_captura']}</li>
+					<!-- >>>>> Consultar >>>>>>-->		
+				   <li class="text-muted inactivo">#{messageSource['etiqueta_consulta']}</li>		
+					<!-- >>>>> Modificar >>>>>>-->	
+				   <li class="text-muted inactivo">#{messageSource['etiqueta_modifica']}</li>			   				
+				   <!-- >>>>> Eliminar >>>>>>-->	
+	   			   <li class="text-muted inactivo">#{messageSource['etiqueta_elimina']}</li>			   				
+				   <li class="divider"></li>
+	   			   <!-- >>>>> Descargar >>>>>>-->	
+				   <li class="text-muted inactivo">#{messageSource['etiqueta_descarga']}</li>   			   
+	   			   <!-- >>>>> Imprimir >>>>>>-->					  
+				   <li class="text-muted inactivo">#{messageSource['etiqueta_imprime']}</li>
+				   <li class="divider"></li>
+				   <!-- >>>>> Ayuda >>>>>>-->					
+				   <li><p:commandLink value="#{messageSource['etiqueta_ayuda']}" action="#" immediate="true"/></li>
+				</ul>	      
+			</div>
+			<!-- Título del módulo-->		 
+			<div class="col-md-11">
+				<h1>#{messageSource['etiqueta_nombre_modulo']}</h1>
+			</div>
+		</div>
+		
+		<!-- Leyenda de campos requeridos -->	
+		<div class="row">
+			<div class="col-md-11">
+				<p>
+					<small> #{messageSource['etiqueta_requerido_1']} <span class="obligatorio">*</span>
+						#{messageSource['etiqueta_requerido_2']}
+					</small>
+				</p>
+			</div>
+		</div>
+		
+		<!-- Se inicia el formulario de validaciones-->
+		<h:form>
+
+			<!-- Se Mensaje de error -->
+			<p:growl id="growl" life="2000" />
+			
+			<!-- Titulo del formulario -->
+			<h3>#{messageSource['titulo_registro_datos']}</h3>
+			<section class="contenidoTabla">
+				
+				<!-- Se agrega la siguiente linea si el campo es obligatorio llenar  -->
+				<label><span class="obligatorio">#{messageSource['etiqueta_requerido']}</span>#{messageSource['etiqueta_clave_elector']}</label>
+					
+				<!-- Fila el tamaño de está es de 12 col -->
+				<div class="row">
+				
+				    <!-- Columna y su tamaño -->
+				    <div class="col-md-2">
+				    	<!--InputText contiene: id= con el que se identificará el input, styleClass= Estilo, required= si el campo es obligatorio true de lo contrario false 
+				    	    style="text-transform: uppercase" convierte la entrada en Mayuscualas, requiredMessage = Mensaje cuando el campo es requerido, 
+				    	    validatorMessage = Mensaje de que la validacion es incorrecta, value= valor del campo, maxlength= máximo tamaño del campo
+				    	-->
+				    	<p:inputText id="claveElectoral1" 
+							styleClass="form-control"
+							required="false"
+							style="text-transform: uppercase"
+							requiredMessage="#{messageSource['mensaje_validacion_datoRequerido']}"
+							validatorMessage="#{messageSource['etiqueta_mensaje_cve_elector_incorrecta']}"
+							value="#{mbValidaciones.dtoValidaciones.claveElector1}"
+							maxlength="6">
+							<!-- Patrón que se debe validar -->
+							<!-- <f:validateRegex pattern="#{Constantes.REG_EX_VALIDA_CVE_ELECTOR_PRIMERA_PARTE}" /> -->
+							
+							<!-- En caso de perder el focus y exista error se lanzará el mensaje-->
+							<p:ajax update="msjClaveElectoral1" event="blur" /> 
+						</p:inputText>
+						<!-- Mensaje id= es con el que identificará el mensaje, for= para el id del input -->
+						<p:message id="msjClaveElectoral1"
+							for="claveElectoral1"
+							display="text" />
+					</div>
+					<div class="col-md-2">
+						<p:inputText id="claveElectoral2" 
+							styleClass="form-control"
+							required="false"
+							requiredMessage="#{messageSource['mensaje_validacion_datoRequerido']}"
+							validatorMessage="#{messageSource['etiqueta_mensaje_cve_elector_incorrecta']}"
+							value="#{mbValidaciones.dtoValidaciones.claveElector2}"
+							maxlength="6">
+							<p:ajax update="msjClaveElectoral2" event="blur" /> 
+						</p:inputText>
+						<p:message id="msjClaveElectoral2"
+							for="claveElectoral2"
+							display="text" />
+					</div>
+					<div class="col-md-2">
+						<p:inputText id="claveElectoral3" 
+							styleClass="form-control"
+							required="false"
+							style="text-transform: uppercase"
+							requiredMessage="#{messageSource['mensaje_validacion_datoRequerido']}"
+							validatorMessage="#{messageSource['etiqueta_mensaje_cve_elector_incorrecta']}"
+							value="#{mbValidaciones.dtoValidaciones.claveElector3}"
+							maxlength="6">
+							<p:ajax update="msjClaveElectoral3" event="blur" />
+						</p:inputText>
+						<p:message id="msjClaveElectoral3"
+							for="claveElectoral3"
+							display="text" />
+					</div>
+				</div>
+				<br />
+				
+				<!-- Leyenda-->	
+				<p style="background-color: highlight;" >#{messageSource['leyenda_apellidos']}</p>
+				<br />
+				
+				<div class="row">
+					<div class="form-group col-md-4">
+						<p:outputLabel for="primerApellido" value="#{messageSource['etiqueta_primer_apellido']}" />
+						<p:inputText id="primerApellido"
+							maxlength="40"
+							styleClass="form-control"
+							style="text-transform: uppercase"
+							value="#{mbValidaciones.dtoValidaciones.primerApellido}"
+							validatorMessage="#{messageSource['etiqueta_formato_invalido']}">
+							<p:ajax update="msjPrimerApellido" event="blur" /> 
+						</p:inputText>
+						<p:message id="msjPrimerApellido" 
+							for="primerApellido" 
+							display="text" />
+					</div>
+					<div class="form-group col-md-4">
+						<p:outputLabel for="segundoApellido" value="#{messageSource['etiqueta_segundo_apellido']}" />
+						<p:inputText id="segundoApellido"
+							maxlength="40"
+							styleClass="form-control"
+							style="text-transform: uppercase"
+							value="#{mbValidaciones.dtoValidaciones.segundoApellido}"
+							validatorMessage="#{messageSource['etiqueta_formato_invalido']}">
+							<p:ajax update="msjSegundoApellido" event="blur" />
+						</p:inputText>
+						<p:message id="msjSegundoApellido" 
+							for="segundoApellido" 
+							display="text" />
+					</div>
+					<div class="form-group col-md-4">
+						<label for="nombre"><span class="obligatorio">#{messageSource['etiqueta_requerido']}</span> #{messageSource['etiqueta_nombres']}</label>
+						<p:inputText id="nombre" required="false"
+							requiredMessage="#{messageSource['mensaje_validacion_datoRequerido']}"
+							maxlength="50"
+							style="text-transform: uppercase"
+							styleClass="form-control"
+							value="#{mbValidaciones.dtoValidaciones.nombre}"
+							validatorMessage="#{messageSource['etiqueta_formato_invalido']}">
+							<p:ajax update="msjNombre" event="blur" />
+						</p:inputText>
+						<p:message id="msjNombre"
+							for="nombre"
+							display="text" />
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="form-group col-md-4">
+						<label for="rfc"><span class="obligatorio">#{messageSource['etiqueta_requerido']}</span> #{messageSource['etiqueta_rfc']}</label>
+						<p:inputText id="rfc"
+							maxlength="13"
+							style="text-transform: uppercase"
+							styleClass="form-control"
+							value="#{mbValidaciones.dtoValidaciones.rfc}"
+							required="false"
+							requiredMessage="#{messageSource['mensaje_validacion_datoRequerido']}"
+							validatorMessage="#{messageSource['etiqueta_formato_invalido']}">
+							<p:ajax update="msjRfc" event="blur"/>
+						</p:inputText>
+						<p:message id="msjRfc" 
+							for="rfc"
+							display="text" />
+					</div>
+					<div class="form-group col-md-4">
+						<p:outputLabel for="curp" value="#{messageSource['etiqueta_curp']}" />
+						<p:inputText id="curp"
+							maxlength="18"
+							styleClass="form-control"
+							style="text-transform: uppercase"
+							value="#{mbValidaciones.dtoValidaciones.curp}"
+							validatorMessage="#{messageSource['etiqueta_formato_invalido']}">
+							<p:ajax update="msjCurp" event="blur" />
+						</p:inputText>
+						<p:message id="msjCurp" 
+							for="curp" 
+							display="text" />
+					</div>
+					<div class="form-group col-md-4">
+						<label for="sexo"><span class="obligatorio">#{messageSource['etiqueta_requerido']}</span> #{messageSource['etiqueta_sexo']}</label>
+						<p:selectOneRadio id="sexo" required="false"
+							requiredMessage="#{messageSource['mensaje_validacion_datoRequerido']}"
+							value="#{mbValidaciones.dtoValidaciones.sexo}">
+							<f:selectItem itemLabel="Hombre" itemValue="H"/>
+							<f:selectItem itemLabel="Mujer" itemValue="M"/>
+						</p:selectOneRadio>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="form-group col-md-4">
+						<label for="ocupacion">#{messageSource['etiqueta_ocupacion']}</label>
+						<p:inputText id="ocupacion"
+							maxlength="50"
+							styleClass="form-control"
+							value="#{mbValidaciones.dtoValidaciones.ocupacion}"
+							validatorMessage="#{messageSource['etiqueta_formato_invalido']}">
+							<p:ajax update="msjOcupacion" event="blur" />
+						</p:inputText>
+						<p:message id="msjOcupacion"
+							for="ocupacion"
+							display="text" />
+					</div>
+				</div>
+				<div class="row">
+					<div class="form-group col-md-4">
+						<label for="emailPersonal">#{messageSource['etiqueta_email_personal']}</label>
+						<p:inputText id="emailPersonal"
+							value="#{mbValidaciones.dtoValidaciones.emailPersonal}"								
+							styleClass="form-control"
+							maxlength="50"
+							validatorMessage="#{messageSource['etiqueta_formato_invalido']}">
+							<p:ajax update="msjEmailPersonal" event="blur" />
+						</p:inputText>
+						<p:message id="msjEmailPersonal"
+							for="emailPersonal"
+							display="text" />
+					</div>
+				</div>
+			</section>
+			
+			<!--subtitulo de otra sección del formulario -->
+			<section>
+				<div class="row subtitulos">
+					<h4>
+						<p:outputLabel value="#{messageSource['titulo_registro_datos']}"/>
+					</h4>	
+				</div>
+				<div class="row">
+					<div class="form-group col-md-6">
+						<label for="calle"><span class="obligatorio">#{messageSource['etiqueta_requerido']}</span> #{messageSource['etiqueta_calle']}</label>
+						<p:inputText id="calle" required="false"
+							maxlength="80"
+							styleClass="form-control"
+							value="#{mbValidaciones.dtoValidaciones.calle}"
+							requiredMessage="#{messageSource['mensaje_validacion_datoRequerido']}"
+							validatorMessage="#{messageSource['etiqueta_formato_invalido']}">
+							<p:ajax update="msjCalle" event="blur" />
+						</p:inputText>
+						<p:message id="msjCalle"
+							for="calle"
+							display="text" />
+					</div>
+					<div class="form-group col-md-2">
+						<label for="numExterior"><span class="obligatorio">#{messageSource['etiqueta_requerido']}</span> #{messageSource['etiqueta_numero_exterior']}</label>
+						<p:inputText id="numExterior" required="false"
+							maxlength="15"
+							styleClass="form-control"
+							value="#{mbValidaciones.dtoValidaciones.numeroExterior}"
+							requiredMessage="#{messageSource['mensaje_validacion_datoRequerido']}"
+							validatorMessage="#{messageSource['etiqueta_formato_invalido']}">
+							<p:ajax update="msjNumExterior" event="blur" />
+						</p:inputText>
+						<p:message id="msjNumExterior"
+							for="numExterior"
+							display="text" />
+					</div>
+					<div class="form-group col-md-2">
+						<label for="numInterior">#{messageSource['etiqueta_numero_interior']}</label>
+						<p:inputText id="numInterior"
+							maxlength="15"
+							styleClass="form-control"
+							value="#{mbValidaciones.dtoValidaciones.numeroInterior}"
+							validatorMessage="#{messageSource['etiqueta_formato_invalido']}">
+							<p:ajax update="msjNumInterior" event="blur" />
+						</p:inputText>
+						<p:message id="msjNumInterior"
+							for="numInterior"
+							display="text" />
+					</div>
+				</div>
+					
+				<div class="row">
+					<div class="form-group col-md-6">
+						<label for="colonia"><span class="obligatorio">#{messageSource['etiqueta_requerido']}</span> #{messageSource['etiqueta_colonia']}</label>
+						<p:inputText id="colonia" required="false"
+							maxlength="100"
+							styleClass="form-control"
+							value="#{mbValidaciones.dtoValidaciones.colonia}"
+							requiredMessage="#{messageSource['mensaje_validacion_datoRequerido']}"
+							validatorMessage="#{messageSource['etiqueta_formato_invalido']}">
+							<p:ajax update="msjColonia" event="blur" />
+						</p:inputText>
+						<p:message id="msjColonia"
+							for="colonia"
+							display="text" />
+					</div>
+					<div class="form-group col-md-2">
+						<label for="codigoPostal"><span class="obligatorio">#{messageSource['etiqueta_requerido']}</span> #{messageSource['etiqueta_codigo_postal']}</label>
+						<p:inputText id="codigoPostal" required="false"
+							maxlength="5"
+							styleClass="form-control"
+							value="#{mbValidaciones.dtoValidaciones.codigoPostal}"
+							requiredMessage="#{messageSource['mensaje_validacion_datoRequerido']}"
+							validatorMessage="#{messageSource['etiqueta_formato_invalido']}">
+							<p:ajax update="msjCodigoPostal" event="blur" />
+						</p:inputText>
+						<p:message id="msjCodigoPostal"
+							for="codigoPostal"
+							display="text" />
+					</div>
+				</div>
+				<div class="row">
+					<div class="form-group col-md-3">
+						<label for="ladaDomicilio">#{messageSource['etiqueta_domicilio']}</label>
+						<div class="row">
+							<div class="form-group col-md-5">
+								<p:inputText id="ladaDomicilio"
+									maxlength="3"
+									styleClass="form-control"
+									value="#{mbValidaciones.dtoValidaciones.ladaDomicilio}"
+									validatorMessage="#{messageSource['etiqueta_formato_invalido']}">
+									<p:ajax update="msjLadaDomicilio" event="blur" />
+								</p:inputText>
+								<p:message id="msjLadaDomicilio"
+									for="ladaDomicilio"
+									display="text" />
+								<p:watermark for="ladaDomicilio" value="#{messageSource['marca_agua_lada']}" />
+							</div>
+							<div class="form-group col-md-7">
+								<p:inputText id="telDomicilio"
+									maxlength="8"
+									styleClass="form-control"
+									value="#{mbValidaciones.dtoValidaciones.telefonoDomicilio}"
+									validatorMessage="#{messageSource['etiqueta_formato_invalido']}">
+									<p:ajax update="msjTelDomicilio" event="blur" />
+								</p:inputText>
+								<p:message id="msjTelDomicilio"
+									for="telDomicilio"
+									display="text" />
+								<p:watermark for="telDomicilio" value="#{messageSource['marca_agua_telefono']}" />
+							</div>
+						</div>
+					</div>
+					<div class="form-group col-md-3">
+						<label for="ladaOficina">#{messageSource['etiqueta_oficina']}</label>
+						<div class="row">
+							<div class="form-group col-md-5">
+								<p:inputText id="ladaOficina"
+									maxlength="3"
+									styleClass="form-control"
+									value="#{mbValidaciones.dtoValidaciones.ladaOficina}"
+									validatorMessage="#{messageSource['etiqueta_formato_invalido']}">
+									<p:ajax update="msjLadaOficina" event="blur" />
+								</p:inputText>
+								<p:message id="msjLadaOficina"
+									for="ladaOficina"
+									display="text" />
+								<p:watermark for="ladaOficina" value="#{messageSource['marca_agua_lada']}" />
+							</div>
+							<div class="form-group col-md-7">
+								<p:inputText id="telOficina"
+									maxlength="8"
+									styleClass="form-control"
+									value="#{mbValidaciones.dtoValidaciones.telOficina}"
+									validatorMessage="#{messageSource['etiqueta_formato_invalido']}">
+									<p:ajax update="msjTelOficina" event="blur" />
+								</p:inputText>
+								<p:message id="msjTelOficina"
+									for="telOficina" 
+									display="text" />
+								<p:watermark for="telOficina" value="#{messageSource['marca_agua_telefono']}" />
+							</div>
+						</div>
+					</div>
+					<div class="form-group col-md-3">
+						<label for="extension">#{messageSource['etiqueta_extension']}</label>
+						<div class="row">
+							<div class="form-group col-md-7">
+								<p:inputText id="extension"
+									styleClass="form-control"
+									maxlength="20"
+									value="#{mbValidaciones.dtoValidaciones.extensionOficina}"
+									validatorMessage="#{messageSource['etiqueta_formato_invalido']}">
+									<p:ajax update="msjExtension" event="blur" />
+								</p:inputText>
+								<p:message id="msjExtension"
+									for="extension" 
+									display="text" />
+								<p:watermark for="extension" value="#{messageSource['marca_agua_extension']}" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+			<section>
+				<div class="row subtitulos">
+					<h4>
+						<p:outputLabel value="#{messageSource['titulo_registro_datos']}"/>
+					</h4>	
+				</div>
+				<div class="row">
+					<div class="form-group col-md-3">
+						<label for="monto_prorrateo"><span class="obligatorio">#{messageSource['etiqueta_requerido']}</span>Monto:</label>
+						<div class="input-group">
+							<span class="input-group-addon">$</span>
+							<pe:inputNumber id="monto" 
+								value="#{mbValidaciones.dtoValidaciones.monto}" 
+								styleClass="" 
+								autocomplete="off" 
+								preventPaste="true" 
+								required="false"
+								requiredMessage="#{messageSource['mensaje_validacion_datoRequerido']}" 
+								validatorMessage="#{messageSource['mensaje_validacion_monto']}">
+								<f:validateDoubleRange minimum="0.10" maximum="99999999999.99" />
+								<p:ajax update="msjMonto" event="blur" ></p:ajax>
+							</pe:inputNumber>
+							<p:message id="msjMonto"
+									for="monto" 
+									display="text" />
+							<p:watermark for="monto" value="#{messageSource['marca_agua_monto']}" />
+						</div>
+					</div>
+				</div>
+			</section>
+			<div align="center">
+				<p:commandButton value="Aceptar" ajax="false" icon="ui-icon-check" actionListener="#{mbValidaciones.validarCampos}"/>
+			</div>			
+		</h:form>
+	</ui:define>
+</ui:composition>

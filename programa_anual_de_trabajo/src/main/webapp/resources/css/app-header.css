@@ -1,0 +1,148 @@
+body, .layout-wrapper{
+	margin-top:40px;
+}
+
+.layout-wrapper .layout-menu {
+	top:116px;
+}
+
+
+.topbar .wrapper{
+	display: flex; 
+	justify-content: space-between; 
+}
+
+/*
+.layout-wrapper .topbar .topbar-right #menu-button{
+	position:absolute;
+	top:18px;
+	left:235px;
+}*/
+
+.app-header{
+	height:42px; 
+	display:flex; 
+	flex-direction:column; 
+	flex-wrap:wrap; 
+	justify-content:space-around; 
+	color:white;
+	align-items:center;
+	
+	position:fixed;
+	top:0;
+	left:0;
+	right:0;
+	background:#e91e63;
+}
+
+.app-header .main{
+	font-size:14px; 
+	font-weight:bold;
+}
+
+.app-header .small{
+	font-size:14px; 
+}
+
+
+
+
+@media (min-width: 640px) {
+	body, .layout-wrapper{
+		margin-top:0px;
+	}
+	
+	.layout-wrapper .layout-menu {
+		top:75px;
+	}
+		
+	.app-header{
+		margin-left:30px;
+		position:inherit;
+		align-items:flex-start;
+		background:transparent;
+		color:#727475;
+	}
+	
+	.app-header .main{
+		font-size:16px; 
+		font-weight:bold;
+	}
+	
+}
+
+@media (min-width: 1025px) {
+		.app-header .main{
+		font-size:18px; 
+		font-weight:bold;
+	}
+	}
+
+/* Temporal*/
+
+
+.topbar.clearfix{
+	background: #f3f3f4!important;
+}
+
+.layout-wrapper .layout-menu.layout-menu-dark {
+    background-color: rgb(41, 56, 70);
+}
+
+
+.layout-wrapper .topbar .topbar-left {
+	/*background-image: url(/auditoria/app/javax.faces.resource/images/logo-bg.png?ln=ultima-layout);*/
+	background-color:#293846!important;
+	/*-webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;*/
+    /*border-right:2px solid #cccccc;*/
+    /*border-right:3px solid #e7eaec;*/
+}
+
+.layout-wrapper .topbar .topbar-right #topbar-menu-button {
+	color:#1ab394;	
+}
+
+.layout-wrapper .topbar .topbar-right .topbar-items .search-item input {
+		border-color:#727475!important;
+}
+
+.layout-wrapper .topbar .topbar-right .topbar-items .search-item label {
+		color:#727475!important;
+}
+
+.layout-wrapper .topbar .topbar-right #menu-button {
+
+    position: absolute;
+    top: 18px;
+    left: 230px;
+
+}
+/*
+.layout-wrapper .topbar .topbar-right #menu-button {
+	color:#1ab394;
+    position: absolute;
+    top: 11px;
+    left: 255px;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    background:transparent;
+}*/
+
+/*
+.layout-wrapper .topbar .topbar-right #menu-button i{
+	font-size:45px;
+}
+
+.layout-wrapper .topbar .topbar-right #menu-button i:before {
+    content: "menu";
+}*/
+
+@media (min-width: 1025px){
+	.layout-wrapper .topbar-items > li .topbar-icon {
+    	color: #727475!important;
+	}
+}
+

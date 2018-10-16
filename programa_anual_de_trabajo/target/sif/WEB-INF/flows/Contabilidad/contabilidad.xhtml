@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:sec="http://www.springframework.org/security/tags"
+	template="/templates/template.xhtml">
+
+	<ui:define name="CONTENT">
+	
+	<div class="row" >
+			<div class="titulo btn-group col-md-1" style="text-align:left;">
+				<!-- Menú hamburguesa-->
+				<button type="button" class="btn btn-default btn-sm dropdown-toggle"  data-toggle="dropdown">    
+			       <i class="fa fa-bars fa-2x"></i>
+			    </button>
+				<ul class="dropdown-menu" role="menu">
+				   <!-- >>>>> Capturar >>>>>>-->
+	 			   <li class="text-muted activo" value="">#{messageSource['etiqueta_captura']}</li>
+					<!-- >>>>> Consultar >>>>>>-->		
+				   <li class="text-muted inactivo">#{messageSource['etiqueta_consulta']}</li>		
+					<!-- >>>>> Modificar >>>>>>-->	
+				   <li class="text-muted inactivo">#{messageSource['etiqueta_modifica']}</li>			   				
+				   <!-- >>>>> Eliminar >>>>>>-->	
+	   			   <li class="text-muted inactivo">#{messageSource['etiqueta_elimina']}</li>			   				
+				   <li class="divider"></li>
+	   			   <!-- >>>>> Descargar >>>>>>-->	
+				   <li class="text-muted inactivo">#{messageSource['etiqueta_descarga']}</li>   			   
+	   			   <!-- >>>>> Imprimir >>>>>>-->					  
+				   <li class="text-muted inactivo">#{messageSource['etiqueta_imprime']}</li>
+				   <li class="divider"></li>
+				   <!-- >>>>> Ayuda >>>>>>-->					
+				   <li><p:commandLink value="#{messageSource['etiqueta_ayuda']}" action="#" immediate="true"/></li>
+				</ul>	      
+			</div>
+			<!-- Título del módulo-->		 
+			<div class="col-md-11">
+				<h1>#{messageSource['etiqueta_contabilidades']}</h1>
+			</div>
+		</div>
+		
+		<div class="col-md-12">
+			<h:form id = "formConta">
+			
+			<pe:blockUI id="bloqContForm" target="formConta" content="blockUIContent" widgetVar="bloqContForm" />
+
+			<!-- BLOCKUICONTENT -->
+			<h:panelGrid id="blockUIContent" columns="2" style="display:none;">
+				<h:graphicImage library="img" name="loader.gif" width="70" />
+				<h:outputText value="#{messageSource['etiqueta_procesando_info']}" style="white-space: nowrap;" />
+			</h:panelGrid>
+			<!-- FIN BLOCKUICONTENT -->
+			
+				<h3>Contabilidades Ordinarias</h3>
+				<section class="contenidoTabla">
+				
+	<!-- 				<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+					<p:commandButton value="Crea Contabilidades Ordinario" actionListener="#{mbConta.creaContabilidadesOrdinario}" />
+				</section>
+ 				<section> -->
+ 				<div class="row" >
+	 				<div class="col-md-3">
+		 				<span class="obligatorio">* </span><p:outputLabel value="Selecciona Entidad:" />
+		 				<p:selectOneMenu 	id="tipoSujeto"
+											value="#{mbConta.idEstado}" 
+											style="width:150px" 
+											required="true" >
+							<p:ajax listener="#{mbConta.cargaMunicipiosODistritos()}" update="pickList" onstart="PF('bloqContForm').block()" onsuccess="PF('bloqContForm').unblock()"/>
+							<f:selectItem itemLabel="Selecciona Uno" itemValue="" noSelectionOption="true"/>
+							<f:selectItems value="#{mbConta.menuEstados}" />
+						</p:selectOneMenu>
+					</div>
+				</div>
+				
+			    <p:selectOneRadio id="console" value="#{mbConta.municipiosOEstados}">
+			    	<f:selectItem itemLabel="Municipios" itemValue="true" />
+			        <f:selectItem itemLabel="Distritos" itemValue="false" />
+			        <p:ajax listener="#{mbConta.cargaMunicipiosODistritos()}" update="pickList" onstart="PF('bloqContForm').block()" onsuccess="PF('bloqContForm').unblock()"/>
+			    </p:selectOneRadio>
+					
+					<p:pickList id="pickList" value="#{mbConta.cities}" var="cities" itemLabel="#{cities}" itemValue="#{cities}" style="margin-center:20px;" showCheckbox="true" showSourceFilter="true" showTargetFilter="true"/>
+	   			 	
+	   			 	<p:commandButton id="citySubmit" value="Crea Contabilidad"  style="margin-top:5px" />
+ 				</section>
+			</h:form>
+		</div>
+	</ui:define>
+</ui:composition>

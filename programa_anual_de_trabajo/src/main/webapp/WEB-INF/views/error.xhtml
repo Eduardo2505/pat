@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:sf="http://www.springframework.org/tags/faces"
+	xmlns:sec="http://www.springframework.org/security/tags"
+	template="/templates/template.xhtml">
+
+	<ui:define name="CONTENT">
+		<section> <c:choose>
+			<c:when
+				test="#{requestScope['javax.servlet.error.status_code']==null}">
+				<div style="display: flex; align-items: center;">
+					<h:graphicImage id="logoAud" library="ultima-layout"
+						name="images/errorDif.png" width="100%" styleClass="img-aud" />
+				</div>
+			</c:when>
+			<c:when
+				test="#{requestScope['javax.servlet.error.status_code']==401}">
+				<div style="display: flex; align-items: center;">
+					<h:graphicImage id="logoAud" library="ultima-layout"
+						name="images/error401.png" width="100%" styleClass="img-aud" />
+				</div>
+			</c:when>
+			<c:when
+				test="#{requestScope['javax.servlet.error.status_code']==403}">
+				<div style="display: flex; align-items: center;">
+					<h:graphicImage id="logoAud" library="ultima-layout"
+						name="images/error403.png" width="100%" styleClass="img-aud" />
+				</div>
+			</c:when>
+			<c:when
+				test="#{requestScope['javax.servlet.error.status_code']==404}">
+				<div style="display: flex; align-items: center;">
+					<h:graphicImage id="logoAud" library="ultima-layout"
+						name="images/error404.png" width="100%" styleClass="img-aud" />
+				</div>
+			</c:when>
+			<c:when
+				test="#{requestScope['javax.servlet.error.exception'].toString().contains('BadlyFormattedFlowExecutionKeyException')}">
+				<div style="display: flex; align-items: center;">
+					<h:graphicImage id="logoAud" library="ultima-layout"
+						name="images/errorURL.png" width="100%" styleClass="img-aud" />
+				</div>
+			</c:when>
+			<c:when
+				test="#{requestScope['javax.servlet.error.exception'].toString().contains('FlowExecutionRestorationFailureException')}">
+				<div style="display: flex; align-items: center;">
+					<h:graphicImage id="logoAud" library="ultima-layout"
+						name="images/errorURL.png" width="100%" styleClass="img-aud" />
+				</div>
+			</c:when>
+			<c:when
+				test="#{requestScope['javax.servlet.error.status_code']==500}">
+				<c:if test="#{mbUsuario.usuarioErrorneo == null }">
+					<div style="display: flex; align-items: center;">
+						<h:graphicImage id="logoAud" library="ultima-layout"
+							name="images/error500.png" width="100%" styleClass="img-aud" />
+					</div>
+				</c:if>
+				<c:if test="#{mbUsuario.usuarioErrorneo == true }">
+					<h3 align="center">Estatus del usuario</h3>
+					<br />
+					<div align="center">
+						Este usuario no cuenta con permiso para ingresar al aplicativo <br />
+					</div>
+					<c:choose>
+						<c:when test="#{mbUsuario.usuarioLogin.idRol == -1 }">
+							<div align="center">
+								<br /> Causa : No se cuenta con un rol en el sistema <br /> <br />
+							</div>
+						</c:when>
+						<c:when
+							test="#{(mbUsuario.usuarioLogin.idSO == null || mbUsuario.usuarioLogin.idSO == 0) and (mbUsuario.usuarioLogin.idRol != null and  mbUsuario.usuarioLogin.idRol != 1 and mbUsuario.usuarioLogin.idRol != 3 and mbUsuario.usuarioLogin.idRol != 4 and mbUsuario.usuarioLogin.idRol != 5 and mbUsuario.usuarioLogin.idRol != 6)}">
+							<div align="center">
+								<br /> Causa : No se encuentra asociado a ningun Sujeto
+								Obligado <br /> <br />
+							</div>
+						</c:when>
+					</c:choose>
+					<div align="center">
+						<p:panelGrid columns="2">
+							<f:facet name="header">
+								<h:outputText value="Información del usuario"
+									style="color:white" />
+							</f:facet>
+							<h:outputText value="Nombre :" />
+							<h:outputText value="#{mbUsuario.usuarioLogin.nombreUsuario  }" />
+							<h:outputText value="Apellidos :" />
+							<h:outputText
+								value="#{mbUsuario.usuarioLogin.apellidosUsuario  }" />
+							<h:outputText value="Estado:" />
+							<h:outputText value="#{mbUsuario.usuarioLogin.idEstado}" />
+							<h:outputText value="Distrito:" />
+							<h:outputText value="#{mbUsuario.usuarioLogin.idDistrito}" />
+							<h:outputText value="Estado de Visibilidad:" />
+							<h:outputText
+								value="#{mbUsuario.usuarioLogin.idEstadoVisibilidad}" />
+							<h:outputText value="Identificador Usuario:" />
+							<h:outputText value="#{mbUsuario.usuarioLogin.idUsuario}" />
+							<h:outputText value="Usuario:" />
+							<h:outputText value="#{mbUsuario.usuarioLogin.usuario}" />
+							<h:outputText value="Identificador Rol:" />
+							<h:outputText value="#{mbUsuario.usuarioLogin.idRol}" />
+							<h:outputText value="Entidad SO:" />
+							<h:outputText value="#{mbUsuario.usuarioLogin.idEntidadSO}" />
+							<h:outputText value="Tipo SO:" />
+							<h:outputText value="#{mbUsuario.usuarioLogin.idTipoSO}" />
+							<h:outputText value="Identificador SO:" />
+							<h:outputText value="#{mbUsuario.usuarioLogin.idSO}" />
+							<h:outputText value="Operaciones Asociadas:" />
+							<h:outputText
+								value="#{mbUsuario.usuarioLogin.idsContbilidadesAsociadas.size()}" />
+						</p:panelGrid>
+					</div>
+				</c:if>
+
+			</c:when>
+		</c:choose> </section>
+		<h:form>
+			<br />
+			<div align="center">
+				<p:button href="/app/home" value="Volver al inicio"
+					icon="ui-icon-home" />
+				<p:button href="/logout" value="Volver al menú"
+					icon="ui-icon-replay">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p:button>
+			</div>
+		</h:form>
+	</ui:define>
+</ui:composition>

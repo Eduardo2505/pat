@@ -1,0 +1,204 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pu="http://primefaces.org/ultima">
+
+	<div class="topbar clearfix">
+
+		<div class="topbar-left" style="display: flex; align-items: center;">
+		<a href="${request.contextPath}/app/home">
+			<h:graphicImage id="logoSif" library="ultima-layout"
+				name="images/sif_logo.png" width="50px" styleClass="img-aud;" />
+				</a>
+			<span
+				style="font-size: 25px; font-weight: bold; border-left: 2px solid #2c2d2e; margin-left: 7px; padding-left: 7px; font-family: sans-serif; color: white;">ORDINARIO</span>
+			<!--         	<h:graphicImage id="logoINE" library="img" 				name="logoINE_white.png" 			height="100%" 	styleClass="img-ine"/> -->
+			<!--         	<h:graphicImage id="logoAud" library="ultima-layout" 	name="images/logo_auditoria2x.png" 	width="100%" 	styleClass="img-aud"/>             -->
+			<!--             <div class="logo img-aud"></div> -->
+			
+		</div>
+
+		<div class="topbar-right">
+			<a id="menu-button" href="#" title="Mostrar/ocultar menú ordinario"> <i></i>
+			</a> <a id="topbar-menu-button" href="#"> <i class="material-icons">menu</i>
+			</a>
+			<div class="wrapper">
+				<div class="md app-header">
+					<span class="main">Hola
+						#{SPRING_SECURITY_CONTEXT.authentication.principal.usuario}/
+						<h:outputText
+							rendered="#{SPRING_SECURITY_CONTEXT.authentication.principal.getIdRol().toString().equals('1')}"
+							value="Administrador INE" class="main"/><h:outputText 
+							rendered="#{SPRING_SECURITY_CONTEXT.authentication.principal.getIdRol().toString().equals('2')}"
+							value="Administrador SO" /> <h:outputText
+							rendered="#{SPRING_SECURITY_CONTEXT.authentication.principal.getIdRol().toString().equals('3')}"
+							value="Supervisor de Fiscalización" /> <h:outputText
+							rendered="#{SPRING_SECURITY_CONTEXT.authentication.principal.getIdRol().toString().equals('4')}"
+							value="Auditor" /> <h:outputText
+							rendered="#{SPRING_SECURITY_CONTEXT.authentication.principal.getIdRol().toString().equals('5')}"
+							value="Consulta Restringida" /> <h:outputText
+							rendered="#{SPRING_SECURITY_CONTEXT.authentication.principal.getIdRol().toString().equals('6')}"
+							value="Consulta" /> <h:outputText
+							rendered="#{SPRING_SECURITY_CONTEXT.authentication.principal.getIdRol().toString().equals('7')}"
+							value="Candidato" /> <h:outputText
+							rendered="#{SPRING_SECURITY_CONTEXT.authentication.principal.getIdRol().toString().equals('8')}"
+							value="Candidato Independiente" /> <h:outputText
+							rendered="#{SPRING_SECURITY_CONTEXT.authentication.principal.getIdRol().toString().equals('9')}"
+							value="Capturista" /> <h:outputText
+							rendered="#{SPRING_SECURITY_CONTEXT.authentication.principal.getIdRol().toString().equals('10')}"
+							value="Responsable de Finanzas" /> <h:outputText
+							rendered="#{SPRING_SECURITY_CONTEXT.authentication.principal.getIdRol().toString().equals('11')}"
+							value="Responsable de Finanzas" /> <h:outputText
+							rendered="#{SPRING_SECURITY_CONTEXT.authentication.principal.getIdRol().toString().equals('12')}"
+							value="Precandidato RP" /> <h:outputText
+							rendered="#{SPRING_SECURITY_CONTEXT.authentication.principal.getIdRol().toString().equals('13')}"
+							value="Precandidato" /> <h:outputText
+							rendered="#{SPRING_SECURITY_CONTEXT.authentication.principal.getIdRol().toString().equals('14')}"
+							value="Aspirante" /> <h:outputText
+							rendered="#{SPRING_SECURITY_CONTEXT.authentication.principal.getIdRol().toString().equals('15')}"
+							value="Candidato RP" /><h:outputText
+							rendered="#{SPRING_SECURITY_CONTEXT.authentication.principal.getIdRol().toString().equals('16')}"
+							value="Consulta TEPJF" /><h:outputText
+							rendered="#{SPRING_SECURITY_CONTEXT.authentication.principal.getIdRol().toString().equals('17')}"
+							value="Consulta Sujeto Obligado" /><h:outputText
+							rendered="#{SPRING_SECURITY_CONTEXT.authentication.principal.getIdRol().toString().equals('18')}"
+							value="ADMINISTRADOR ADAPPAPO" /><h:outputText
+							rendered="#{SPRING_SECURITY_CONTEXT.authentication.principal.getIdRol().toString().equals('19')}"
+							value="ADMINISTRADOR ADRN" />
+							<h:outputText
+							rendered="#{SPRING_SECURITY_CONTEXT.authentication.principal.getIdRol().toString().equals('28')}"
+							value="AUDITOR EXTERNO" />
+					</span>
+					<span class="small"><small> <h:outputText
+								value="#{SPRING_SECURITY_CONTEXT.authentication.principal.siglasPartido}"
+								rendered="#{SPRING_SECURITY_CONTEXT.authentication.principal.siglasPartido!=null}" />
+							<h:outputText
+								value="/ #{SPRING_SECURITY_CONTEXT.authentication.principal.ambito}"
+								rendered="#{SPRING_SECURITY_CONTEXT.authentication.principal.ambito!=null}" />
+							<h:outputText
+								value="/ #{SPRING_SECURITY_CONTEXT.authentication.principal.entidadCandidadatura}"
+								rendered="#{SPRING_SECURITY_CONTEXT.authentication.principal.entidadCandidadatura!=null}" />
+							<h:outputText
+								value="/ #{SPRING_SECURITY_CONTEXT.authentication.principal.siglasComite}"
+								rendered="SPRING_SECURITY_CONTEXT.authentication.principal.siglasComite!=null}" />
+							<h:outputText
+								value="/ #{SPRING_SECURITY_CONTEXT.authentication.principal.idContabilidad}"
+								rendered="#{SPRING_SECURITY_CONTEXT.authentication.principal.idContabilidad!=null}" />
+							<h:outputText style="font-size: 10px" value="-A"
+								rendered="#{mbContabilidadesOrd.getIpAddress().equals('10.0.41.161')}" />
+								
+							<h:outputText style="font-size: 10px" value="-B"
+								rendered="#{mbContabilidadesOrd.getIpAddress().equals('10.0.41.162')}" />
+								
+							<h:outputText style="font-size: 10px" value="-C"
+								rendered="#{mbContabilidadesOrd.getIpAddress().equals('10.0.41.163')}" />
+								
+							<h:outputText style="font-size: 10px" value="-D"
+								rendered="#{mbContabilidadesOrd.getIpAddress().equals('10.0.41.164')}" />
+								
+							<h:outputText style="font-size: 10px" value="-E"
+								rendered="#{mbContabilidadesOrd.getIpAddress().equals('10.0.41.165')}" />
+								
+							<h:outputText style="font-size: 10px" value="-F"
+								rendered="#{mbContabilidadesOrd.getIpAddress().equals('10.0.41.186')}" />
+								
+							<h:outputText style="font-size: 10px" value="-G"
+								rendered="#{mbContabilidadesOrd.getIpAddress().equals('10.0.41.187')}" />
+								
+							<h:outputText style="font-size: 10px" value="-H"
+								rendered="#{mbContabilidadesOrd.getIpAddress().equals('10.0.41.188')}" />
+								
+							<h:outputText style="font-size: 10px" value="-I"
+								rendered="#{mbContabilidadesOrd.getIpAddress().equals('10.0.41.189')}" />
+								
+							<h:outputText style="font-size: 10px" value="-J"
+								rendered="#{mbContabilidadesOrd.getIpAddress().equals('10.0.41.190')}" />
+								
+							<!-- pru --> <h:outputText style="font-size: 10px" value="-A"
+								rendered="#{mbContabilidadesOrd.getIpAddress().equals('10.0.28.129')}" />
+								
+							<h:outputText style="font-size: 10px" value="-B"
+								rendered="#{mbContabilidadesOrd.getIpAddress().equals('10.0.28.130')}" />
+								
+							<h:outputText style="font-size: 10px" value="-C"
+								rendered="#{mbContabilidadesOrd.getIpAddress().equals('10.0.28.131')}" />
+								
+							<h:outputText style="font-size: 10px" value="-D"
+								rendered="#{mbContabilidadesOrd.getIpAddress().equals('10.0.28.132')}" />
+								
+							<!-- sif-capacita --> <h:outputText style="font-size: 10px" value="-A"
+								rendered="#{mbContabilidadesOrd.getIpAddress().equals('10.0.189.32')}" />
+								
+							<h:outputText style="font-size: 10px" value="-B"
+								rendered="#{mbContabilidadesOrd.getIpAddress().equals('10.0.189.33')}" />
+								
+								
+							<!-- sif-seguridad --> <h:outputText style="font-size: 10px" value="-A"
+								rendered="#{mbContabilidadesOrd.getIpAddress().equals('10.0.189.38')}" />
+								
+							<h:outputText style="font-size: 10px" value="-B"
+								rendered="#{mbContabilidadesOrd.getIpAddress().equals('10.0.189.39')}" />
+								
+							<!-- capa --> <h:outputText style="font-size: 10px" value="-A"
+								rendered="#{mbContabilidadesOrd.getIpAddress().equals('10.0.28.125')}" />
+								
+							<h:outputText style="font-size: 10px" value="-B"
+								rendered="#{mbContabilidadesOrd.getIpAddress().equals('10.0.28.126')}" />
+								
+							<!-- seg --> <h:outputText style="font-size: 10px" value="-A"
+								rendered="#{mbContabilidadesOrd.getIpAddress().equals('10.0.28.177')}" />
+								
+							<h:outputText style="font-size: 10px" value="-B"
+								rendered="#{mbContabilidadesOrd.getIpAddress().equals('10.0.28.178')}" />
+							
+							<!-- usu-pruebas --> <h:outputText style="font-size: 10px" value="-A"
+								rendered="#{mbContabilidadesOrd.getIpAddress().equals('10.0.189.59')}" />
+								
+							<h:outputText style="font-size: 10px" value="-B"
+								rendered="#{mbContabilidadesOrd.getIpAddress().equals('10.0.189.60')}" />
+							
+							<!-- pruebas --> <h:outputText style="font-size: 10px" value="-A"
+								rendered="#{mbContabilidadesOrd.getIpAddress().equals('10.0.189.55')}" />
+								
+							<h:outputText style="font-size: 10px" value="-B"
+								rendered="#{mbContabilidadesOrd.getIpAddress().equals('10.0.189.56')}" />
+					</small></span>
+				</div>
+
+				<div>
+					<ul class="topbar-items fadeInDown animated">
+						
+							<ui:param name="root" value="${request.contextPath}/logout" />
+							<h:inputHidden value="#{root}" id="hideURL"></h:inputHidden>
+							
+						<h:form prependId="false">
+ 							<script type="text/javascript">
+								function redirecciaMenu(){
+									var url = document.getElementById("hideURL").value; 
+									location.href = url;
+								}
+							</script>
+							
+							<p:commandLink  actionListener="#{mbBitacoraUsuarios.updateFechaFinSesion()}" oncomplete="redirecciaMenu()" onerror="redirecciaMenu()">
+								<span style="font-size: 15px; margin-left: 7px; padding-left: 7px; font-family: sans-serif; color: black;">
+		 							<i class="material-icons">reply</i> Volver al menú inicio
+		 						</span>
+							</p:commandLink>
+							
+							
+						</h:form>
+<!-- 						<a href="${request.contextPath}/logout"> <span -->
+<!-- 							style="font-size: 15px; margin-left: 7px; padding-left: 7px; font-family: sans-serif; color: black;"> -->
+<!-- 								<i class="material-icons">reply</i> Volver al menú inicio -->
+<!-- 						</span> -->
+<!-- 						</a> -->
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+</ui:composition>

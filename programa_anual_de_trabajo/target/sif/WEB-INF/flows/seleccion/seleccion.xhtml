@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:sec="http://www.springframework.org/security/tags"
+	template="/templates/template.xhtml">
+
+	<ui:define name="CONTENT">
+	
+	<ol class="breadcrumb">
+    	<li><a href="${request.contextPath}/app/home">Inicio</a></li>
+    	<li>Subnivel</li>
+<!-- 			                <c:if test="#{mbReportes.dto.opcion eq 'listados'}"> -->
+    	<li class="active">Subnivel 2</li>
+<!-- 			                </c:if> -->
+<!-- 			                <c:if test="#{mbReportes.dto.opcion eq 'cedulas'}"> -->
+<!-- 			                	<li class="active">#{messageSource['etiqueta_titulo_cedulas']}</li> -->
+<!-- 			                </c:if> -->
+    </ol>
+
+		<h:form id="firstForm" enctype="multipart/form-data">
+		
+			<!-- BLOCKUI -->
+			<pe:blockUI id="bloqContForm" target="firstForm" content="blockUIContent" widgetVar="bloqContForm" />
+			
+			<!-- BLOCKUICONTENT -->
+			<h:panelGrid id="blockUIContent" columns="2" style="display:none;">
+				<h:graphicImage library="img" name="loader.gif" width="70" />
+				<h:outputText value="procesando" style="white-space: nowrap;" />
+			</h:panelGrid>
+			<!-- FIN BLOCKUICONTENT -->
+			
+			<div class="titulo row">
+				<div class="titulo btn-group col-md-1" style="text-align:left;">
+				  <button type="button" class="btn btn-default btn-sm dropdown-toggle"  data-toggle="dropdown">    
+			        <i class="fa fa-bars fa-2x"></i>
+			      </button> 
+					<ul class="dropdown-menu" role="menu">
+					   <!-- >>>>> Capturar >>>>>>-->		
+					   <li class="text-muted activo" value="">Captura</li>
+					
+						<!-- >>>>> Consultar >>>>>>-->	
+					   <li><p:commandLink value="Consulta" action="irAConsulta" immediate="true"/></li>
+						
+						
+						<!-- >>>>> Modificar >>>>>>-->
+					   	<li><p:commandLink value="Modifica" action="irAModifica" immediate="true"/></li>
+					     
+						
+					   <li class="divider"></li>
+					
+		   			   <!-- >>>>> Ayuda >>>>>>-->					
+						<li><a href="http://ine.mx/archivos2/tutoriales/sistemas/ApoyoInstitucional/SIF/index.html"  target="_blank">Ayuda</a></li>
+					</ul>	      
+				</div>	
+				<div class="col-md-11">
+					<h1>Nombre del modulo.</h1>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="col-md-11">
+					<p>
+						<small> #{messageSource['etiqueta_requerido_1']} <span class="obligatorio">*</span>
+							#{messageSource['etiqueta_requerido_2']}
+						</small>
+					</p>
+				</div>
+			</div>
+			
+			<h3>
+				<h:outputText value="Header principal." />
+			</h3>
+				
+			<section class="container">
+			<div class="row">
+				<div class="col-md-12">
+					<a href="#{request.contextPath}/app/home">Home</a>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<a href="#{request.contextPath}/app/tablas">Tablas</a>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<a href="#{request.contextPath}/app/validaciones">Validaciones
+						de texto y n&uacute;mero</a>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<a href="#{request.contextPath}/app/seleccion">Combos y
+						selecci&oacute;n</a>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<a href="#{request.contextPath}/app/fechas">Fechas</a>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<a href="#{request.contextPath}/app/botones">Botones y mensajes</a>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<a href="#{request.contextPath}/app/form">Form din&aacute;mico</a>
+				</div>
+			</div>
+			</section>
+			
+			<!-- Seccion de muestra para el elemento ComboBox -->
+			<section>
+				<div class="row subtitulos">
+					<h4>
+						<p:outputLabel value="#{messageSource['titulo_registro_datos']}"/>
+					</h4>	
+				</div>
+				<div class="row show-grid">
+					<div class="col-md-4">
+						<label><span class="obligatorio">*</span> <h:outputText value="Etiqueta del combo" />:</label>
+						<p:selectOneMenu disabled="false" id="firstOne" styleClass="form-control" 
+							value="#{mbSeleccion.tipoIndicador}" >
+				            <f:selectItem itemLabel="Seleccione una opci&oacute;n" itemValue="" />
+				            <f:selectItem itemLabel="Colectivo" itemValue="0"/>
+				            <f:selectItem itemLabel="Individual" itemValue="1" />
+				            <p:ajax event="change" listener="#{mbSeleccion.cargaIndicadores()}"  
+				            onstart="PF('bloqContForm').block()"
+							onsuccess="PF('bloqContForm').unblock()" 
+				        update="@form" />
+				        </p:selectOneMenu>		
+					</div>
+				
+					<div class="col-md-4">
+						<label><span class="obligatorio">*</span> <h:outputText value="Etiqueta del combo" />:</label>
+						<p:selectOneMenu id="selectTipoAportacion" styleClass="form-control" 
+							required="true"
+							requiredMessage="mensaje requerido"
+							value="#{mbSeleccion.tipoAportacion}">
+				            <f:selectItem  itemLabel="Seleccione una opción" itemValue="" />
+							<f:selectItems value="#{mbSeleccion.listaIndicadores}" />
+							
+				        </p:selectOneMenu>
+				        <p:message id="tipFM" for="selectTipoAportacion" errorStyle="color:red" display="text" />
+					</div>
+				</div>
+				
+				
+				<div class="row show-grid">
+						<div class="col-md-12">
+							<label><span class="obligatorio">*</span> <h:outputText value="Seleccion multiple" />:</label>
+					        <p:selectManyMenu id="basic" 
+					        	required="true"
+					        	requiredMessage="mensaje requerido"
+					        	value="#{mbSeleccion.listaValores}" style="width:600px; height:250px">
+					            <f:selectItems value="#{mbSeleccion.listaMuestra}" 
+					            var="objeto" itemValue="#{objeto.idDistrito}" 
+					            itemLabel="#{objeto.idDistrito} &nbsp;&nbsp;&nbsp; #{objeto.nombreDistrito}" />
+					            <p:ajax update="msgReq" event="click" />
+					        </p:selectManyMenu>
+					        <p:message id="msgReq" for="basic" errorStyle="color:red" display="text" />
+						</div>
+				</div>
+				
+				<div class="row show-grid">
+					<div class="col-md-4">
+					</div>
+					<div class="col-md-4">
+						<div class="form-group">
+	                		 <div class="text-center">
+	                			<p:commandButton id="firstBtn"  
+		                			value="Submit" 
+		                			styleClass="btn btn-default"
+		                			ajax="false"
+		                			actionListener="#{mbSeleccion.eventoSubmit()}"
+		                			process="@form"
+									update="@form"
+									onstart="PF('bloqContForm').block()"
+									onsuccess="PF('bloqContForm').unblock()" 
+									disabled="false"
+								/>              		
+	                		</div>
+               			</div>
+					</div>
+				</div>
+			</section>
+		</h:form>
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+			  xmlns:h="http://java.sun.com/jsf/html"
+			  xmlns:f="http://java.sun.com/jsf/core"
+			  xmlns:ui="http://java.sun.com/jsf/facelets"
+			  xmlns:c="http://java.sun.com/jsp/jstl/core"
+			  xmlns:sec="http://www.springframework.org/security/tags"
+              xmlns:p="http://primefaces.org/ui">
+	<h:form>
+	<div class="container">
+		<div class="row">
+			<!-- ESTADO -->
+			<div class="col-md-3">
+				 <!-- Entrada para OC -->
+		        <sec:authorize ifAnyGranted="ROLE_COM2015.ADMIN.OC, ROLE_COM2015.CONSULTA.OC">
+	                <h:selectOneMenu id="somEntidadFederativa" styleClass="form-control"  
+	                				 value="#{mbUsuario.dtoFiltros.idNombreEstado}"
+	                				 required="true"
+	                                 requiredMessage="#{messageSource['mensaje_generico_campoRequerido']}" >		                    
+	                    <f:selectItems value="#{mbUsuario.listaEstados}" var="estado" itemLabel="#{estado.nombreEstado}" itemValue="#{estado.idEstado}"/>			                    
+	                    <p:ajax update="somDistritoOc,idEtiquetaJunta" listener="#{mbUsuario.estadoSeleccionado()}" process="@this,somEntidadFederativa" event="change"/>                
+	                </h:selectOneMenu>	
+			  	</sec:authorize>
+				<!--     ENTRADA PARA JL  -->
+				<sec:authorize ifAnyGranted="ROLE_COM2015.CAPTURA.JL, ROLE_COM2015.CONSULTA.JL, ROLE_COM2015.ADMIN.JL">    
+					<h:selectOneMenu id="somEntidadFederativa" styleClass="form-control"  
+	                				 value="#{mbUsuario.dtoFiltros.idNombreEstado}"
+	                				 disabled="true"
+	                                 requiredMessage="#{messageSource['mensaje_generico_campoRequerido']}" >		                    
+	                    <f:selectItems value="#{mbUsuario.listaEstados}" var="estado" itemLabel="#{estado.nombreEstado}" itemValue="#{estado.idEstado}"/>			                    
+	                    <p:ajax update="somDistritoOc,idEtiquetaJunta" listener="#{mbUsuario.estadoSeleccionado()}" process="@this,somEntidadFederativa" event="change"/>                
+	                </h:selectOneMenu>
+		        </sec:authorize>
+		        	<!-- Entrada para JD -->
+			  	<sec:authorize ifAnyGranted="ROLE_COM2015.ADMIN.JD, ROLE_COM2015.CONSULTA.JL, ROLE_COM2015.CAPTURA.JD">
+	                <h:selectOneMenu id="somEntidadFederativa" styleClass="form-control"  
+	                				 value="#{mbUsuario.dtoFiltros.idNombreEstado}"
+	                				 disabled="true"
+	                                 requiredMessage="#{messageSource['mensaje_generico_campoRequerido']}" >		                    
+	                    <f:selectItems value="#{mbUsuario.listaEstados}" var="estado" itemLabel="#{estado.nombreEstado}" itemValue="#{estado.idEstado}"/>			                    
+	                    <p:ajax update="somDistritoOc" listener="#{mbUsuario.estadoSeleccionado()}" process="@this,somEntidadFederativa" event="change"/>                
+	                </h:selectOneMenu>	
+		       	</sec:authorize>
+			</div>
+			
+			<!-- DISTRITO -->
+			<div class="col-md-6">
+				 <!-- Entrada para OC -->
+		        <sec:authorize ifAnyGranted="ROLE_COM2015.ADMIN.OC, ROLE_COM2015.CONSULTA.OC">
+				   	<div class="col-md-6 col-xs-6">
+		                <h:selectOneMenu id="somDistritoOc" value="#{mbUsuario.dtoFiltros.idNombreDistrito}"
+		                				 required="true" styleClass="form-control" 
+		                                 disabled="#{mbUsuario.dtoFiltros.idEstado gt 0 ? false:true}"
+		                                 requiredMessage="#{messageSource['mensaje_generico.campoRequerido']}">
+		                    <f:selectItem itemLabel="No disponible" itemValue="" itemDisabled="#{mbUsuario.dtoFiltros.idEstado eq 0 ? false:true}" />
+		                    <f:selectItems value="#{mbUsuario.listaDistritos}" var="dis" itemLabel="#{dis.idDistrito eq 0 ? '' : dis.idDistrito} #{dis.cabeceraDistrital}" itemValue="#{dis.idDistrito}"/>
+		                    <p:ajax  listener="#{mbUsuario.distritoSeleccionado()}" update=":@form:idEtiquetaJunta"/>
+		                </h:selectOneMenu>
+		          	</div>
+			  	</sec:authorize>
+				<!--     ENTRADA PARA JL  -->
+				<sec:authorize ifAnyGranted="ROLE_COM2015.CAPTURA.JL, ROLE_COM2015.CONSULTA.JL, ROLE_COM2015.ADMIN.JL">    
+	        		<h:selectOneMenu id="somDistritoJl" styleClass="form-control"
+	                				 value="#{mbUsuario.dtoFiltros.idNombreDistrito}"
+	                				 required="true"
+	                                 requiredMessage="#{messageSource['mensaje_generico_campoRequerido']}">		                    
+	                    <f:selectItems value="#{mbUsuario.listaDistritos}" var="dis" itemLabel="#{dis.idDistrito eq 0 ? '' : dis.idDistrito} #{dis.cabeceraDistrital}" itemValue="#{dis.idDistrito}"/>
+	                    <p:ajax  listener="#{mbUsuario.distritoSeleccionado()}" update=":@form:idEtiquetaJunta"/>
+	                </h:selectOneMenu>
+		        </sec:authorize>
+		        	<!-- Entrada para JD -->
+			  	<sec:authorize ifAnyGranted="ROLE_COM2015.ADMIN.JD, ROLE_COM2015.CONSULTA.JL, ROLE_COM2015.CAPTURA.JD">
+				   	<div class="col-md-6 col-xs-6">
+		                <h:selectOneMenu id="somDistritoOc" value="#{mbUsuario.dtoFiltros.idNombreDistrito}"
+		                				 styleClass="form-control" 
+		                                 disabled="true"
+		                                 requiredMessage="#{messageSource['mensaje_generico.campoRequerido']}">
+		                    <f:selectItem itemLabel="No disponible" itemValue="" itemDisabled="#{mbUsuario.dtoFiltros.idEstado eq 0 ? false:true}" />
+		                    <f:selectItems value="#{mbUsuario.listaDistritos}" var="dis" itemLabel="#{dis.idDistrito eq 0 ? '' : dis.idDistrito} #{dis.cabeceraDistrital}" itemValue="#{dis.idDistrito}"/>
+		                    <p:ajax  listener="#{mbUsuario.distritoSeleccionado()}"/>
+		                </h:selectOneMenu>
+		          	</div>
+		       	</sec:authorize>
+			</div>
+			
+			<!-- UBICACION USUARIO -->
+			<div class="col-md-3 col-xs-6">
+				 <!-- Entrada para OC -->
+		        <sec:authorize ifAnyGranted="ROLE_COM2015.ADMIN.OC, ROLE_COM2015.CONSULTA.OC">
+		          	<div class="text-right">
+		          		<p class="text-right"><b><h:outputText value="#{mbUsuario.etiquetaJunta}" rendered="#{SPRING_SECURITY_CONTEXT!=null}" id="idEtiquetaJunta"/></b></p>
+		          	</div>
+			  	</sec:authorize>
+				<!--     ENTRADA PARA JL  -->
+				<sec:authorize ifAnyGranted="ROLE_COM2015.CAPTURA.JL, ROLE_COM2015.CONSULTA.JL, ROLE_COM2015.ADMIN.JL">    
+		        	<div class="text-right">
+		          		<p class="text-right"><b><h:outputText value="#{mbUsuario.etiquetaJunta}" rendered="#{SPRING_SECURITY_CONTEXT!=null}" id="idEtiquetaJunta"/></b></p>
+		          	</div>
+		        </sec:authorize>
+		        	<!-- Entrada para JD -->
+			  	<sec:authorize ifAnyGranted="ROLE_COM2015.ADMIN.JD, ROLE_COM2015.CONSULTA.JL, ROLE_COM2015.CAPTURA.JD">
+		          	<div class="text-right">
+		          		<p class="text-right"><b><h:outputText value="#{mbUsuario.etiquetaJunta}" rendered="#{SPRING_SECURITY_CONTEXT!=null}" id="idEtiquetaJunta"/></b></p>
+		          	</div>
+		       	</sec:authorize>
+			</div>
+		</div>
+	</div>
+	</h:form>
+</ui:component>

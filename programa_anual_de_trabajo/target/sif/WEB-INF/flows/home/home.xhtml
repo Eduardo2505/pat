@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:c ="http://java.sun.com/jsp/jstl/core"
+				xmlns:ui="http://java.sun.com/jsf/facelets"
+				xmlns:h ="http://java.sun.com/jsf/html"
+				xmlns:f ="http://java.sun.com/jsf/core"
+				xmlns:p ="http://primefaces.org/ui"
+				xmlns:pe="http://primefaces.org/ui/extensions"
+				xmlns:sec="http://www.springframework.org/security/tags"
+				template="/templates/template.xhtml"> 
+      	
+	<ui:define name="CONTENT">
+		
+		<h:form id="formEjemplo">
+			
+			<script>
+				function extLegend() {
+				    this.cfg.legend= {
+				        show: true,
+				        location: 'ne',
+				        placement: 'outsideGrid'
+				    };
+				}
+			</script>
+		
+			
+			<br/>
+			<section class="container">
+				
+				<div class="row">
+    				<div class="col-md-7">
+      					<h4>
+      						#{messageSource['etiqueta_home_periodoTitulo']}
+      					</h4>
+      					<h1 style="font-weight: normal;text-align: left; padding-left: 22px;">
+      						#{messageSource['etiqueta_home_periodo']} 
+      					</h1>
+						<p>
+							#{messageSource['etiqueta_home_descripcionSistema']} 
+						</p>
+					</div>
+	    			<div class="col-md-3">
+	      				<h4>
+	      					#{messageSource['etiqueta_home_areaResponsableTitulo']} 
+	      				</h4>
+	      				<h1 style="color: #564980; font-weight: normal; padding-left: 22px;"> #{messageSource['etiqueta_home_areaResponsable']}  </h1>
+				    	<br/>
+				    	<br/>
+				    	<h4>
+				    		#{messageSource['etiqueta_home_sistemasRelacionadosTitulo']} 
+				    	</h4>
+				      	<ol>
+				        	#{messageSource['etiqueta_home_sistemasRelacionadosUno']} 
+				      	</ol>
+	      				<br/>
+	   			 	</div>
+	    			<div class="col-md-1">
+					</div>
+					
+	      		</div>
+	      		
+      			<hr/>
+      			      			
+      			      			
+      			<div class="row">
+      				<div class="col-md-12">
+      					<a href="#{request.contextPath}/app/CatalogoCuentas">CATALOGO CUENTAS</a>
+      				</div>
+				</div>
+      			<div class="row">
+      				<div class="col-md-12">
+      					<a href="#{request.contextPath}/app/tablas">Tablas</a>
+      				</div>
+				</div>
+				<div class="row">
+      				<div class="col-md-12">
+      					<a href="#{request.contextPath}/app/ejemplos/tablasLazy">Tablas Lazy</a>
+      				</div>
+				</div>
+				<div class="row">
+      				<div class="col-md-12">
+      					<a href="#{request.contextPath}/app/validaciones">Validaciones de texto y n&uacute;mero</a>
+      				</div>
+				</div>
+				<div class="row">
+      				<div class="col-md-12">
+      					<a href="#{request.contextPath}/app/seleccion">Combos y selecci&oacute;n</a>
+      				</div>
+				</div>
+				<div class="row">
+      				<div class="col-md-12">
+      					<a href="#{request.contextPath}/app/fechas">Fechas</a>
+      				</div>
+				</div>
+				<div class="row">
+      				<div class="col-md-12">
+      					<a href="#{request.contextPath}/app/botones">Botones y mensajes</a>
+      				</div>
+				</div>
+				<div class="row">
+      				<div class="col-md-12">
+      					<a href="#{request.contextPath}/app/form">Form din&aacute;mico</a>
+      				</div>
+				</div>
+				<!-- Carga de archivos -->
+				
+				<div class="row">
+      				<div class="col-md-12">
+      					<a href="#{request.contextPath}/app/cargaArchivos/captura">Carga de Archivos</a>
+      				</div>
+				</div>
+      		</section>     		
+			<h:outputScript library="js" name="jquery-1.10.2.min.js" />	
+		</h:form>
+		<!--  FIN MENU NAVEGACION PRINCIPAL   -->
+   	  						
+	</ui:define>
+
+</ui:composition>

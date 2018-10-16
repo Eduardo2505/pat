@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:batch="http://www.springframework.org/schema/batch"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+	http://www.springframework.org/schema/batch
+	http://www.springframework.org/schema/batch/spring-batch.xsd
+	http://www.springframework.org/schema/task
+	http://www.springframework.org/schema/task/spring-task.xsd"
+>
+
+	<!-- Beans de configuración de Spring Batch -->
+	<task:executor id="executorBatch" />
+	<bean id="jobRepository"
+	class="org.springframework.batch.core.repository.support.JobRepositoryFactoryBean">
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<bean id="txManagerVacio" class="org.springframework.batch.support.transaction.ResourcelessTransactionManager" />
+
+	<bean id="jobLauncher"
+	class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
+		<property name="jobRepository" ref="jobRepository" />
+		<property name="taskExecutor" ref="executorBatch"/>
+	</bean>
+	
+	<!-- Job de carga por lotes -->
+	<!-- batch:job id="cargaLotes" job-repository="jobRepository">
+		<batch:step id="cargaLotesPaso1" next="cargaLotesPaso2">
+			<batch:tasklet ref="iniciarCargaLotes" />
+		</batch:step>
+		<batch:step id="cargaLotesPaso2" next="cargaLotesPaso3" >
+			<batch:tasklet ref="procesarCargaLotes" start-limit="3" transaction-manager="txManagerVacio"/>
+		</batch:step>
+		<batch:step id="cargaLotesPaso3" >
+			<batch:tasklet ref="finalizarCargaLotes" />
+		</batch:step>
+	</batch:job-->
+	
+	<task:annotation-driven/>
+
+</beans>
